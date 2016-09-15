@@ -4,6 +4,7 @@ import dao.interfaces.ConnectionFactory;
 import dao.interfaces.ContactDao;
 import model.Contact;
 
+import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,8 +28,9 @@ public class MySqlContactDao implements ContactDao {
 
     }
 
-    public List<Contact> getContactsPage(int pageNumber) {
+    public List<Contact> getContactsPage(int pageNumber) throws NamingException {
         ConnectionFactory connectionFactory = MySqlConnectionFactory.getInstance();
+
         List<Contact> contactList = new ArrayList<>();
         try(Connection connection = connectionFactory.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` LIMIT ?, 20")) {

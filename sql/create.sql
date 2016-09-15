@@ -1,65 +1,57 @@
-DROP DATABASE IF EXISTS `contacts`;
+DROP DATABASE IF EXISTS `contacts_maltsev`;
 
-CREATE DATABASE `contacts` CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
+CREATE DATABASE `contacts_maltsev` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 
---citizenship
---relationship
---contact phones
---attached files
-
-CREATE TABLE `contacts`.`citizenship` (
+CREATE TABLE `contacts_maltsev`.`citizenship` (
 	`id` TINYINT UNSIGNED AUTO_INCREMENT  NOT NULL,
-	`name` NVARCHAR(30) NOT NULL
-	
+	`name` NVARCHAR(30) NOT NULL,
 	PRIMARY KEY (`id`)		
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`relationship` (
+CREATE TABLE `contacts_maltsev`.`relationship` (
 	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`name` NVARCHAR(30) NOT NULL
-	
+	`name` NVARCHAR(30) NOT NULL,
 	PRIMARY KEY (`id`)		
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`country` (
+CREATE TABLE `contacts_maltsev`.`country` (
 	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`phone_code` SMALLINT UNSIGNED NOT NULL,
-	`name` NVARCHAR(30) NOT NULL
-	
+	`name` NVARCHAR(30) NOT NULL,
 	PRIMARY KEY (`id`)		
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`region` (
+CREATE TABLE `contacts_maltsev`.`region` (
 	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`name` NVARCHAR(30) NOT NULL,
 	`id_country` TINYINT UNSIGNED NOT NULL,
 	
 	PRIMARY KEY (`id`),
-	CONSTRAINT `region_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts`.`country`(`id`) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	CONSTRAINT `region_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country`(`id`) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`city` (
+CREATE TABLE `contacts_maltsev`.`city` (
 	`id` SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`name` NVARCHAR(30) NOT NULL,
 	`id_region` TINYINT UNSIGNED NOT NULL,
 	
 	PRIMARY KEY (`id`),
-	CONSTRAINT `city_region_fk` FOREIGN KEY (`id_region`) REFERENCES `contacts`.`region`(`id`) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	CONSTRAINT `city_region_fk` FOREIGN KEY (`id_region`) REFERENCES `contacts_maltsev`.`region`(`id`) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`contact` (
+CREATE TABLE `contacts_maltsev`.`contact` (
 	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`first_name` NVARCHAR(30) NOT NULL,
 	`last_name` NVARCHAR(30) NOT NULL,
-	`patronymic` NVARCHAR(30) NOT NULL,
-	`birth_date` DATE NOT NULL,
+	`patronymic` NVARCHAR(30),
+	`birth_date` DATE,
 	`gender` BIT(1) NOT NULL,
 	`id_citizenship` TINYINT UNSIGNED,
 	`id_relationship` TINYINT UNSIGNED,
-	`web_site` NVARCHAR(255) NOT NULL,
-	`email` NVARCHAR(255) NOT NULL,
+	`web_site` NVARCHAR(255),
+	`email` NVARCHAR(255),
 	`company_name` NVARCHAR(50),
-	`profile_picture` NVARCHAR(255) NOT NULL,
+	`profile_picture` NVARCHAR(255),
 	
 	`id_country` TINYINT UNSIGNED,
 	`id_city` SMALLINT UNSIGNED,
@@ -67,14 +59,14 @@ CREATE TABLE `contacts`.`contact` (
 	`postcode` NVARCHAR(20),
 	
 	PRIMARY KEY (`id`),
-	CONSTRAINT `concact_citizenship_fk` FOREIGN KEY (`id_citizenship`) REFERENCES `contacts`.`citizenship` (`id`) ON DELETE SET NULL
-	CONSTRAINT `concact_relationship_fk` FOREIGN KEY (`id_relationship`) REFERENCES `contacts`.`relationship` (`id`) ON DELETE SET NULL
+	CONSTRAINT `concact_citizenship_fk` FOREIGN KEY (`id_citizenship`) REFERENCES `contacts_maltsev`.`citizenship` (`id`) ON DELETE SET NULL,
+	CONSTRAINT `concact_relationship_fk` FOREIGN KEY (`id_relationship`) REFERENCES `contacts_maltsev`.`relationship` (`id`) ON DELETE SET NULL,
 	
-	CONSTRAINT `concact_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts`.`country` (`id`) ON DELETE SET NULL
-	CONSTRAINT `concact_city_fk` FOREIGN KEY (`id_city`) REFERENCES `contacts`.`city` (`id`) ON DELETE SET NULL
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	CONSTRAINT `concact_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country` (`id`) ON DELETE SET NULL,
+	CONSTRAINT `concact_city_fk` FOREIGN KEY (`id_city`) REFERENCES `contacts_maltsev`.`city` (`id`) ON DELETE SET NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`phone` (
+CREATE TABLE `contacts_maltsev`.`phone` (
 	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`id_country` TINYINT UNSIGNED  NOT NULL,
 	`operator_code` SMALLINT UNSIGNED NOT NULL,
@@ -84,20 +76,19 @@ CREATE TABLE `contacts`.`phone` (
 	`comment` NVARCHAR(255) NOT NULL,
 	
 	PRIMARY KEY (`id`),
-	CONSTRAINT `phone_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts`.`country`(`id`) ON DELETE CASCADE
-	CONSTRAINT `phone_contact_fk` FOREIGN KEY (`id_contact`) REFERENCES `contacts`.`contact`(`id`) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	CONSTRAINT `phone_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `phone_contact_fk` FOREIGN KEY (`id_contact`) REFERENCES `contacts_maltsev`.`contact`(`id`) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`attachment` (
+CREATE TABLE `contacts_maltsev`.`attachment` (
 	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`file_name` NVARCHAR(50) NOT NULL,
 	`file_path` NVARCHAR(255) NOT NULL,
 	`id_contact` INT UNSIGNED NOT NULL,
-	`upload_date` DATETIME NOT NULL,S
+	`upload_date` DATETIME NOT NULL,
 	`comment` NVARCHAR(255) NOT NULL,
 	
 	PRIMARY KEY (`id`),
-	CONSTRAINT `phone_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts`.`country`(`id`) ON DELETE CASCADE
-	CONSTRAINT `attachment_contact_fk` FOREIGN KEY (`id_contact`) REFERENCES `contacts`.`contact`(`id`) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	CONSTRAINT `attachment_contact_fk` FOREIGN KEY (`id_contact`) REFERENCES `contacts_maltsev`.`contact`(`id`) ON DELETE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
