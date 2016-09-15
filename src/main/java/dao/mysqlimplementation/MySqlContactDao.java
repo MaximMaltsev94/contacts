@@ -34,7 +34,7 @@ public class MySqlContactDao implements ContactDao {
         List<Contact> contactList = new ArrayList<>();
         try(Connection connection = connectionFactory.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` LIMIT ?, 20")) {
-            preparedStatement.setInt(1, pageNumber);
+            preparedStatement.setInt(1, (pageNumber - 1) * 20);
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Contact contact = new Contact();
