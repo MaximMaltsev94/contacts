@@ -5,7 +5,7 @@
     <title>Контакты</title>
 </head>
 <body>
-<c:forEach var="i" items="${contactList}" >
+<c:forEach var="i" items="${requestScope.get('contactList')}" >
     <c:out value="${i.firstName} - ${i.lastName}"/> <br>
 </c:forEach>
 </body>
