@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
 </head>
 <body>
-<h1>Редактировать контакт</h1>
+<span class="text-large">
+    Редактировать контакт
+</span>
 </body>
 </html>
