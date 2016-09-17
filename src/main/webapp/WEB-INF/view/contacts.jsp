@@ -16,9 +16,9 @@
     <c:forEach var="i" items="${requestScope.get('contactList')}">
         <section>
             <form action="<c:url value="/contact/"/>" method="get">
+                <input type="text" name="action" value="edit" hidden/>
+                <input type="text" name="id" value="${i.id}" hidden/>
                 <div class="jlab-row">
-                    <input type="text" name="id" value="${i.id}" hidden/>
-                    <input type="text" name="action" value="edit" hidden>
 
                     <div class="jlab-cell-1">
                         <input type="checkbox"/>
@@ -38,9 +38,8 @@
 
                         <div class="jlab-row">
                             <div class="jlab-cell-12">
-                                <c:out value="${i.birthDate} ${i.companyName}"/>
                                 <span class="text-small">
-                                    14.11.1994 iTechArt Беларусь г. Полоцк ул. Мариненко д.1А кв.59
+                                    <c:out value="${i.birthDate}, ${i.companyName}, ${i.street}"/>
                                 </span>
                             </div>
                         </div>

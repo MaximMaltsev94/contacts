@@ -38,7 +38,7 @@ public class MySqlConnectionFactory implements ConnectionFactory{
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
+    synchronized public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
 }

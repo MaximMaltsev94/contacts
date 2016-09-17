@@ -9,5 +9,6 @@ public interface ContactDao {
     void insert(Contact contact);
     void update(Contact contact);
     void delete(Contact contact);
+    int getRowsCount();
     List<Contact> getContactsPage(int pageNumber) throws NamingException;
 }

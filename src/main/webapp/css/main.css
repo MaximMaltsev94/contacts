@@ -16,6 +16,7 @@ form {
 
 nav {
     width: 100%;
+    padding: 0 5%;
     min-height: 70px;
     border-bottom: #e6e6e6 solid 1px;
     margin-bottom: 10px;
@@ -46,7 +47,6 @@ section {
 }
 
 div[class*="jlab-cell-"] {
-    align-content: center;
     display: inline-block;
     box-sizing: border-box;
     margin: auto 0;
@@ -114,7 +114,7 @@ div[class*="jlab-cell-"] {
 }
 
 .text-small {
-    font-size: 0.7em;
+    font-size: 0.8em;
     font-weight: lighter;
 }
 

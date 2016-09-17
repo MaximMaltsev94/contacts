@@ -13,6 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlContactDao implements ContactDao {
+    ConnectionFactory connectionFactory;
+
+    public MySqlContactDao() throws NamingException {
+        connectionFactory = MySqlConnectionFactory.getInstance();
+    }
+
     @Override
     public void insert(Contact contact) {
 
@@ -28,9 +34,7 @@ public class MySqlContactDao implements ContactDao {
 
     }
 
-    public List<Contact> getContactsPage(int pageNumber) throws NamingException {
-        ConnectionFactory connectionFactory = MySqlConnectionFactory.getInstance();
-
+    public List<Contact> getContactsPage(int pageNumber) {
         List<Contact> contactList = new ArrayList<>();
         try(Connection connection = connectionFactory.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` LIMIT ?, 20")) {
@@ -58,9 +62,26 @@ public class MySqlContactDao implements ContactDao {
 
                 contactList.add(contact);
             }
+            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return contactList;
+    }
+
+    @Override
+    public int getRowsCount() {
+        int count = 0;
+        try(Connection connection = connectionFactory.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`")) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("cnt");
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 }
