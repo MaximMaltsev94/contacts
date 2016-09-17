@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 public class FrontController extends HttpServlet {
 
     private RequestHandler getHandlerClass(HttpServletRequest request) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        String commandName = request.getPathInfo().substring(1).toLowerCase();
+        String commandName = request.getParameter("action");
         String className = commandName.substring(0, 1).toUpperCase() + commandName.substring(1);
         Class cl = Class.forName("command." + className + "Handler");
         return (RequestHandler) cl.newInstance();
@@ -26,11 +26,9 @@ public class FrontController extends HttpServlet {
         try {
             RequestHandler handler = getHandlerClass(request);
             handler.handle(request, response);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (ClassNotFoundException | NullPointerException e) {
+            response.sendRedirect("/contact/?action=show&page=1");
+        } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
     }
