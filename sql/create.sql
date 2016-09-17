@@ -51,7 +51,7 @@ CREATE TABLE `contacts_maltsev`.`contact` (
 	`web_site` NVARCHAR(255),
 	`email` NVARCHAR(255),
 	`company_name` NVARCHAR(50),
-	`profile_picture` NVARCHAR(255),
+	`profile_picture` NVARCHAR(255) DEFAULT '/profileImages/default.png',
 	
 	`id_country` TINYINT UNSIGNED,
 	`id_city` SMALLINT UNSIGNED,
