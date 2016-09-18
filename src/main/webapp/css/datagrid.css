@@ -7,10 +7,20 @@
 div[class*="jlab-cell-"] {
     display: inline-block;
     box-sizing: border-box;
+    margin: 0 5px;
+}
+
+div[class*="jlab-cell-"] .center {
     margin: auto 5px;
 }
 
-/*
+.fixed {
+    position: fixed;
+    top: 81px;
+    right: 30px;
+}
+
+
 .jlab-cell-1 {
     width: 8.333333%;
 }
@@ -57,4 +67,4 @@ div[class*="jlab-cell-"] {
 
 .jlab-cell-12 {
     width: 100%;
-}*/
+}
