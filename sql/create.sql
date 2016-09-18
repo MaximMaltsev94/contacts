@@ -2,15 +2,9 @@ DROP DATABASE IF EXISTS `contacts_maltsev`;
 
 CREATE DATABASE `contacts_maltsev` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 
-CREATE TABLE `contacts_maltsev`.`citizenship` (
-	`id` TINYINT UNSIGNED AUTO_INCREMENT  NOT NULL,
-	`name` NVARCHAR(30) NOT NULL,
-	PRIMARY KEY (`id`)		
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE `contacts_maltsev`.`relationship` (
 	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`name` NVARCHAR(30) NOT NULL,
+	`name` NVARCHAR(20) NOT NULL,
 	PRIMARY KEY (`id`)		
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -21,22 +15,13 @@ CREATE TABLE `contacts_maltsev`.`country` (
 	PRIMARY KEY (`id`)		
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts_maltsev`.`region` (
-	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
+CREATE TABLE `contacts_maltsev`.`city` (
+	`id` SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`name` NVARCHAR(30) NOT NULL,
 	`id_country` TINYINT UNSIGNED NOT NULL,
 	
 	PRIMARY KEY (`id`),
-	CONSTRAINT `region_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country`(`id`) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `contacts_maltsev`.`city` (
-	`id` SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`name` NVARCHAR(30) NOT NULL,
-	`id_region` TINYINT UNSIGNED NOT NULL,
-	
-	PRIMARY KEY (`id`),
-	CONSTRAINT `city_region_fk` FOREIGN KEY (`id_region`) REFERENCES `contacts_maltsev`.`region`(`id`) ON DELETE CASCADE
+	CONSTRAINT `city_county_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country`(`id`) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts_maltsev`.`contact` (
@@ -46,7 +31,7 @@ CREATE TABLE `contacts_maltsev`.`contact` (
 	`patronymic` NVARCHAR(30),
 	`birth_date` DATE,
 	`gender` BIT(1) NOT NULL,
-	`id_citizenship` TINYINT UNSIGNED,
+	`citizenship` NVARCHAR(50),
 	`id_relationship` TINYINT UNSIGNED,
 	`web_site` NVARCHAR(255),
 	`email` NVARCHAR(255),
@@ -59,7 +44,6 @@ CREATE TABLE `contacts_maltsev`.`contact` (
 	`postcode` NVARCHAR(20),
 	
 	PRIMARY KEY (`id`),
-	CONSTRAINT `concact_citizenship_fk` FOREIGN KEY (`id_citizenship`) REFERENCES `contacts_maltsev`.`citizenship` (`id`) ON DELETE SET NULL,
 	CONSTRAINT `concact_relationship_fk` FOREIGN KEY (`id_relationship`) REFERENCES `contacts_maltsev`.`relationship` (`id`) ON DELETE SET NULL,
 	
 	CONSTRAINT `concact_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country` (`id`) ON DELETE SET NULL,
