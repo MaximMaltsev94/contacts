@@ -7,6 +7,7 @@
     <title>Контакты</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/pagination.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
 </head>
 <body>
 <nav>
