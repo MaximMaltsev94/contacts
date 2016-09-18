@@ -21,7 +21,7 @@
             <div class="jlab-row">
 
                 <div class="jlab-cell-1">
-                    <input type="checkbox"/>
+                    <input type="checkbox" id="${i.id}" class="regular-checkbox" /><label for="${i.id}"></label>
                 </div>
 
                 <div class="jlab-cell-1">
@@ -51,6 +51,8 @@
             </div>
         </section>
     </c:forEach>
+
+    <%--pagination--%>
 
     <c:set var="currentPage" scope="page" value="${param.get('page')}"/>
     <c:set var="lastPage" scope="page" value="${requestScope.get('maxPageNumber')}"/>
