@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class City implements Serializable {
     private int id;
     private String name;
-    private int regionID;
+    private int countryID;
 
     public int getId() {
         return id;
@@ -23,18 +23,18 @@ public class City implements Serializable {
         this.name = name;
     }
 
-    public int getRegionID() {
-        return regionID;
+    public int getCountryID() {
+        return countryID;
     }
 
-    public void setRegionID(int regionID) {
-        this.regionID = regionID;
+    public void setCountryID(int countryID) {
+        this.countryID = countryID;
     }
 
-    public City(int id, String name, int regionID) {
+    public City(int id, String name, int countryID) {
         this.id = id;
         this.name = name;
-        this.regionID = regionID;
+        this.countryID = countryID;
     }
 
     public City() {

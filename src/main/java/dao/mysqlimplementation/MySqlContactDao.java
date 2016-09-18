@@ -49,7 +49,7 @@ public class MySqlContactDao implements ContactDao {
                 contact.setPatronymic(rs.getString("patronymic"));
                 contact.setBirthDate(rs.getDate("birth_date"));
                 contact.setGender(rs.getBoolean("gender"));
-                contact.setCitizenshipID(rs.getByte("id_citizenship"));
+                contact.setCitizenship(rs.getString("citizenship"));
                 contact.setRelationshipID(rs.getByte("id_relationship"));
                 contact.setWebSite(rs.getString("web_site"));
                 contact.setEmail(rs.getString("email"));

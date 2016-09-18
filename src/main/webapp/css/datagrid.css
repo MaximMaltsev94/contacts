@@ -7,8 +7,7 @@
 div[class*="jlab-cell-"] {
     display: inline-block;
     box-sizing: border-box;
-    margin: auto 0;
-    margin-right: 10px;
+    margin: auto 5px;
 }
 
 /*

@@ -10,7 +10,7 @@ public class Contact implements Serializable{
     private String patronymic;
     private Date birthDate;
     private boolean gender;
-    private int citizenshipID;
+    private String citizenship;
     private int relationshipID;
     private String webSite;
     private String email;
@@ -69,12 +69,12 @@ public class Contact implements Serializable{
         this.gender = gender;
     }
 
-    public int getCitizenshipID() {
-        return citizenshipID;
+    public String getCitizenship() {
+        return citizenship;
     }
 
-    public void setCitizenshipID(int citizenshipID) {
-        this.citizenshipID = citizenshipID;
+    public void setCitizenship(String citizenship) {
+        this.citizenship = citizenship;
     }
 
     public int getRelationshipID() {
@@ -152,14 +152,14 @@ public class Contact implements Serializable{
     public Contact() {
     }
 
-    public Contact(int id, String firstName, String lastName, String patronymic, Date birthDate, boolean gender, int citizenshipID, int relationshipID, String webSite, String email, String companyName, String profilePicture, int countyID, int cityID, String street, String postcode) {
+    public Contact(int id, String firstName, String lastName, String patronymic, Date birthDate, boolean gender, String citizenship, int relationshipID, String webSite, String email, String companyName, String profilePicture, int countyID, int cityID, String street, String postcode) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;
         this.birthDate = birthDate;
         this.gender = gender;
-        this.citizenshipID = citizenshipID;
+        this.citizenship = citizenship;
         this.relationshipID = relationshipID;
         this.webSite = webSite;
         this.email = email;
