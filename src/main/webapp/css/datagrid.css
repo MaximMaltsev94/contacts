@@ -17,7 +17,8 @@ div[class*="jlab-cell-"] .center {
 .fixed {
     position: fixed;
     top: 81px;
-    right: 30px;
+    right: 10px;
+    overflow: auto;
 }
 
 

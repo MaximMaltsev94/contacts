@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.lang.Math" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -31,14 +30,13 @@
                             <img src="<c:url value="${i.profilePicture}" /> " width="50px" height="50px">
                         </div>
 
-                        <div class="jlab-cell-10 center">
+                        <div class="jlab-cell-8 center">
 
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
-                            <span class="text-medium">
-                                    <a href="<c:url value="/contact/?action=edit&id=${i.id}" /> "><c:out
+                                    <a class="text-medium"
+                                       href="<c:url value="/contact/?action=edit&id=${i.id}" /> "><c:out
                                             value="${i.firstName} ${i.lastName}"/></a>
-                                </span>
                                 </div>
                             </div>
 
@@ -50,6 +48,20 @@
                                 </div>
                             </div>
 
+                        </div>
+
+                        <div class="jlab-cell-1 center">
+                            <a href="<c:url value="/contact/?action=edit&id=${i.id}"/>">
+                                <div id="editImage">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="jlab-cell-1 center ">
+                            <a href="#">
+                                <div id="deleteImage">
+                                </div>
+                            </a>
+                            </a>
                         </div>
                     </div>
                 </section>
@@ -125,7 +137,7 @@
         <%--div.jlab-row end--%>
     </div>
 
-<%--div.container end--%>
+    <%--div.container end--%>
 </div>
 
 </body>

@@ -7,6 +7,7 @@
 ul.pagination li {display: inline;}
 
 ul.pagination li a {
+    color: #595954;
     background-color: white;
     font-size: 1em;
     padding: 8px 16px;

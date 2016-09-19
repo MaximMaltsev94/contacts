@@ -6,10 +6,9 @@
 }
 
 body {
-    margin: 0;
-    margin-bottom: 50px;
+    margin: 0 0 40px;
     background-color: #f0f0f0;
-    font-family: OpenSans;
+    font-family: OpenSans, sans-serif;
     color: #595954;
 }
 
@@ -57,13 +56,14 @@ section {
 }
 
 a {
-    font-family: OpenSans;
     color: #595954;
+    text-decoration: none;
 }
 
 a:hover {
-    text-decoration: none;
+    text-decoration: underline;
 }
+
 
 label {
     display: inline;
@@ -76,7 +76,7 @@ label {
 .regular-checkbox + label {
     background-color: white;
     border: 1px solid #dbdbdb;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 -15px 10px -12px rgba(0,0,0,0.05);
     padding: 9px;
     border-radius: 3px;
     display: inline-block;
@@ -84,13 +84,13 @@ label {
 }
 
 .regular-checkbox + label:active, .regular-checkbox:checked + label:active {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .regular-checkbox:checked + label {
     background-color: white;
     border: 1px solid #dbdbdb;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
     color: #ec1c24;
 }
 
@@ -101,5 +101,33 @@ label {
     top: -4px;
     left: 2px;
     color: #ec1c24;
+}
+
+#editImage {
+    background-image: url('/sysImages/edit.png');
+    background-size: 25px, 25px;
+    width: 25px;
+    height: 25px;
+}
+
+#editImage:hover {
+    background-image: url('/sysImages/edit hover.png');
+    background-size: 25px, 25px;
+    width: 25px;
+    height: 25px;
+}
+
+#deleteImage {
+    background-image: url('/sysImages/delete.png');
+    background-size: 25px, 25px;
+    width: 25px;
+    height: 25px;
+}
+
+#deleteImage:hover {
+    background-image: url('/sysImages/delete hover.png');
+    background-size: 25px, 25px;
+    width: 25px;
+    height: 25px;
 }
 
