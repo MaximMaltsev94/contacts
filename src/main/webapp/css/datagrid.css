@@ -5,13 +5,25 @@
 }
 
 div[class*="jlab-cell-"] {
-    display: inline-block;
+    /*display: inline-block;*/
     box-sizing: border-box;
     margin: 0 5px;
 }
 
 div[class*="jlab-cell-"] .center {
     margin: auto 5px;
+}
+
+.align-center {
+    margin: auto;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.margin {
+    margin: 5px;
 }
 
 .fixed {

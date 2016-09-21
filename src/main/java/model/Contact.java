@@ -61,7 +61,7 @@ public class Contact implements Serializable{
         this.birthDate = birthDate;
     }
 
-    public boolean isGender() {
+    public boolean getGender() {
         return gender;
     }
 

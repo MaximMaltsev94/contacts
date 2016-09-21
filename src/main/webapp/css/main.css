@@ -36,7 +36,7 @@ section {
     border: #dbdbdb solid 1px;
     border-radius: 5px;
     padding: 5px;
-    margin-bottom: 5px;
+    margin: 0 auto 5px;
 }
 
 
@@ -103,31 +103,159 @@ label {
     color: #ec1c24;
 }
 
-#editImage {
+
+.regular-radio {
+    display: none;
+}
+
+.regular-radio + label {
+    -webkit-appearance: none;
+    background-color: white;
+    border: 1px solid #dbdbdb;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+    padding: 9px;
+    border-radius: 50px;
+    display: inline-block;
+    position: relative;
+}
+
+.regular-radio:checked + label:after {
+    content: ' ';
+    width: 12px;
+    height: 12px;
+    border-radius: 50px;
+    position: absolute;
+    top: 3px;
+    background: #ec1c24;
+    /*box-shadow: inset 0px 0px 10px rgba(0,0,0,0.3);*/
+    text-shadow: 0px;
+    left: 3px;
+    font-size: 32px;
+}
+
+.regular-radio:checked + label {
+    background-color: #e9ecee;
+    color: #99a1a7;
+    border: 1px solid #adb8c0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1), inset 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.regular-radio + label:active, .regular-radio:checked + label:active {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+button, input[type="submit"] {
+    color: white;
+    padding: 8px 25px;
+    border: none;
+    border-radius: 2px;
+    background-color: #ec1c24;
+}
+
+button:hover, input[type="submit"] {
+    cursor: pointer;
+    background-color: #e21a22;
+}
+
+button:active, input[type="submit"] {
+    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
+}
+
+button:focus, input[type="submit"] {
+    border: none;
+    outline: none;
+}
+
+button:disabled {
+    cursor: default;
+    background-color: #EF6469;
+}
+
+.editImage {
     background-image: url('/sysImages/edit.png');
     background-size: 25px, 25px;
     width: 25px;
     height: 25px;
 }
 
-#editImage:hover {
+.editImage:hover {
+    cursor: pointer;
     background-image: url('/sysImages/edit hover.png');
     background-size: 25px, 25px;
     width: 25px;
     height: 25px;
 }
 
-#deleteImage {
+.deleteImage {
     background-image: url('/sysImages/delete.png');
     background-size: 25px, 25px;
     width: 25px;
     height: 25px;
 }
 
-#deleteImage:hover {
+.deleteImage:hover {
+    cursor: pointer;
     background-image: url('/sysImages/delete hover.png');
     background-size: 25px, 25px;
     width: 25px;
     height: 25px;
 }
 
+input[type="text"], input[type="email"], input[type="date"], select {
+    min-width: 200px;
+    padding: 5px 10px;
+    font-family: OpenSans, sans-serif;
+    color: #595954;
+    border: #dbdbdb solid 1px;
+    border-radius: 1px;
+    background-color: #f0f0f0;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="date"], select {
+    outline: none;
+}
+
+select {
+    min-width: 222px;
+}
+
+input[type='file'].hidden
+{
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    font-size: 50px;
+    cursor: pointer;
+    opacity: 0;
+    -moz-opacity: 0;
+    filter: Alpha(Opacity=0);
+}
+img.fileDownload
+{
+    height: 100px;
+    width: 100px;
+    padding: 0;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 4px 0 0;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+div.hiddenFileInputContainter
+{
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    vertical-align: middle;
+    cursor: pointer;
+}

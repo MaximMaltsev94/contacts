@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -7,6 +8,8 @@
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/pagination.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
+
+    <script src="<c:url value="/js/showView.js"/>"></script>
 </head>
 <body>
 <nav>
@@ -17,7 +20,7 @@
 <div class="container">
 
     <div class="jlab-row">
-        <div class="jlab-cell-8">
+        <div class="jlab-cell-9">
             <c:forEach var="i" items="${requestScope.get('contactList')}">
                 <section>
                     <div class="jlab-row">
@@ -43,7 +46,10 @@
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
                                 <span class="text-small">
-                                    <c:out value="${i.birthDate}, ${i.companyName}, ${i.street}"/>
+                                    <c:if test="${i.birthDate != null}">
+                                        <fmt:formatDate value="${i.birthDate}" type="date" dateStyle="long" />
+                                    </c:if>
+                                    <c:out value=" ${i.companyName} ${i.street}"/>
                                 </span>
                                 </div>
                             </div>
@@ -52,16 +58,16 @@
 
                         <div class="jlab-cell-1 center">
                             <a href="<c:url value="/contact/?action=edit&id=${i.id}"/>">
-                                <div id="editImage">
+                                <div class="editImage">
                                 </div>
                             </a>
                         </div>
                         <div class="jlab-cell-1 center ">
-                            <a href="#">
-                                <div id="deleteImage">
+                            <form id="fDelete${i.id}" action="<c:url value="/contact/?action=delete&id=${i.id}"/>" method="post">
+                                <input type="text" name="profilePicture" value="${i.profilePicture}" hidden>
+                                <div class="deleteImage" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', 'fDelete${i.id}')">
                                 </div>
-                            </a>
-                            </a>
+                            </form>
                         </div>
                     </div>
                 </section>
@@ -129,8 +135,24 @@
 
             <%--div.jlab-cell-8 end--%>
         </div>
-        <div class="jlab-cell-4 fixed">
-            <section><span class="text-large">Hello world</span></section>
+        <div class="jlab-cell-3 fixed">
+            <section>
+                <div class="jlab-row margin">
+                    <div class="jlab-cell-12">
+                        <span class="text-medium">
+                            Выберите действие
+                        </span>
+                    </div>
+                </div>
+                <div class="jlab-row margin">
+                    <a href="<c:url value="/contact/?action=add" />">
+                        <button>Создать контакт</button>
+                    </a>
+                </div>
+                <div class="jlab-row margin">
+                    <button disabled>Удалить</button>
+                </div>
+            </section>
 
         </div>
 
