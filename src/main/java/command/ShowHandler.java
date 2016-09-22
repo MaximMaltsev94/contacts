@@ -5,6 +5,8 @@ import dao.interfaces.ContactDao;
 import dao.mysqlimplementation.MySqlConnectionFactory;
 import dao.mysqlimplementation.MySqlContactDao;
 import model.Contact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -14,8 +16,15 @@ import java.io.IOException;
 import java.util.List;
 
 public class ShowHandler implements RequestHandler {
+    private final static Logger LOG = LoggerFactory.getLogger(ShowHandler.class);
+
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             int pageNumber = Integer.parseInt(request.getParameter("page"));
             ContactDao contactDao = new MySqlContactDao();
@@ -28,10 +37,11 @@ public class ShowHandler implements RequestHandler {
             request.setAttribute("contactList", contactList);
             request.setAttribute("maxPageNumber", maxPageNumber);
         } catch (NumberFormatException ex) {
+            LOG.warn("incorrect page number {}", request.getParameter("page"), ex);
             response.sendRedirect("/contact/?action=show&page=1");
             return;
         } catch (NamingException e) {
-            e.printStackTrace();
+            LOG.warn("can't get db connection", e);
         }
         request.getRequestDispatcher("/WEB-INF/view/contacts.jsp").forward(request, response);
     }

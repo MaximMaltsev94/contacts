@@ -3,9 +3,10 @@ package command;
 import dao.interfaces.ContactDao;
 import dao.mysqlimplementation.MySqlContactDao;
 import model.Contact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -15,6 +16,8 @@ import java.io.IOException;
  * Created by maxim on 21.09.2016.
  */
 public class DeleteHandler implements RequestHandler {
+
+    private final static Logger LOG = LoggerFactory.getLogger(DeleteHandler.class);
 
     private void deleteProfileImage(String uploadPath, int id) throws NamingException {
         ContactDao contactDao = new MySqlContactDao();
@@ -28,18 +31,21 @@ public class DeleteHandler implements RequestHandler {
     }
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if(request.getMethod().equalsIgnoreCase("post")) {
-            try {
-                int contactID = Integer.parseInt(request.getParameter("id"));
-                ContactDao contactDao = new MySqlContactDao();
-                deleteProfileImage(request.getServletContext().getInitParameter("uploadPath"), contactID);
-                contactDao.deleteByID(contactID);
-                response.sendRedirect("/contact/?action=show");
-            }catch (Exception ex) {
-                ex.printStackTrace();
-                response.sendRedirect("/contact/?action=show");
-            }
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            int contactID = Integer.parseInt(request.getParameter("id"));
+            ContactDao contactDao = new MySqlContactDao();
+            deleteProfileImage(request.getServletContext().getInitParameter("uploadPath"), contactID);
+            contactDao.deleteByID(contactID);
+            response.sendRedirect("/contact/?action=show");
+        }catch (NamingException e) {
+            LOG.warn("can't get db connection", e);
+            response.sendRedirect("/contact/?action=show");
         }
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+
     }
 }

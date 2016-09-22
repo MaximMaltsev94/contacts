@@ -9,5 +9,6 @@ import java.io.IOException;
  * Created by maxim on 14.09.2016.
  */
 public interface RequestHandler {
-    void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+    void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

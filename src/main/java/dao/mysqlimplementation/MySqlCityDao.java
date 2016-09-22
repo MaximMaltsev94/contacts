@@ -3,6 +3,8 @@ package dao.mysqlimplementation;
 import dao.interfaces.CityDao;
 import dao.interfaces.ConnectionFactory;
 import model.City;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
 import java.sql.Connection;
@@ -16,6 +18,7 @@ import java.util.List;
  * Created by maxim on 20.09.2016.
  */
 public class MySqlCityDao implements CityDao {
+    private final static Logger LOG = LoggerFactory.getLogger(MySqlCityDao.class);
     private ConnectionFactory connectionFactory;
 
     public MySqlCityDao() throws NamingException {
@@ -26,8 +29,8 @@ public class MySqlCityDao implements CityDao {
     public List<City> getAll() {
         List<City> cityList = new ArrayList<>();
         try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city`")) {
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city`");
+            ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 City city = new City();
                 city.setId(rs.getInt("id"));
@@ -35,9 +38,8 @@ public class MySqlCityDao implements CityDao {
                 city.setCountryID(rs.getInt("id_country"));
                 cityList.add(city);
             }
-            rs.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("can't get city list", e);
         }
         return cityList;
     }

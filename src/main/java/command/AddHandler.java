@@ -6,6 +6,8 @@ import model.*;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.naming.NamingException;
@@ -15,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
@@ -24,8 +25,9 @@ import java.util.List;
  * Created by maxim on 19.09.2016.
  */
 public class AddHandler implements RequestHandler {
+    private final static Logger LOG = LoggerFactory.getLogger(AddHandler.class);
 
-    private void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
         if(isMultipart) {
@@ -37,6 +39,7 @@ public class AddHandler implements RequestHandler {
                 ServletContext servletContext = request.getServletContext();
                 File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
                 factory.setRepository(repository);
+                factory.setSizeThreshold(10000);
 
                 // Create a new file upload handler
                 ServletFileUpload upload = new ServletFileUpload(factory);
@@ -64,7 +67,7 @@ public class AddHandler implements RequestHandler {
                             contact.setProfilePicture("/contact/?action=image&name=" + fileToSave.getName());
 
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            LOG.warn("can't save profile image", ex);
                         }
                     } else {
                         String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
@@ -119,37 +122,34 @@ public class AddHandler implements RequestHandler {
                         }
                     }
                 }
-
                 ContactDao contactDao = new MySqlContactDao();
                 contactDao.insert(contact);
                 response.sendRedirect("/contact/?action=show");
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOG.warn("can't add contact", ex);
             }
         }
     }
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if(request.getMethod().equalsIgnoreCase("get")) {
-            try {
-                RelationshipDao rshDao = new MySqlRelationshipDao();
-                List<Relationship> relationshipList = rshDao.getAll();
-                request.setAttribute("relationshipList", relationshipList);
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            RelationshipDao rshDao = new MySqlRelationshipDao();
+            List<Relationship> relationshipList = rshDao.getAll();
+            request.setAttribute("relationshipList", relationshipList);
 
-                CountryDao countryDao = new MySqlCountryDao();
-                List<Country> countryList = countryDao.getAll();
-                request.setAttribute("countryList", countryList);
+            CountryDao countryDao = new MySqlCountryDao();
+            List<Country> countryList = countryDao.getAll();
+            request.setAttribute("countryList", countryList);
 
-                CityDao cityDao = new MySqlCityDao();
-                List<City> cityList = cityDao.getAll();
-                request.setAttribute("cityList", cityList);
-                request.getRequestDispatcher("/WEB-INF/view/addContact.jsp").forward(request, response);
-            } catch (NamingException e) {
-                e.printStackTrace();
-            }
-        } else if(request.getMethod().equalsIgnoreCase("post")) {
-            doPost(request, response);
+            CityDao cityDao = new MySqlCityDao();
+            List<City> cityList = cityDao.getAll();
+            request.setAttribute("cityList", cityList);
+            request.getRequestDispatcher("/WEB-INF/view/addContact.jsp").forward(request, response);
+        } catch (ServletException | IOException e) {
+            LOG.warn("can't forward request - {}", "/WEB-INF/view/addContact.jsp", e);
+        } catch (NamingException e) {
+            LOG.warn("can't get db connection", e);
         }
     }
 }

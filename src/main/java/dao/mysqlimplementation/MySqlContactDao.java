@@ -1,9 +1,10 @@
 package dao.mysqlimplementation;
 
-import com.mysql.cj.core.MysqlType;
 import dao.interfaces.ConnectionFactory;
 import dao.interfaces.ContactDao;
 import model.Contact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MySqlContactDao implements ContactDao {
+    private final static Logger LOG = LoggerFactory.getLogger(MySqlContactDao.class);
     private ConnectionFactory connectionFactory;
 
     private Contact parseResultSet(ResultSet rs) throws SQLException {
@@ -71,7 +73,7 @@ public class MySqlContactDao implements ContactDao {
             pStatement.executeUpdate();
             con.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("can't insert contact", e);
         }
 
     }
@@ -94,41 +96,50 @@ public class MySqlContactDao implements ContactDao {
             pStatement.execute();
             connection.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("can't delete contact by id - {}", id, e);
         }
     }
 
+    private PreparedStatement createGetByIDStatement(Connection connection, int id) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` WHERE id = ?");
+        preparedStatement.setObject(1, id);
+        return preparedStatement;
+    }
     @Override
     public Contact getByID(int id) {
         Contact contact = null;
         try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` WHERE id = ?")) {
-            preparedStatement.setObject(1, id);
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement preparedStatement = createGetByIDStatement(connection, id);
+            ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 contact = parseResultSet(rs);
             }
             rs.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("can't get contact by id - {}", id, e);
         }
         return contact;
 
     }
 
+
+    private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` LIMIT ?, 20");
+        preparedStatement.setObject(1, (pageNumber - 1) * 20);
+        return preparedStatement;
+    }
+    @Override
     public List<Contact> getContactsPage(int pageNumber) {
         List<Contact> contactList = new ArrayList<>();
         try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` LIMIT ?, 20")) {
-            preparedStatement.setObject(1, (pageNumber - 1) * 20);
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber);
+            ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
                 contactList.add(contact);
             }
-            rs.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("can't get contacts list", e);
         }
         return contactList;
     }
@@ -137,14 +148,13 @@ public class MySqlContactDao implements ContactDao {
     public int getRowsCount() {
         int count = 0;
         try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`")) {
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`");
+            ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 count = rs.getInt("cnt");
             }
-            rs.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn("can't get contacts count", e);
         }
         return count;
     }
