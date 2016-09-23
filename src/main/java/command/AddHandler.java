@@ -6,6 +6,8 @@ import model.*;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +17,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,13 +59,14 @@ public class AddHandler implements RequestHandler {
                     FileItem item = iter.next();
                     if (!item.isFormField()) {
                         try {
-                            // Check if loaded file is actually image
-                            ImageIO.read(item.getInputStream()).toString();
+                            //read image from input
+                            BufferedImage image = ImageIO.read(item.getInputStream());
+                            //check if loaded file is actually image
+                            image.toString();
 
                             String uploadPath = request.getServletContext().getInitParameter("uploadPath");
-                            String fileExtension = item.getName().substring(item.getName().indexOf('.'));
-                            File fileToSave = File.createTempFile("pri", fileExtension, new File(uploadPath));
-                            item.write(fileToSave);
+                            File fileToSave = File.createTempFile("pri", ".png", new File(uploadPath));
+                            ImageIO.write(image, "png", fileToSave);
 
                             contact.setProfilePicture("/contact/?action=image&name=" + fileToSave.getName());
 
@@ -83,10 +87,8 @@ public class AddHandler implements RequestHandler {
                                     contact.setPatronymic(itemValue);
                                     break;
                                 case "birthDate":
-                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-DD");
-                                    java.util.Date d = format.parse(itemValue);
-
-                                    contact.setBirthDate(d);
+                                    Date birthDate =  DateUtils.parseDate(itemValue, new String[]{"yyyy-MM-dd"});
+                                    contact.setBirthDate(birthDate);
                                     break;
                                 case "gender":
                                     contact.setGender(itemValue.charAt(0) == '1');

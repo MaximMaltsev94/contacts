@@ -1,6 +1,7 @@
 package servlet;
 
 import command.RequestHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +16,9 @@ public class FrontController extends HttpServlet {
     private final static Logger LOG = LoggerFactory.getLogger(FrontController.class);
 
     private RequestHandler getHandlerClass(HttpServletRequest request) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        String commandName = request.getParameter("action");
-        String className = commandName.substring(0, 1).toUpperCase() + commandName.substring(1);
+        String commandName = request.getParameter("action").toLowerCase();
+
+        String className = StringUtils.capitalize(commandName);
         Class cl = Class.forName("command." + className + "Handler");
         return (RequestHandler) cl.newInstance();
     }

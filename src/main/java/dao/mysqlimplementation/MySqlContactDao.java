@@ -3,6 +3,7 @@ package dao.mysqlimplementation;
 import dao.interfaces.ConnectionFactory;
 import dao.interfaces.ContactDao;
 import model.Contact;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +55,12 @@ public class MySqlContactDao implements ContactDao {
             pStatement.setObject(2, contact.getLastName());
             pStatement.setObject(3, contact.getPatronymic());
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-            String d = format.format(contact.getBirthDate());
+            String birthDate = null;
+            if(contact.getBirthDate() != null) {
+                birthDate = DateFormatUtils.format(contact.getBirthDate(), "yyyy.MM.dd");
+            }
 
-
-            pStatement.setObject(4, d);
+            pStatement.setObject(4, birthDate);
             pStatement.setObject(5, contact.getGender());
             pStatement.setObject(6, contact.getCitizenship());
             pStatement.setObject(7, contact.getRelationshipID());

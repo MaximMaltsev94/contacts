@@ -3,6 +3,7 @@ package command;
 import dao.interfaces.ContactDao;
 import dao.mysqlimplementation.MySqlContactDao;
 import model.Contact;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

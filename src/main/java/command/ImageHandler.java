@@ -1,5 +1,6 @@
 package command;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +27,14 @@ public class ImageHandler implements RequestHandler {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String uploadPath = request.getServletContext().getInitParameter("uploadPath");
-            response.setContentType("image/*");
             String imageName = request.getParameter("name");
+            response.setContentType("image/png");
+
+            String uploadPath = request.getServletContext().getInitParameter("uploadPath");
             File f = new File(uploadPath + imageName);
             BufferedImage bi = ImageIO.read(f);
             OutputStream out = response.getOutputStream();
-            ImageIO.write(bi, "jpg", out);
+            ImageIO.write(bi, "png", out);
             out.close();
         } catch (IOException e) {
             LOG.warn("can't find image - ", request.getParameter("name"), e);
