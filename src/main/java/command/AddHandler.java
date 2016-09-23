@@ -6,7 +6,6 @@ import model.*;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +108,7 @@ public class AddHandler implements RequestHandler {
                                     contact.setCompanyName(itemValue);
                                     break;
                                 case "country":
-                                    contact.setCountyID(Integer.parseInt(itemValue));
+                                    contact.setCountryID(Integer.parseInt(itemValue));
                                     break;
                                 case "city":
                                     contact.setCityID(Integer.parseInt(itemValue));
@@ -118,7 +117,7 @@ public class AddHandler implements RequestHandler {
                                     contact.setStreet(itemValue);
                                     break;
                                 case "postcode":
-                                    contact.setStreet(itemValue);
+                                    contact.setPostcode(itemValue);
                                     break;
                             }
                         }

@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +34,37 @@ public class MySqlContactDao implements ContactDao {
         contact.setEmail(rs.getString("email"));
         contact.setCompanyName(rs.getString("company_name"));
         contact.setProfilePicture(rs.getString("profile_picture"));
-        contact.setCountyID(rs.getByte("id_country"));
+        contact.setCountryID(rs.getByte("id_country"));
         contact.setCityID(rs.getByte("id_city"));
         contact.setStreet(rs.getString("street"));
         contact.setPostcode(rs.getString("postcode"));
 
         return contact;
+    }
+
+    private void fillPreparedStatement(PreparedStatement preparedStatement, Contact contact) throws SQLException {
+        preparedStatement.setObject(1, contact.getFirstName());
+        preparedStatement.setObject(2, contact.getLastName());
+        preparedStatement.setObject(3, contact.getPatronymic());
+
+        String birthDate = null;
+        if(contact.getBirthDate() != null) {
+            birthDate = DateFormatUtils.format(contact.getBirthDate(), "yyyy.MM.dd");
+        }
+
+        preparedStatement.setObject(4, birthDate);
+        preparedStatement.setObject(5, contact.getGender());
+        preparedStatement.setObject(6, contact.getCitizenship());
+        preparedStatement.setObject(7, contact.getRelationshipID());
+        preparedStatement.setObject(8, contact.getWebSite());
+        preparedStatement.setObject(9, contact.getEmail());
+        preparedStatement.setObject(10, contact.getCompanyName());
+        preparedStatement.setObject(11, contact.getProfilePicture());
+        preparedStatement.setObject(12, contact.getCountryID() == 0 ? null : contact.getCountryID());
+        preparedStatement.setObject(13, contact.getCityID() == 0 ? null : contact.getCityID());
+        preparedStatement.setObject(14, contact.getStreet());
+        preparedStatement.setObject(15, contact.getPostcode());
+
     }
 
     public MySqlContactDao() throws NamingException {
@@ -51,27 +75,7 @@ public class MySqlContactDao implements ContactDao {
     public void insert(Contact contact) {
         try(Connection con = connectionFactory.getConnection();
             PreparedStatement pStatement = con.prepareStatement("INSERT INTO `contacts_maltsev`.`contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            pStatement.setObject(1, contact.getFirstName());
-            pStatement.setObject(2, contact.getLastName());
-            pStatement.setObject(3, contact.getPatronymic());
-
-            String birthDate = null;
-            if(contact.getBirthDate() != null) {
-                birthDate = DateFormatUtils.format(contact.getBirthDate(), "yyyy.MM.dd");
-            }
-
-            pStatement.setObject(4, birthDate);
-            pStatement.setObject(5, contact.getGender());
-            pStatement.setObject(6, contact.getCitizenship());
-            pStatement.setObject(7, contact.getRelationshipID());
-            pStatement.setObject(8, contact.getWebSite());
-            pStatement.setObject(9, contact.getEmail());
-            pStatement.setObject(10, contact.getCompanyName());
-            pStatement.setObject(11, contact.getProfilePicture());
-            pStatement.setObject(12, contact.getCountyID() == 0 ? null : contact.getCountyID());
-            pStatement.setObject(13, contact.getCityID() == 0 ? null : contact.getCityID());
-            pStatement.setObject(14, contact.getStreet());
-            pStatement.setObject(15, contact.getPostcode());
+            fillPreparedStatement(pStatement, contact);
             pStatement.executeUpdate();
             con.commit();
         } catch (SQLException e) {
@@ -82,6 +86,15 @@ public class MySqlContactDao implements ContactDao {
 
     @Override
     public void update(Contact contact) {
+        try(Connection connection = connectionFactory.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contacts_maltsev`.`contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ? WHERE `id` = ?");){
+            fillPreparedStatement(preparedStatement, contact);
+            preparedStatement.setObject(16, contact.getId());
+            preparedStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            LOG.warn("can't update contact id - {}", contact.getId(), e);
+        }
 
     }
 
@@ -116,12 +129,26 @@ public class MySqlContactDao implements ContactDao {
             while (rs.next()) {
                 contact = parseResultSet(rs);
             }
-            rs.close();
         } catch (SQLException e) {
             LOG.warn("can't get contact by id - {}", id, e);
         }
         return contact;
 
+    }
+
+    @Override
+    public int getMaxID() {
+        int maxID = 0;
+        try(Connection connection = connectionFactory.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contacts_maltsev`.`contact`");
+            ResultSet rs = preparedStatement.executeQuery();) {
+            while (rs.next()) {
+                maxID = rs.getInt("mx");
+            }
+        } catch (SQLException e) {
+            LOG.warn("can't get max ID ", e);
+        }
+        return maxID;
     }
 
 

@@ -2,11 +2,17 @@ var addView = (function() {
     var cityOptions;
     var i, n;
     return { // методы доступные извне
+        selectCountryAndCity: function(countryID, cityID) {
+            document.getElementById('country').selectedIndex = countryID;
+            this.onChangeCountry(countryID);
+            document.getElementById('city').selectedIndex = cityID;
+        },
         onChangeCountry: function(selectedValue) {
+            console.info(selectedValue);
             cityOptions = document.getElementById('city').options;
             for(i = 0, n = cityOptions.length; i < n; i++) {
                 cityOptions[i].style.display = 'none';
-                if(cityOptions[i].dataset.country === selectedValue) {
+                if(cityOptions[i].dataset.country == selectedValue) {
                     cityOptions[i].style.display = 'block';
                 }
             }
@@ -20,7 +26,7 @@ var addView = (function() {
 
             reader.onload = function (e) {
                 document.getElementById('blah').setAttribute('src', e.target.result);
-            }
+            };
 
             reader.readAsDataURL(input.files[0]);
         }

@@ -16,7 +16,7 @@ public class Contact implements Serializable{
     private String email;
     private String companyName;
     private String profilePicture;
-    private int countyID;
+    private int countryID;
     private int cityID;
     private String street;
     private String postcode;
@@ -117,12 +117,12 @@ public class Contact implements Serializable{
         this.profilePicture = profilePicture;
     }
 
-    public int getCountyID() {
-        return countyID;
+    public int getCountryID() {
+        return countryID;
     }
 
-    public void setCountyID(int countyID) {
-        this.countyID = countyID;
+    public void setCountryID(int countryID) {
+        this.countryID = countryID;
     }
 
     public int getCityID() {
@@ -152,7 +152,7 @@ public class Contact implements Serializable{
     public Contact() {
     }
 
-    public Contact(int id, String firstName, String lastName, String patronymic, Date birthDate, boolean gender, String citizenship, int relationshipID, String webSite, String email, String companyName, String profilePicture, int countyID, int cityID, String street, String postcode) {
+    public Contact(int id, String firstName, String lastName, String patronymic, Date birthDate, boolean gender, String citizenship, int relationshipID, String webSite, String email, String companyName, String profilePicture, int countryID, int cityID, String street, String postcode) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -165,7 +165,7 @@ public class Contact implements Serializable{
         this.email = email;
         this.companyName = companyName;
         this.profilePicture = profilePicture;
-        this.countyID = countyID;
+        this.countryID = countryID;
         this.cityID = cityID;
         this.street = street;
         this.postcode = postcode;

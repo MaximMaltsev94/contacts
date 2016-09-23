@@ -11,6 +11,7 @@ public interface ContactDao {
     void delete(Contact contact);
     void deleteByID(int id);
     Contact getByID(int id);
+    int getMaxID();
     int getRowsCount();
     List<Contact> getContactsPage(int pageNumber) throws NamingException;
 }

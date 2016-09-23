@@ -3,13 +3,13 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Добавить контакт</title>
+    <title>Редактировать контакт</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
 
     <script src="<c:url value="/js/addView.js"/>"></script>
 </head>
-<body>
+<body onload="addView.selectCountryAndCity(${requestScope.get('contact').countryID}, ${requestScope.get('contact').cityID})">
 <nav>
     <span class="text-large">
         Contacts
@@ -21,8 +21,8 @@
         <div class="jlab-row">
             <span class="text-large">Основное</span>
         </div>
-        <form action="<c:url value="/contact/?action=add"/>" method="post" enctype="multipart/form-data">
-
+        <form action="<c:url value="/contact/?action=edit"/>" method="post" enctype="multipart/form-data">
+            <input type="text" name="id" value="${requestScope.get('contact').id}" hidden>
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">
                     <span class="text-small">Фотография</span>
@@ -31,8 +31,11 @@
                 <div class="jlab-cell-9 center">
                     <div class="hiddenFileInputContainter">
 
-                        <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>" width="100px" height="100px">
-                        <input type="file" name="fileUp" class="hidden" accept="image/*" onchange="addView.readURL(this)">
+                        <img id="blah" class="fileDownload"
+                             src="<c:url value="${requestScope.get('contact').profilePicture}"/>" width="100px"
+                             height="100px">
+                        <input type="file" name="fileUp" class="hidden" accept="image/*"
+                               onchange="addView.readURL(this)">
                     </div>
                 </div>
             </div>
@@ -42,7 +45,8 @@
                     <span class="text-small">Имя</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="firstName" required pattern="[A-Za-zА-яа-я]{2,30}"/>
+                    <input type="text" name="firstName" value="${requestScope.get('contact').firstName}" required
+                           pattern="[A-Za-zА-яа-я]{2,30}"/>
                 </div>
             </div>
             <div class="jlab-row margin">
@@ -50,7 +54,8 @@
                     <span class="text-small">Фамилия</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="lastName" required pattern="[A-Za-zА-яа-я]{2,30}"/>
+                    <input type="text" name="lastName" value="${requestScope.get('contact').lastName}" required
+                           pattern="[A-Za-zА-яа-я]{2,30}"/>
                 </div>
             </div>
 
@@ -59,7 +64,8 @@
                     <span class="text-small">Отчество</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="patronymic" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                    <input type="text" name="patronymic" value="${requestScope.get('contact').patronymic}"
+                           pattern="[A-Za-zА-яа-я]{2,30}"/>
                 </div>
             </div>
 
@@ -68,7 +74,7 @@
                     <span class="text-small">День рождения</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="date" name="birthDate"/>
+                    <input type="date" name="birthDate" value="${requestScope.get('contact').birthDate}"/>
                 </div>
             </div>
 
@@ -77,8 +83,20 @@
                     <span class="text-small">Пол</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input class="regular-radio" type="radio" name="gender" value="1" checked id="r1"/> <label for="r1"></label> Мужской
-                    <input class="regular-radio" type="radio" name="gender" value="0" id="r2"/> <label for="r2"></label> Женский
+                    <c:choose>
+                        <c:when test="${requestScope.get('contact').gender == true}">
+                            <input class="regular-radio" type="radio" name="gender" value="1" checked id="r1"/> <label
+                                for="r1"></label> Мужской
+                            <input class="regular-radio" type="radio" name="gender" value="0" id="r2"/> <label
+                                for="r2"></label> Женский
+                        </c:when>
+                        <c:otherwise>
+                            <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label
+                                for="r1"></label> Мужской
+                            <input class="regular-radio" type="radio" name="gender" value="0" checked id="r2"/> <label
+                                for="r2"></label> Женский
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
 
@@ -88,7 +106,7 @@
                     <span class="text-small">Гражданство</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="citizenship"/>
+                    <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}"/>
                 </div>
             </div>
 
@@ -99,7 +117,14 @@
                 <div class="jlab-cell-9">
                     <select name="relationship">
                         <c:forEach var="i" items="${requestScope.get('relationshipList')}">
-                            <option value="${i.id}">${i.name}</option>
+                            <c:choose>
+                                <c:when test="${requestScope.get('contact').relationshipID == i.id}">
+                                    <option value="${i.id}" selected>${i.name}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${i.id}">${i.name}</option>
+                                </c:otherwise>
+                            </c:choose>
                         </c:forEach>
                     </select>
                 </div>
@@ -110,7 +135,7 @@
                     <span class="text-small">Веб сайт</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="webSite"/>
+                    <input type="text" name="webSite" value="${requestScope.get('contact').webSite}"/>
                 </div>
             </div>
 
@@ -120,7 +145,7 @@
                     <span class="text-small">Эл. почта</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="email" name="email"/>
+                    <input type="email" name="email" value="${requestScope.get('contact').email}"/>
                 </div>
             </div>
 
@@ -130,7 +155,7 @@
                     <span class="text-small">Место работы</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="companyName"/>
+                    <input type="text" name="companyName" value="${requestScope.get('contact').companyName}"/>
                 </div>
             </div>
 
@@ -157,7 +182,7 @@
 
                         <option value="0" data-country="0">Не выбрано</option>
                         <c:forEach var="i" items="${requestScope.get('cityList')}">
-                            <option value="${i.id}" data-country="${i.countryID}" hidden>${i.name}</option>
+                            <option value="${i.id}" data-country="${i.countryID}">${i.name}</option>
                         </c:forEach>
                     </select>
                 </div>
@@ -168,7 +193,7 @@
                     <span class="text-small">Адрес</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="street"/>
+                    <input type="text" name="street" value="${requestScope.get('contact').street}"/>
                 </div>
             </div>
 
@@ -177,7 +202,7 @@
                     <span class="text-small">Почтовый индекс</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="text" name="postcode"/>
+                    <input type="text" name="postcode" value="${requestScope.get('contact').postcode}"/>
                 </div>
             </div>
 
@@ -186,7 +211,7 @@
 
                 </div>
                 <div class="jlab-cell-9">
-                    <input type="submit" value="Добавить"/>
+                    <input type="submit" value="Сохранить"/>
                 </div>
             </div>
 
