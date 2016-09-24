@@ -16,9 +16,10 @@ form {
     margin: 0;
 }
 
-nav {
+.nav {
+    position: relative;
     width: 100%;
-    min-height: 70px;
+    padding: 15px 0;
     border-bottom: #e6e6e6 solid 1px;
     margin-bottom: 10px;
     background-color: white;
@@ -26,8 +27,13 @@ nav {
 
 .container {
     width: 90%;
+    height: 100%;
     margin: auto;
 }
+
+/*.container.center {*/
+    /*margin: auto auto;*/
+/*}*/
 
 section {
     width: 95%;

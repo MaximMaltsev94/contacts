@@ -10,11 +10,7 @@
     <script src="<c:url value="/js/addView.js"/>"></script>
 </head>
 <body onload="addView.selectCountryAndCity(${requestScope.get('contact').countryID}, ${requestScope.get('contact').cityID})">
-<nav>
-    <span class="text-large">
-        Contacts
-    </span>
-</nav>
+<jsp:include page="header.jsp"/>
 
 <div class="container">
     <section>

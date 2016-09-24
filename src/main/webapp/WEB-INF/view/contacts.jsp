@@ -12,11 +12,8 @@
     <script src="<c:url value="/js/showView.js"/>"></script>
 </head>
 <body>
-<nav>
-    <span class="text-large">
-        Contacts
-    </span>
-</nav>
+<jsp:include page="header.jsp"/>
+
 <div class="container">
 
     <div class="jlab-row">
@@ -137,21 +134,21 @@
         </div>
         <div class="jlab-cell-3 fixed">
             <section>
-                <div class="jlab-row margin">
-                    <div class="jlab-cell-12">
-                        <span class="text-medium">
-                            Выберите действие
-                        </span>
+                    <div class="jlab-row margin">
+                        <div class="jlab-cell-12">
+                            <span class="text-medium">
+                                Выберите действие
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="jlab-row margin">
-                    <a href="<c:url value="/contact/?action=add" />">
-                        <button>Создать контакт</button>
-                    </a>
-                </div>
-                <div class="jlab-row margin">
-                    <button disabled>Удалить</button>
-                </div>
+                    <div class="jlab-row margin">
+                        <a class="jlab-cell-10 align-center" href="<c:url value="/contact/?action=add" />">
+                            <button class="jlab-cell-12">Создать контакт</button>
+                        </a>
+                    </div>
+                    <div class="jlab-row margin">
+                        <button disabled class="jlab-cell-10 align-center">Удалить</button>
+                    </div>
             </section>
 
         </div>

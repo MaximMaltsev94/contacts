@@ -10,11 +10,7 @@
     <script src="<c:url value="/js/addView.js"/>"></script>
 </head>
 <body>
-<nav>
-    <span class="text-large">
-        Contacts
-    </span>
-</nav>
+<jsp:include page="header.jsp"/>
 
 <div class="container">
     <section>
@@ -31,8 +27,10 @@
                 <div class="jlab-cell-9 center">
                     <div class="hiddenFileInputContainter">
 
-                        <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>" width="100px" height="100px">
-                        <input type="file" name="fileUp" class="hidden" accept="image/*" onchange="addView.readURL(this)">
+                        <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>" width="100px"
+                             height="100px">
+                        <input type="file" name="fileUp" class="hidden" accept="image/*"
+                               onchange="addView.readURL(this)">
                     </div>
                 </div>
             </div>
@@ -77,8 +75,10 @@
                     <span class="text-small">Пол</span>
                 </div>
                 <div class="jlab-cell-9">
-                    <input class="regular-radio" type="radio" name="gender" value="1" checked id="r1"/> <label for="r1"></label> Мужской
-                    <input class="regular-radio" type="radio" name="gender" value="0" id="r2"/> <label for="r2"></label> Женский
+                    <input class="regular-radio" type="radio" name="gender" value="1" checked id="r1"/> <label
+                        for="r1"></label> Мужской
+                    <input class="regular-radio" type="radio" name="gender" value="0" id="r2"/> <label for="r2"></label>
+                    Женский
                 </div>
             </div>
 

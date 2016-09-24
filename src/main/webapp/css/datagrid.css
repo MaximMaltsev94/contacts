@@ -1,6 +1,5 @@
 .jlab-row {
     width: 100%;
-    height: auto;
     display: flex;
 }
 
@@ -10,7 +9,7 @@ div[class*="jlab-cell-"] {
     margin: 0 5px;
 }
 
-div[class*="jlab-cell-"] .center {
+div[class*="jlab-cell-"].center {
     margin: auto 5px;
 }
 
@@ -23,13 +22,12 @@ div[class*="jlab-cell-"] .center {
 }
 
 .margin {
-    margin: 5px;
+    margin: 5px 0;
 }
 
 .fixed {
     position: fixed;
-    top: 81px;
-    right: 10px;
+    right: 15px;
     overflow: auto;
 }
 
