@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
     <script src="<c:url value="/js/addView.js"/>"></script>
 </head>
-<body onload="addView.selectCountryAndCity(${requestScope.get('contact').countryID}, ${requestScope.get('contact').cityID})">
+<body onload="addView.selectCountryAndCity(${requestScope.get('contact').countryID}, ${requestScope.get('contact').cityID});
+                addView.setPhoneCount(${requestScope.get('phoneList').size()})">
 <jsp:include page="header.jsp"/>
 
 <div class="container">
@@ -222,9 +223,7 @@
             </div>
 
             <div class="jlab-cell-9 center">
-                <a href="#phonePopup">
-                    <div class="imageButton add"></div>
-                </a>
+                <div class="imageButton add" onclick="addView.showAddPhonePopup()"></div>
             </div>
 
         </div>
@@ -232,7 +231,7 @@
             <div class="popup">
                 <div class="jlab-row">
                     <div class="jlab-cell-12 align-right">
-                        <a class="text-large" href="#">&times;</a>
+                        <a class="text-large" href="#phoneSection">&times;</a>
                     </div>
                 </div>
                 <div class="jlab-row margin">
@@ -243,7 +242,7 @@
 
                     <select id="popup_countryCode">
                         <c:forEach var="i" items="${requestScope.get('countryList')}">
-                            <option value="${i.id}">+${i.phoneCode} ${i.name}</option>
+                            <option value="${i.id}">+${i.phoneCode}</option>
                         </c:forEach>
                     </select>
 
@@ -257,7 +256,7 @@
                 </div>
 
                 <div class="jlab-row margin">
-                    <div class="jlab-cell-12 align-right"><button>Добавить</button></div>
+                    <div class="jlab-cell-12 align-right"><button id="popup_submit">Добавить</button></div>
                 </div>
 
             </div>
@@ -274,7 +273,7 @@
                 <input type="text" name="op_code_phone-${phoneCount}" id="op_code_phone-${phoneCount}" value="${i.operatorCode}" hidden>
                 <input type="text" name="number_phone-${phoneCount}" id="number_phone-${phoneCount}" value="${i.phoneNumber}" hidden>
                 <input type="text" name="comment_phone-${phoneCount}" id="comment_phone-${phoneCount}" value="${i.comment}" hidden>
-                <div class="jlab-cell-3 align-right text-small">
+                <div id="display_type_phone-${phoneCount}" class="jlab-cell-3 align-right text-small">
                     <c:choose>
                         <c:when test="${i.type == true}">
                             Дом.
@@ -286,20 +285,20 @@
                 </div>
 
                 <div class="jlab-cell-3">
-                    <div class="jlab-row text-medium">
+                    <div id="display_number_phone-${phoneCount}" class="jlab-row text-medium">
                         <c:forEach var="country" items="${requestScope.get('countryList')}">
                             <c:if test="${country.id == i.countryID}">
                                 +${country.phoneCode}${i.operatorCode}${i.phoneNumber}
                             </c:if>
                         </c:forEach>
                     </div>
-                    <div class="jlab-row text text-small">
+                    <div id="display_comment_phone-${phoneCount}" class="jlab-row text text-small">
                         ${i.comment}
                     </div>
                 </div>
 
                 <div class="jlab-cell-1">
-                    <div class="imageButton edit" onclick="addView.editPhoneElement(this)"></div>
+                    <div class="imageButton edit" onclick="addView.showEditPhonePopup(this)"></div>
                 </div>
                 <div class="jlab-cell-1">
                     <div class="imageButton delete" onclick="addView.deletePhoneElement(this)"></div>
