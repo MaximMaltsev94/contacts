@@ -1,17 +1,8 @@
 package command;
 
-import dao.interfaces.CityDao;
-import dao.interfaces.ContactDao;
-import dao.interfaces.CountryDao;
-import dao.interfaces.RelationshipDao;
-import dao.mysqlimplementation.MySqlCityDao;
-import dao.mysqlimplementation.MySqlContactDao;
-import dao.mysqlimplementation.MySqlCountryDao;
-import dao.mysqlimplementation.MySqlRelationshipDao;
-import model.City;
-import model.Contact;
-import model.Country;
-import model.Relationship;
+import dao.interfaces.*;
+import dao.mysqlimplementation.*;
+import model.*;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -190,6 +181,10 @@ public class EditHandler implements RequestHandler {
             CityDao cityDao = new MySqlCityDao();
             List<City> cityList = cityDao.getAll();
             request.setAttribute("cityList", cityList);
+
+            PhoneDao phoneDao = new MySqlPhoneDao();
+            List<Phone> phoneList = phoneDao.getPhoneByContactID(contactID);
+            request.setAttribute("phoneList", phoneList);
 
             request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
         } catch (NumberFormatException ex) {

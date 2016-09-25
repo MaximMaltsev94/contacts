@@ -6,7 +6,7 @@
     <title>Редактировать контакт</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
-
+    <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
     <script src="<c:url value="/js/addView.js"/>"></script>
 </head>
 <body onload="addView.selectCountryAndCity(${requestScope.get('contact').countryID}, ${requestScope.get('contact').cityID})">
@@ -212,7 +212,105 @@
             </div>
 
         </form>
+        <%--main info section end--%>
     </section>
+
+    <section id="phoneSection">
+        <div class="jlab-row">
+            <div class="jlab-cell-3 center">
+                <span class="text-large">Контактные телефоны</span>
+            </div>
+
+            <div class="jlab-cell-9 center">
+                <a href="#phonePopup">
+                    <div class="imageButton add"></div>
+                </a>
+            </div>
+
+        </div>
+        <div id="phonePopup" class="popupBack">
+            <div class="popup">
+                <div class="jlab-row">
+                    <div class="jlab-cell-12 align-right">
+                        <a class="text-large" href="#">&times;</a>
+                    </div>
+                </div>
+                <div class="jlab-row margin">
+                    <select id="popup_phoneType">
+                        <option value="0">Моб.</option>
+                        <option value="1">Дом.</option>
+                    </select>
+
+                    <select id="popup_countryCode">
+                        <c:forEach var="i" items="${requestScope.get('countryList')}">
+                            <option value="${i.id}">+${i.phoneCode} ${i.name}</option>
+                        </c:forEach>
+                    </select>
+
+                    <input id="popup_operatorCode" type="text" pattern="[0-9]{2,5}" placeholder="Код. оп.">
+
+                    <input id="popup_phoneNumber" type="text" pattern="[0-9]{4,9}" placeholder="Номер">
+                </div>
+
+                <div class="jlab-row margin">
+                    <input type="text" id="popup_comment" placeholder="Комментарий">
+                </div>
+
+                <div class="jlab-row margin">
+                    <div class="jlab-cell-12 align-right"><button>Добавить</button></div>
+                </div>
+
+            </div>
+
+            <%--div id popup end--%>
+        </div>
+
+        <c:set var="phoneCount" value="0" scope="page"/>
+        <c:forEach var="i" items="${requestScope.get('phoneList')}">
+            <c:set var="phoneCount" value="${phoneCount + 1}" scope="page"/>
+            <div id="phone-${phoneCount}" class="jlab-row margin">
+                <input type="text" name="type_phone-${phoneCount}" id="type_phone-${phoneCount}" value="${i.type == false ? 0 : 1}" hidden>
+                <input type="text" name="country_code_phone-${phoneCount}" id="country_code_phone-${phoneCount}" value="${i.countryID - 1}" hidden>
+                <input type="text" name="op_code_phone-${phoneCount}" id="op_code_phone-${phoneCount}" value="${i.operatorCode}" hidden>
+                <input type="text" name="number_phone-${phoneCount}" id="number_phone-${phoneCount}" value="${i.phoneNumber}" hidden>
+                <input type="text" name="comment_phone-${phoneCount}" id="comment_phone-${phoneCount}" value="${i.comment}" hidden>
+                <div class="jlab-cell-3 align-right text-small">
+                    <c:choose>
+                        <c:when test="${i.type == true}">
+                            Дом.
+                        </c:when>
+                        <c:otherwise>
+                            Моб.
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+
+                <div class="jlab-cell-3">
+                    <div class="jlab-row text-medium">
+                        <c:forEach var="country" items="${requestScope.get('countryList')}">
+                            <c:if test="${country.id == i.countryID}">
+                                +${country.phoneCode}${i.operatorCode}${i.phoneNumber}
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                    <div class="jlab-row text text-small">
+                        ${i.comment}
+                    </div>
+                </div>
+
+                <div class="jlab-cell-1">
+                    <div class="imageButton edit" onclick="addView.editPhoneElement(this)"></div>
+                </div>
+                <div class="jlab-cell-1">
+                    <div class="imageButton delete" onclick="addView.deletePhoneElement(this)"></div>
+                </div>
+            </div>
+        </c:forEach>
+
+
+    <%--contact phones section end--%>
+    </section>
+    <%--div container end--%>
 </div>
 </body>
 </html>

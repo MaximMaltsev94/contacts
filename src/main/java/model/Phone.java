@@ -51,7 +51,7 @@ public class Phone implements Serializable {
         this.contactID = contactID;
     }
 
-    public boolean isType() {
+    public boolean getType() {
         return type;
     }
 

@@ -31,17 +31,13 @@ form {
     margin: auto;
 }
 
-/*.container.center {*/
-    /*margin: auto auto;*/
-/*}*/
-
 section {
     width: 95%;
     background-color: white;
     font-size: 1em;
     border: #dbdbdb solid 1px;
     border-radius: 5px;
-    padding: 5px;
+    padding: 10px;
     margin: 0 auto 5px;
 }
 
@@ -158,7 +154,7 @@ button, input[type="submit"] {
     background-color: #ec1c24;
 }
 
-button:hover, input[type="submit"] {
+button:hover, input[type="submit"]:hover {
     cursor: pointer;
     background-color: #e21a22;
 }
@@ -179,34 +175,38 @@ button:disabled {
     background-color: #EF6469;
 }
 
-.editImage {
+.imageButton {
+    background-size: 25px, 25px;
+    width: 25px;
+    height: 25px;
+}
+
+.imageButton:hover {
+    cursor: pointer;
+}
+
+.imageButton.edit {
     background-image: url('/sysImages/edit.png');
-    background-size: 25px, 25px;
-    width: 25px;
-    height: 25px;
 }
 
-.editImage:hover {
-    cursor: pointer;
+.imageButton.edit:hover {
     background-image: url('/sysImages/edit hover.png');
-    background-size: 25px, 25px;
-    width: 25px;
-    height: 25px;
 }
 
-.deleteImage {
+.imageButton.delete {
     background-image: url('/sysImages/delete.png');
-    background-size: 25px, 25px;
-    width: 25px;
-    height: 25px;
 }
 
-.deleteImage:hover {
-    cursor: pointer;
+.imageButton.delete:hover {
     background-image: url('/sysImages/delete hover.png');
-    background-size: 25px, 25px;
-    width: 25px;
-    height: 25px;
+}
+
+.imageButton.add {
+    background-image: url('/sysImages/add.png');
+}
+
+.imageButton.add:hover {
+    background-image: url('/sysImages/add hover.png');
 }
 
 input[type="text"], input[type="email"], input[type="date"], select {
@@ -265,3 +265,4 @@ div.hiddenFileInputContainter
     vertical-align: middle;
     cursor: pointer;
 }
+

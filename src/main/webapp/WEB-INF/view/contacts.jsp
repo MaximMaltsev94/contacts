@@ -55,14 +55,14 @@
 
                         <div class="jlab-cell-1 center">
                             <a href="<c:url value="/contact/?action=edit&id=${i.id}"/>">
-                                <div class="editImage">
+                                <div class="imageButton edit">
                                 </div>
                             </a>
                         </div>
                         <div class="jlab-cell-1 center ">
                             <form id="fDelete${i.id}" action="<c:url value="/contact/?action=delete&id=${i.id}"/>" method="post">
                                 <input type="text" name="profilePicture" value="${i.profilePicture}" hidden>
-                                <div class="deleteImage" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', 'fDelete${i.id}')">
+                                <div class="imageButton delete" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', 'fDelete${i.id}')">
                                 </div>
                             </form>
                         </div>

@@ -18,6 +18,7 @@ div[class*="jlab-cell-"].center {
 }
 
 .align-right {
+    width: 100%;
     text-align: right;
 }
 
@@ -27,8 +28,7 @@ div[class*="jlab-cell-"].center {
 
 .fixed {
     position: fixed;
-    right: 15px;
-    overflow: auto;
+    right: 10px;
 }
 
 
