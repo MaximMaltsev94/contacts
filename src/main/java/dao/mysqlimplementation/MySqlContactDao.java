@@ -72,28 +72,27 @@ public class MySqlContactDao implements ContactDao {
     }
 
     @Override
-    public void insert(Contact contact) {
+    public void insert(Contact contact) throws SQLException {
         try(Connection con = connectionFactory.getConnection();
             PreparedStatement pStatement = con.prepareStatement("INSERT INTO `contacts_maltsev`.`contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             fillPreparedStatement(pStatement, contact);
             pStatement.executeUpdate();
-            con.commit();
         } catch (SQLException e) {
             LOG.warn("can't insert contact", e);
+            throw new SQLException();
         }
 
     }
 
     @Override
-    public void update(Contact contact) {
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contacts_maltsev`.`contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ? WHERE `id` = ?");){
+    public void update(Connection connection, Contact contact) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contacts_maltsev`.`contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ? WHERE `id` = ?");){
             fillPreparedStatement(preparedStatement, contact);
             preparedStatement.setObject(16, contact.getId());
             preparedStatement.executeUpdate();
-            connection.commit();
         } catch (SQLException e) {
             LOG.warn("can't update contact id - {}", contact.getId(), e);
+            throw new SQLException();
         }
 
     }
@@ -109,7 +108,6 @@ public class MySqlContactDao implements ContactDao {
             PreparedStatement pStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`contact` WHERE id = ?")) {
             pStatement.setObject(1, id);
             pStatement.execute();
-            connection.commit();
         } catch (SQLException e) {
             LOG.warn("can't delete contact by id - {}", id, e);
         }

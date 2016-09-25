@@ -59,4 +59,31 @@ public class MySqlPhoneDao implements PhoneDao {
         }
         return phoneList;
     }
+
+    @Override
+    public void deleteByContactID(Connection connection, int contactID) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`phone` WHERE `id_contact` = ?");) {
+            preparedStatement.setObject(1, contactID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            LOG.warn("can't delete phones by contact id ", e);
+            throw new SQLException();
+        }
+    }
+
+    @Override
+    public void insert(Connection connection, Phone phone) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `contacts_maltsev`.`phone` (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES(?, ?, ?, ?, ?, ?)")) {
+            preparedStatement.setObject(1, phone.getCountryID());
+            preparedStatement.setObject(2, phone.getOperatorCode());
+            preparedStatement.setObject(3, phone.getPhoneNumber());
+            preparedStatement.setObject(4, phone.getContactID());
+            preparedStatement.setObject(5, phone.getType());
+            preparedStatement.setObject(6, phone.getComment());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            LOG.warn("can't insert phone ", e);
+            throw new SQLException();
+        }
+    }
 }

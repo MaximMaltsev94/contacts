@@ -110,7 +110,7 @@ var addView = (function() {
         },
 
         showAddPhonePopup: function () {
-            popupSubmit = document.getElementById('popup_submit');
+            popupSubmit = document.getElementById('popup_ok');
             popupSubmit.textContent = 'Добавить';
             popupSubmit.onclick = this.onAddPhoneSubmit;
 
@@ -121,7 +121,7 @@ var addView = (function() {
         showEditPhonePopup: function (sender) {
             phoneID = sender.parentNode.parentNode.id;
 
-            popupSubmit = document.getElementById('popup_submit');
+            popupSubmit = document.getElementById('popup_ok');
             popupSubmit.textContent = 'Сохранить';
             popupSubmit.onclick = this.onEditPhoneSubmit;
 
@@ -139,8 +139,11 @@ var addView = (function() {
                 phoneID = "phone-" + phoneCount;
                 console.log('new id: ' + phoneID);
                 createPhoneTemplate(phoneID);
+                console.log("created template");
                 parsePopup(phoneID);
+                console.log("parsed popup");
                 location.hash = '#phoneSection';
+                console.log("closed popup");
             } else {
                 alert('Код оператора число 2-5 знаков, номер телефона число 5-7 знаков, длина комментария меньше 255 символов');
             }

@@ -20,6 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -39,121 +44,171 @@ public class EditHandler implements RequestHandler {
         return factory;
     }
 
+    private int parseContactID(List<FileItem> items) throws UnsupportedEncodingException {
+        int contactID = 0;
+        for (FileItem item : items) {
+            if (item.isFormField()) {
+                if (item.getFieldName().equals("id")) {
+                    contactID = Integer.parseInt(new String(item.getString().getBytes("iso-8859-1"), "UTF-8"));
+                }
+            }
+        }
+        return contactID;
+    }
+
+    private void parseContactInfo(Contact contact, List<FileItem> items, String uploadPath) throws ParseException, UnsupportedEncodingException {
+        for (FileItem item : items) {
+            if (!item.isFormField()) {
+                try {
+                    //read image from input
+                    BufferedImage image = ImageIO.read(item.getInputStream());
+                    //check if loaded file is actually image
+                    image.toString();
+
+                    String profPicture = contact.getProfilePicture();
+                    File fileToSave;
+                    if (profPicture.contains("pri")) {
+                        String imageName = profPicture.substring(profPicture.indexOf("pri"));
+                        fileToSave = new File(uploadPath + imageName);
+                    } else {
+                        fileToSave = File.createTempFile("pri", ".png", new File(uploadPath));
+                    }
+                    ImageIO.write(image, "png", fileToSave);
+
+                    contact.setProfilePicture("/contact/?action=image&name=" + fileToSave.getName());
+
+                } catch (Exception ex) {
+                    LOG.warn("can't save profile image", ex);
+                }
+            } else {
+                String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
+                if (StringUtils.isNotBlank(itemValue)) {
+                    switch (item.getFieldName()) {
+                        case "id":
+                            contact.setId(Integer.parseInt(itemValue));
+                            break;
+                        case "firstName":
+                            contact.setFirstName(itemValue);
+                            break;
+                        case "lastName":
+                            contact.setLastName(itemValue);
+                            break;
+                        case "patronymic":
+                            contact.setPatronymic(itemValue);
+                            break;
+                        case "birthDate":
+                            Date birthDate = DateUtils.parseDate(itemValue, "yyyy-MM-dd");
+                            contact.setBirthDate(birthDate);
+                            break;
+                        case "gender":
+                            contact.setGender(itemValue.charAt(0) == '1');
+                            break;
+                        case "citizenship":
+                            contact.setCitizenship(itemValue);
+                            break;
+                        case "relationship":
+                            contact.setRelationshipID(Integer.parseInt(itemValue));
+                            break;
+                        case "webSite":
+                            contact.setWebSite(itemValue);
+                            break;
+                        case "email":
+                            contact.setEmail(itemValue);
+                            break;
+                        case "companyName":
+                            contact.setCompanyName(itemValue);
+                            break;
+                        case "country":
+                            contact.setCountryID(Integer.parseInt(itemValue));
+                            break;
+                        case "city":
+                            contact.setCityID(Integer.parseInt(itemValue));
+                            break;
+                        case "street":
+                            contact.setStreet(itemValue);
+                            break;
+                        case "postcode":
+                            contact.setPostcode(itemValue);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    private List<Phone> parsePhones(List<FileItem> items) throws UnsupportedEncodingException {
+        List<Phone> phoneList = new ArrayList<>();
+        for (FileItem item : items) {
+            if(item.isFormField()) {
+                String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
+                if(StringUtils.startsWith(item.getFieldName(), "type_phone-")) {
+                    phoneList.add(new Phone());
+                    phoneList.get(phoneList.size() - 1).setType(itemValue.equals("1"));
+                } else if(StringUtils.startsWith(item.getFieldName(), "country_code_phone-")) {
+                    phoneList.get(phoneList.size() - 1).setCountryID(Integer.parseInt(itemValue) + 1);
+                } else if(StringUtils.startsWith(item.getFieldName(), "op_code_phone-")){
+                    phoneList.get(phoneList.size() - 1).setOperatorCode(Integer.parseInt(itemValue));
+                } else if(StringUtils.startsWith(item.getFieldName(), "number_phone-")){
+                    phoneList.get(phoneList.size() - 1).setPhoneNumber(Integer.parseInt(itemValue));
+                } else if(StringUtils.startsWith(item.getFieldName(), "comment_phone-")){
+                    phoneList.get(phoneList.size() - 1).setComment(itemValue);
+                }
+            }
+        }
+        return phoneList;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
         if(isMultipart) {
+            Connection connection = null;
             try {
                 DiskFileItemFactory factory = initDiskFactory(request, 10000);
-
-                // Create a new file upload handler
                 ServletFileUpload upload = new ServletFileUpload(factory);
-
-                // Parse the request
                 List<FileItem> items = upload.parseRequest(request);
 
-                // Process the uploaded items
-                Iterator<FileItem> iter = items.iterator();
-
-                int contactID = 0;
-                while (iter.hasNext()) {
-                    FileItem item = iter.next();
-                    if(item.isFormField()) {
-                        if(item.getFieldName().equals("id")) {
-                            contactID = Integer.parseInt(new String(item.getString().getBytes("iso-8859-1"), "UTF-8"));
-                        }
-                    }
-                }
+                int contactID = parseContactID(items);
 
                 ContactDao contactDao = new MySqlContactDao();
                 Contact contact = contactDao.getByID(contactID);
+                parseContactInfo(contact, items, request.getServletContext().getInitParameter("uploadPath"));
+                List<Phone> phoneList = parsePhones(items);
 
-                iter = items.iterator();
-                while (iter.hasNext()) {
-                    FileItem item = iter.next();
-                    if (!item.isFormField()) {
-                        try {
-                            //read image from input
-                            BufferedImage image = ImageIO.read(item.getInputStream());
-                            //check if loaded file is actually image
-                            image.toString();
+                connection = MySqlConnectionFactory.getInstance().getConnection();
+                connection.setAutoCommit(false);
+                contactDao.update(connection, contact);
 
-                            String uploadPath = request.getServletContext().getInitParameter("uploadPath");
-                            String profPicture = contact.getProfilePicture();
-                            File fileToSave;
-                            if(profPicture.contains("pri")) {
-                                String imageName = profPicture.substring(profPicture.indexOf("pri"));
-                                fileToSave = new File(uploadPath + imageName);
-                            } else {
-                                fileToSave = File.createTempFile("pri", ".png", new File(uploadPath));
-                            }
-                            ImageIO.write(image, "png", fileToSave);
-
-                            contact.setProfilePicture("/contact/?action=image&name=" + fileToSave.getName());
-
-                        } catch (Exception ex) {
-                            LOG.warn("can't save profile image", ex);
-                        }
-                    } else {
-                        String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
-                        if(StringUtils.isNotBlank(itemValue)) {
-                            switch (item.getFieldName()) {
-                                case "id":
-                                    contact.setId(Integer.parseInt(itemValue));
-                                    break;
-                                case "firstName":
-                                    contact.setFirstName(itemValue);
-                                    break;
-                                case "lastName":
-                                    contact.setLastName(itemValue);
-                                    break;
-                                case "patronymic":
-                                    contact.setPatronymic(itemValue);
-                                    break;
-                                case "birthDate":
-                                    Date birthDate =  DateUtils.parseDate(itemValue, "yyyy-MM-dd");
-                                    contact.setBirthDate(birthDate);
-                                    break;
-                                case "gender":
-                                    contact.setGender(itemValue.charAt(0) == '1');
-                                    break;
-                                case "citizenship":
-                                    contact.setCitizenship(itemValue);
-                                    break;
-                                case "relationship":
-                                    contact.setRelationshipID(Integer.parseInt(itemValue));
-                                    break;
-                                case "webSite":
-                                    contact.setWebSite(itemValue);
-                                    break;
-                                case "email":
-                                    contact.setEmail(itemValue);
-                                    break;
-                                case "companyName":
-                                    contact.setCompanyName(itemValue);
-                                    break;
-                                case "country":
-                                    contact.setCountryID(Integer.parseInt(itemValue));
-                                    break;
-                                case "city":
-                                    contact.setCityID(Integer.parseInt(itemValue));
-                                    break;
-                                case "street":
-                                    contact.setStreet(itemValue);
-                                    break;
-                                case "postcode":
-                                    contact.setPostcode(itemValue);
-                                    break;
-                            }
-                        }
-                    }
+                PhoneDao phoneDao = new MySqlPhoneDao();
+                phoneDao.deleteByContactID(connection, contactID);
+                for (Phone phone : phoneList) {
+                    phone.setContactID(contactID);
+                    phoneDao.insert(connection, phone);
                 }
+                connection.commit();
+                connection.setAutoCommit(true);
 
-                contactDao.update(contact);
                 response.sendRedirect("/contact/?action=show&page=1");
-            } catch (Exception ex) {
+            } catch (SQLException e) {
+                LOG.warn("edit transaction error");
+                try {
+                    if(connection != null) {
+                        LOG.info("rolling back transaction ", e);
+                        connection.rollback();
+                    }
+                } catch (SQLException e1) {
+                    LOG.warn("error while rolling back transaction ", e1);
+                }
+            } catch(Exception ex) {
                 LOG.warn("can't add contact", ex);
+            } finally {
+                try {
+                    if(connection != null)
+                        connection.close();
+                } catch (SQLException e) {
+                    LOG.warn("error while closing connection ", e);
+                }
             }
         }
     }
