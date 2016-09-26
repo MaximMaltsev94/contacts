@@ -19,10 +19,10 @@ import java.util.List;
  */
 public class MySqlPhoneDao implements PhoneDao {
     private final static Logger LOG = LoggerFactory.getLogger(MySqlPhoneDao.class);
-    private ConnectionFactory connectionFactory;
+    private Connection connection;
 
-    public MySqlPhoneDao() throws NamingException {
-        connectionFactory = MySqlConnectionFactory.getInstance();
+    public MySqlPhoneDao(Connection connection) {
+        this.connection = connection;
     }
 
     private Phone parseResultSet(ResultSet rs) throws SQLException {
@@ -37,7 +37,7 @@ public class MySqlPhoneDao implements PhoneDao {
         return phone;
     }
 
-    private PreparedStatement createGetPhoneByContactIDStatement(Connection connection, int id) throws SQLException {
+    private PreparedStatement createGetPhoneByContactIDStatement(int id) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`phone` WHERE `id_contact` = ?");
         preparedStatement.setObject(1, id);
         return preparedStatement;
@@ -46,8 +46,7 @@ public class MySqlPhoneDao implements PhoneDao {
     @Override
     public List<Phone> getPhoneByContactID(int id) {
         List<Phone> phoneList = new ArrayList<>();
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = createGetPhoneByContactIDStatement(connection, id);
+        try(PreparedStatement preparedStatement = createGetPhoneByContactIDStatement(id);
             ResultSet rs = preparedStatement.executeQuery()){
             while (rs.next()) {
                 Phone phone = parseResultSet(rs);
@@ -61,7 +60,7 @@ public class MySqlPhoneDao implements PhoneDao {
     }
 
     @Override
-    public void deleteByContactID(Connection connection, int contactID) throws SQLException {
+    public void deleteByContactID(int contactID) throws SQLException {
         try(PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`phone` WHERE `id_contact` = ?");) {
             preparedStatement.setObject(1, contactID);
             preparedStatement.executeUpdate();
@@ -72,7 +71,7 @@ public class MySqlPhoneDao implements PhoneDao {
     }
 
     @Override
-    public void insert(Connection connection, Phone phone) throws SQLException {
+    public void insert(Phone phone) throws SQLException {
         try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `contacts_maltsev`.`phone` (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES(?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setObject(1, phone.getCountryID());
             preparedStatement.setObject(2, phone.getOperatorCode());

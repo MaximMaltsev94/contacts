@@ -20,17 +20,16 @@ import java.util.List;
 public class MySqlRelationshipDao implements RelationshipDao {
     private final static Logger LOG = LoggerFactory.getLogger(MySqlRelationshipDao.class);
 
-    private ConnectionFactory connectionFactory;
+    private Connection connection;
 
-    public MySqlRelationshipDao() throws NamingException {
-        this.connectionFactory = MySqlConnectionFactory.getInstance();
+    public MySqlRelationshipDao(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public List<Relationship> getAll() {
         List<Relationship> relationshipList = new ArrayList<>();
-        try (Connection connection = connectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`relationship`");
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`relationship`");
              ResultSet rs = preparedStatement.executeQuery()) {
 
             while (rs.next()) {

@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface PhoneDao {
     List<Phone> getPhoneByContactID(int id);
-    void deleteByContactID(Connection connection, int contactID) throws SQLException;
-    void insert(Connection connection, Phone phone) throws SQLException;
+    void deleteByContactID(int contactID) throws SQLException;
+    void insert(Phone phone) throws SQLException;
 }

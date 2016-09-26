@@ -19,17 +19,16 @@ import java.util.List;
  */
 public class MySqlCountryDao implements CountryDao {
     private final static Logger LOG = LoggerFactory.getLogger(MySqlCountryDao.class);
-    private ConnectionFactory connectionFactory;
+    private Connection connection;
 
-    public MySqlCountryDao() throws NamingException {
-        connectionFactory = MySqlConnectionFactory.getInstance();
+    public MySqlCountryDao(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public List<Country> getAll() {
         List<Country> countryList = new ArrayList<>();
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`country`");
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`country`");
             ResultSet rs = preparedStatement.executeQuery();) {
 
             while (rs.next()) {

@@ -19,17 +19,16 @@ import java.util.List;
  */
 public class MySqlCityDao implements CityDao {
     private final static Logger LOG = LoggerFactory.getLogger(MySqlCityDao.class);
-    private ConnectionFactory connectionFactory;
+    private Connection connection;
 
-    public MySqlCityDao() throws NamingException {
-        connectionFactory = MySqlConnectionFactory.getInstance();
+    public MySqlCityDao(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public List<City> getAll() {
         List<City> cityList = new ArrayList<>();
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city`");
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city`");
             ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 City city = new City();

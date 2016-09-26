@@ -171,20 +171,21 @@ public class EditHandler implements RequestHandler {
 
                 int contactID = parseContactID(items);
 
-                ContactDao contactDao = new MySqlContactDao();
+                connection = MySqlConnectionFactory.getInstance().getConnection();
+
+                ContactDao contactDao = new MySqlContactDao(connection);
                 Contact contact = contactDao.getByID(contactID);
                 parseContactInfo(contact, items, request.getServletContext().getInitParameter("uploadPath"));
                 List<Phone> phoneList = parsePhones(items);
 
-                connection = MySqlConnectionFactory.getInstance().getConnection();
                 connection.setAutoCommit(false);
-                contactDao.update(connection, contact);
+                contactDao.update(contact);
 
-                PhoneDao phoneDao = new MySqlPhoneDao();
-                phoneDao.deleteByContactID(connection, contactID);
+                PhoneDao phoneDao = new MySqlPhoneDao(connection);
+                phoneDao.deleteByContactID(contactID);
                 for (Phone phone : phoneList) {
                     phone.setContactID(contactID);
-                    phoneDao.insert(connection, phone);
+                    phoneDao.insert(phone);
                 }
                 connection.commit();
                 connection.setAutoCommit(true);
@@ -215,8 +216,10 @@ public class EditHandler implements RequestHandler {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Connection connection = null;
         try {
-            ContactDao contactDao = new MySqlContactDao();
+            connection = MySqlConnectionFactory.getInstance().getConnection();
+            ContactDao contactDao = new MySqlContactDao(connection);
             int contactID = Integer.parseInt(request.getParameter("id"));
             int maxID = contactDao.getMaxID();
             if(contactID < 1 || contactID > maxID) {
@@ -226,19 +229,19 @@ public class EditHandler implements RequestHandler {
             Contact contact = contactDao.getByID(contactID);
             request.setAttribute("contact", contact);
 
-            RelationshipDao rshDao = new MySqlRelationshipDao();
+            RelationshipDao rshDao = new MySqlRelationshipDao(connection);
             List<Relationship> relationshipList = rshDao.getAll();
             request.setAttribute("relationshipList", relationshipList);
 
-            CountryDao countryDao = new MySqlCountryDao();
+            CountryDao countryDao = new MySqlCountryDao(connection);
             List<Country> countryList = countryDao.getAll();
             request.setAttribute("countryList", countryList);
 
-            CityDao cityDao = new MySqlCityDao();
+            CityDao cityDao = new MySqlCityDao(connection);
             List<City> cityList = cityDao.getAll();
             request.setAttribute("cityList", cityList);
 
-            PhoneDao phoneDao = new MySqlPhoneDao();
+            PhoneDao phoneDao = new MySqlPhoneDao(connection);
             List<Phone> phoneList = phoneDao.getPhoneByContactID(contactID);
             request.setAttribute("phoneList", phoneList);
 
@@ -248,8 +251,13 @@ public class EditHandler implements RequestHandler {
             response.sendRedirect("/contact/?action=show&page=1");
         }catch (ServletException | IOException e) {
             LOG.warn("can't forward request - {}", "/WEB-INF/view/editContact.jsp", e);
-        } catch (NamingException e) {
+        } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
+        } finally {
+            if(connection != null)
+                try {
+                    connection.close();
+                } catch (SQLException e) {}
         }
     }
 }

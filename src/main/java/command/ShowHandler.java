@@ -13,6 +13,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ShowHandler implements RequestHandler {
@@ -25,12 +27,14 @@ public class ShowHandler implements RequestHandler {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Connection connection = null;
         try {
+            connection = MySqlConnectionFactory.getInstance().getConnection();
             int pageNumber = Integer.parseInt(request.getParameter("page"));
-            ContactDao contactDao = new MySqlContactDao();
+            ContactDao contactDao = new MySqlContactDao(connection);
             int rowsCount = contactDao.getRowsCount();
             int maxPageNumber = (rowsCount / 20) + (rowsCount % 20 == 0 ? 0 : 1);
-            if(pageNumber > maxPageNumber || pageNumber < 1) {
+            if (pageNumber > maxPageNumber || pageNumber < 1) {
                 throw new NumberFormatException();
             }
             List<Contact> contactList = contactDao.getContactsPage(pageNumber);
@@ -40,8 +44,13 @@ public class ShowHandler implements RequestHandler {
             LOG.warn("incorrect page number {}", request.getParameter("page"), ex);
             response.sendRedirect("/contact/?action=show&page=1");
             return;
-        } catch (NamingException e) {
+        } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
+        } finally {
+            if(connection != null)
+                try {
+                    connection.close();
+                } catch (SQLException e) {}
         }
         request.getRequestDispatcher("/WEB-INF/view/contacts.jsp").forward(request, response);
     }

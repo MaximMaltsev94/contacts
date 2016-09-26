@@ -17,7 +17,7 @@ import java.util.List;
 
 public class MySqlContactDao implements ContactDao {
     private final static Logger LOG = LoggerFactory.getLogger(MySqlContactDao.class);
-    private ConnectionFactory connectionFactory;
+    private Connection connection;
 
     private Contact parseResultSet(ResultSet rs) throws SQLException {
         Contact contact = new Contact();
@@ -67,14 +67,13 @@ public class MySqlContactDao implements ContactDao {
 
     }
 
-    public MySqlContactDao() throws NamingException {
-        connectionFactory = MySqlConnectionFactory.getInstance();
+    public MySqlContactDao(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public void insert(Contact contact) throws SQLException {
-        try(Connection con = connectionFactory.getConnection();
-            PreparedStatement pStatement = con.prepareStatement("INSERT INTO `contacts_maltsev`.`contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+        try(PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contacts_maltsev`.`contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             fillPreparedStatement(pStatement, contact);
             pStatement.executeUpdate();
         } catch (SQLException e) {
@@ -85,7 +84,7 @@ public class MySqlContactDao implements ContactDao {
     }
 
     @Override
-    public void update(Connection connection, Contact contact) throws SQLException {
+    public void update(Contact contact) throws SQLException {
         try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contacts_maltsev`.`contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ? WHERE `id` = ?");){
             fillPreparedStatement(preparedStatement, contact);
             preparedStatement.setObject(16, contact.getId());
@@ -104,8 +103,7 @@ public class MySqlContactDao implements ContactDao {
 
     @Override
     public void deleteByID(int id) {
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement pStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`contact` WHERE id = ?")) {
+        try(PreparedStatement pStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`contact` WHERE id = ?")) {
             pStatement.setObject(1, id);
             pStatement.execute();
         } catch (SQLException e) {
@@ -121,8 +119,7 @@ public class MySqlContactDao implements ContactDao {
     @Override
     public Contact getByID(int id) {
         Contact contact = null;
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = createGetByIDStatement(connection, id);
+        try(PreparedStatement preparedStatement = createGetByIDStatement(connection, id);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 contact = parseResultSet(rs);
@@ -137,8 +134,7 @@ public class MySqlContactDao implements ContactDao {
     @Override
     public int getMaxID() {
         int maxID = 0;
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contacts_maltsev`.`contact`");
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contacts_maltsev`.`contact`");
             ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 maxID = rs.getInt("mx");
@@ -158,8 +154,7 @@ public class MySqlContactDao implements ContactDao {
     @Override
     public List<Contact> getContactsPage(int pageNumber) {
         List<Contact> contactList = new ArrayList<>();
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber);
+        try(PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
@@ -174,8 +169,7 @@ public class MySqlContactDao implements ContactDao {
     @Override
     public int getRowsCount() {
         int count = 0;
-        try(Connection connection = connectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`");
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`");
             ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 count = rs.getInt("cnt");
