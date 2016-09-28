@@ -7,7 +7,7 @@
             maxIdle="30"
             maxWait="10000"
             driverClassName="com.mysql.cj.jdbc.Driver"
-            url="jdbc:mysql://localhost:3306/contacts_maltsev?useSSL=false&amp;serverTimezone=UTC"
+            url="jdbc:mysql://localhost:3306/contacts_maltsev?useSSL=false&amp;useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Minsk"
             username="maltsev.maxim@localhost"
             password="123"
     />

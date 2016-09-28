@@ -38,6 +38,7 @@ section {
     border: #dbdbdb solid 1px;
     border-radius: 5px;
     padding: 10px;
+    /*padding: 10px 10px 0 10px;*/
     margin: 0 auto 5px;
 }
 
@@ -159,7 +160,7 @@ button:hover, input[type="submit"]:hover {
     background-color: #e21a22;
 }
 
-button:active, input[type="submit"] {
+button:active, input[type="submit"]:active {
     -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
     box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
@@ -207,6 +208,22 @@ button:disabled {
 
 .imageButton.add:hover {
     background-image: url('/sysImages/add hover.png');
+}
+
+.imageButton.addAttachment {
+    background-image: url('/sysImages/add attachment.png');
+}
+
+.imageButton.addAttachment:hover {
+    background-image: url('/sysImages/add attachment hover.png');
+}
+
+.imageButton.download {
+    background-image: url('/sysImages/download.png');
+}
+
+.imageButton.download:hover {
+    background-image: url('/sysImages/download hover.png');
 }
 
 input[type="text"], input[type="email"], input[type="date"], select {

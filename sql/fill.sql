@@ -56,3 +56,8 @@ START TRANSACTION ;
 INSERT INTO `contacts_maltsev`.`phone` (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES (1, 33, 9047222, 3, 1, 'Очень хороший номер телефона от очень хорошего человека');
 INSERT INTO `contacts_maltsev`.`phone` (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES (2, 17, 9047222, 3, 0, 'Очень плохой номер телефона от очень плохого человека человека');
 COMMIT;
+
+START TRANSACTION ;
+INSERT INTO `contacts_maltsev`.`attachment` (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES ('файл 1', '/contact/?action=document&name=file0023.zip', 3, NOW(), 'Персональные данные');
+INSERT INTO `contacts_maltsev`.`attachment` (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES ('файл второй', '/contact/?action=document&name=file0024.zip', 3, NOW(), 'Общественные данные');
+COMMIT ;

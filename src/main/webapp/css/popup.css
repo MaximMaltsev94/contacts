@@ -27,20 +27,40 @@
     transition: all 5s ease-in-out;
 }
 
-#popup_phoneType, #popup_countryCode, #popup_operatorCode {
+#popupPhone_phoneType, #popupPhone_countryCode, #popupPhone_operatorCode {
     margin-right: 5px;
     min-width: 30px;
     width: 20%;
 }
 
-#popup_phoneNumber {
+#popupPhone_phoneNumber, #popupAttachment_fileName {
     margin-right: 5px;
     min-width: 100px;
     width: 40%;
 }
 
-#popup_comment {
+#popupPhone_comment, #popupAttachment_comment {
     margin-right: 5px;
     min-width: 100px;
     width: 100%;
+}
+
+
+input[type="file"] > input[type="button"] {
+    color: white;
+    padding: 8px 25px;
+    border: none;
+    border-radius: 2px;
+    background-color: #ec1c24;
+}
+
+input[type="file"] > input[type="button"]:hover {
+    cursor: pointer;
+    background-color: #e21a22;
+}
+
+input[type="file"] > input[type="button"]:active {
+    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
 }

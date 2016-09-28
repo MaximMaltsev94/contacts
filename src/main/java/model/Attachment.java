@@ -7,7 +7,7 @@ public class Attachment implements Serializable {
     private int id;
     private String fileName;
     private String filePath;
-    private String contactID;
+    private int contactID;
     private Date uploadDate;
     private String comment;
 
@@ -35,11 +35,11 @@ public class Attachment implements Serializable {
         this.filePath = filePath;
     }
 
-    public String getContactID() {
+    public int getContactID() {
         return contactID;
     }
 
-    public void setContactID(String contactID) {
+    public void setContactID(int contactID) {
         this.contactID = contactID;
     }
 
@@ -59,7 +59,7 @@ public class Attachment implements Serializable {
         this.comment = comment;
     }
 
-    public Attachment(int id, String fileName, String filePath, String contactID, Date uploadDate, String comment) {
+    public Attachment(int id, String fileName, String filePath, int contactID, Date uploadDate, String comment) {
         this.id = id;
         this.fileName = fileName;
         this.filePath = filePath;

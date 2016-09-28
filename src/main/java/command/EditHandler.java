@@ -136,21 +136,22 @@ public class EditHandler implements RequestHandler {
         }
     }
 
-    private List<Phone> parsePhones(List<FileItem> items) throws UnsupportedEncodingException {
+    private List<Phone> parsePhones(List<FileItem> items, int contactID) throws UnsupportedEncodingException {
         List<Phone> phoneList = new ArrayList<>();
         for (FileItem item : items) {
-            if(item.isFormField()) {
+            if (item.isFormField()) {
                 String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
-                if(StringUtils.startsWith(item.getFieldName(), "type_phone-")) {
+                if (StringUtils.startsWith(item.getFieldName(), "type_phone-")) {
                     phoneList.add(new Phone());
+                    phoneList.get(phoneList.size() - 1).setContactID(contactID);
                     phoneList.get(phoneList.size() - 1).setType(itemValue.equals("1"));
-                } else if(StringUtils.startsWith(item.getFieldName(), "country_code_phone-")) {
+                } else if (StringUtils.startsWith(item.getFieldName(), "country_code_phone-")) {
                     phoneList.get(phoneList.size() - 1).setCountryID(Integer.parseInt(itemValue) + 1);
-                } else if(StringUtils.startsWith(item.getFieldName(), "op_code_phone-")){
+                } else if (StringUtils.startsWith(item.getFieldName(), "op_code_phone-")) {
                     phoneList.get(phoneList.size() - 1).setOperatorCode(Integer.parseInt(itemValue));
-                } else if(StringUtils.startsWith(item.getFieldName(), "number_phone-")){
+                } else if (StringUtils.startsWith(item.getFieldName(), "number_phone-")) {
                     phoneList.get(phoneList.size() - 1).setPhoneNumber(Integer.parseInt(itemValue));
-                } else if(StringUtils.startsWith(item.getFieldName(), "comment_phone-")){
+                } else if (StringUtils.startsWith(item.getFieldName(), "comment_phone-")) {
                     phoneList.get(phoneList.size() - 1).setComment(itemValue);
                 }
             }
@@ -158,11 +159,50 @@ public class EditHandler implements RequestHandler {
         return phoneList;
     }
 
+    private List<Attachment> parseAttachments(List<FileItem> items, int contactID, String uploadPath) throws UnsupportedEncodingException, ParseException {
+        List<Attachment> attachmentList = new ArrayList<>();
+        for (FileItem item : items) {
+            if (!item.isFormField()) {
+                try {
+                    if(StringUtils.startsWith(item.getFieldName(), "file_attachment")) {
+                        //если ничего не пришло то не загружать
+                        String fileExtension = StringUtils.substringAfter(item.getName(), ".");
+                        File fileToSave = File.createTempFile("file", "." + fileExtension, new File(uploadPath));
+                        item.write(fileToSave);
+                        attachmentList.get(attachmentList.size() - 1).setFilePath("/contact/?action=document&name=" + fileToSave.getName());
+                    }
+                } catch (Exception e) {
+                    LOG.warn("can't save file - {}", item.getName());
+                }
+
+            } else {
+                String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
+                if (StringUtils.isNotBlank(itemValue)) {
+                    if (StringUtils.startsWith(item.getFieldName(), "name_attachment")) {
+                        attachmentList.add(new Attachment());
+                        attachmentList.get(attachmentList.size() - 1).setContactID(contactID);
+                        attachmentList.get(attachmentList.size() - 1).setFileName(itemValue);
+                    } else if (StringUtils.startsWith(item.getFieldName(), "id_attachment")) {
+                        attachmentList.get(attachmentList.size() - 1).setId(Integer.parseInt(itemValue));
+                    } else if (StringUtils.startsWith(item.getFieldName(), "path_attachment")) {
+                        attachmentList.get(attachmentList.size() - 1).setFilePath(itemValue);
+                    } else if (StringUtils.startsWith(item.getFieldName(), "date_attachment")) {
+                        Date uploadDate = DateUtils.parseDate(itemValue, "yyyy-MM-dd HH:mm:ss.S");
+                        attachmentList.get(attachmentList.size() - 1).setUploadDate(uploadDate);
+                    } else if (StringUtils.startsWith(item.getFieldName(), "comment_attachment")) {
+                        attachmentList.get(attachmentList.size() - 1).setComment(itemValue);
+                    }
+                }
+            }
+        }
+        return attachmentList;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
-        if(isMultipart) {
+        if (isMultipart) {
             Connection connection = null;
             try {
                 DiskFileItemFactory factory = initDiskFactory(request, 10000);
@@ -176,7 +216,7 @@ public class EditHandler implements RequestHandler {
                 ContactDao contactDao = new MySqlContactDao(connection);
                 Contact contact = contactDao.getByID(contactID);
                 parseContactInfo(contact, items, request.getServletContext().getInitParameter("uploadPath"));
-                List<Phone> phoneList = parsePhones(items);
+                List<Phone> phoneList = parsePhones(items, contactID);
 
                 connection.setAutoCommit(false);
                 contactDao.update(contact);
@@ -184,9 +224,40 @@ public class EditHandler implements RequestHandler {
                 PhoneDao phoneDao = new MySqlPhoneDao(connection);
                 phoneDao.deleteByContactID(contactID);
                 for (Phone phone : phoneList) {
-                    phone.setContactID(contactID);
                     phoneDao.insert(phone);
                 }
+
+                AttachmentDao attachmentDao = new MySqlAttachmentDao(connection);
+                List<Attachment> attachmentList = attachmentDao.getByContactId(contactID);
+                List<Attachment> postedAttachments = parseAttachments(items, contactID, request.getServletContext().getInitParameter("uploadPath"));
+
+                List<Attachment> forDelete = new ArrayList<>();
+                for (Attachment attachment : attachmentList) {
+                    boolean flag = true;
+                    for (Attachment postedAttachment : postedAttachments) {
+                        if(postedAttachment.getId() == attachment.getId()) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag)
+                        forDelete.add(attachment);
+                }
+
+                for (Attachment attachment : forDelete) {
+                    attachmentDao.delete(connection, attachment);
+                    String fileName = "file" + StringUtils.substringAfter(attachment.getFilePath(), "file");
+                    if(new File(request.getServletContext().getInitParameter("uploadPath") + fileName).delete()) {
+                        LOG.info("file - {} - deleted ", fileName);
+                    }
+                }
+
+                for (Attachment postedAttachment : postedAttachments) {
+                    if(postedAttachment.getId() == 0) {
+                        attachmentDao.insert(connection, postedAttachment);
+                    }
+                }
+
                 connection.commit();
                 connection.setAutoCommit(true);
 
@@ -194,18 +265,18 @@ public class EditHandler implements RequestHandler {
             } catch (SQLException e) {
                 LOG.warn("edit transaction error");
                 try {
-                    if(connection != null) {
+                    if (connection != null) {
                         LOG.info("rolling back transaction ", e);
                         connection.rollback();
                     }
                 } catch (SQLException e1) {
                     LOG.warn("error while rolling back transaction ", e1);
                 }
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 LOG.warn("can't add contact", ex);
             } finally {
                 try {
-                    if(connection != null)
+                    if (connection != null)
                         connection.close();
                 } catch (SQLException e) {
                     LOG.warn("error while closing connection ", e);
@@ -222,7 +293,7 @@ public class EditHandler implements RequestHandler {
             ContactDao contactDao = new MySqlContactDao(connection);
             int contactID = Integer.parseInt(request.getParameter("id"));
             int maxID = contactDao.getMaxID();
-            if(contactID < 1 || contactID > maxID) {
+            if (contactID < 1 || contactID > maxID) {
                 throw new NumberFormatException("id out of range");
             }
 
@@ -245,19 +316,24 @@ public class EditHandler implements RequestHandler {
             List<Phone> phoneList = phoneDao.getPhoneByContactID(contactID);
             request.setAttribute("phoneList", phoneList);
 
+            AttachmentDao attachmentDao = new MySqlAttachmentDao(connection);
+            List<Attachment> attachmentList = attachmentDao.getByContactId(contactID);
+            request.setAttribute("attachmentList", attachmentList);
+
             request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
         } catch (NumberFormatException ex) {
             LOG.warn("incorrect contact id {}", request.getParameter("id"), ex);
             response.sendRedirect("/contact/?action=show&page=1");
-        }catch (ServletException | IOException e) {
+        } catch (ServletException | IOException e) {
             LOG.warn("can't forward request - {}", "/WEB-INF/view/editContact.jsp", e);
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
         } finally {
-            if(connection != null)
+            if (connection != null)
                 try {
                     connection.close();
-                } catch (SQLException e) {}
+                } catch (SQLException e) {
+                }
         }
     }
 }

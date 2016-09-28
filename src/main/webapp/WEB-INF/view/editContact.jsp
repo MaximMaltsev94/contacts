@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -8,9 +9,13 @@
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
     <script src="<c:url value="/js/addView.js"/>"></script>
+    <script src="<c:url value="/js/main.js"/>"></script>
+    <script src="<c:url value="/js/popupPhone.js"/>"></script>
+    <script src="<c:url value="/js/popupAttachment.js"/>"></script>
 </head>
 <body onload="addView.selectCountryAndCity(${requestScope.get('contact').countryID}, ${requestScope.get('contact').cityID});
-        addView.setPhoneCount(${requestScope.get('phoneList').size()})">
+        popupPhone.setPhoneCount(${requestScope.get('phoneList').size()});
+        popupAttachment.setAttachmentCount(${requestScope.get('attachmentList').size()})">
 <jsp:include page="header.jsp"/>
 
 <div class="container">
@@ -207,7 +212,7 @@
                 <div class="jlab-cell-3 align-right">
 
                 </div>
-                <div class="jlab-cell-9">
+                <div class="jlab-cell-9 center">
                     <input type="submit" value="Сохранить"/>
                 </div>
             </div>
@@ -216,13 +221,15 @@
 
         <section id="phoneSection">
             <div class="jlab-row">
-                <div class="jlab-cell-3 center">
+                <div class="jlab-cell-4 center">
                     <span class="text-large">Контактные телефоны</span>
                 </div>
 
-                <div class="jlab-cell-9 center">
-                    <div class="imageButton add" onclick="addView.showAddPhonePopup()"></div>
-                </div>
+                <div class="jlab-cell-2"></div>
+                <div class="jlab-cell-1"></div>
+                <div class="jlab-cell-1"></div>
+                <div class="jlab-cell-1 center">
+                    <div class="imageButton add" onclick="popupPhone.showAddPhonePopup()"></div></div>
 
             </div>
             <div id="phonePopup" class="popupBack">
@@ -233,35 +240,35 @@
                         </div>
                     </div>
                     <div class="jlab-row margin">
-                        <select id="popup_phoneType">
+                        <select id="popupPhone_phoneType">
                             <option value="0">Моб.</option>
                             <option value="1">Дом.</option>
                         </select>
 
-                        <select id="popup_countryCode">
+                        <select id="popupPhone_countryCode">
                             <c:forEach var="i" items="${requestScope.get('countryList')}">
                                 <option value="${i.id}">+${i.phoneCode}</option>
                             </c:forEach>
                         </select>
 
-                        <input id="popup_operatorCode" type="text" pattern="[0-9]{2,5}" placeholder="Код. оп.">
+                        <input id="popupPhone_operatorCode" type="text" pattern="[0-9]{2,5}" placeholder="Код. оп.">
 
-                        <input id="popup_phoneNumber" type="text" pattern="[0-9]{4,9}" placeholder="Номер">
+                        <input id="popupPhone_phoneNumber" type="text" pattern="[0-9]{4,9}" placeholder="Номер">
                     </div>
 
                     <div class="jlab-row margin">
-                        <input type="text" id="popup_comment" placeholder="Комментарий">
+                        <input type="text" id="popupPhone_comment" placeholder="Комментарий">
                     </div>
 
                     <div class="jlab-row margin">
                         <div class="jlab-cell-12 align-right">
-                            <button type="button" id="popup_ok">Добавить</button>
+                            <button type="button" id="popupPhone_ok">Добавить</button>
                         </div>
                     </div>
 
                 </div>
 
-                <%--div id popup end--%>
+                <%--div id phonePopup end--%>
             </div>
 
             <c:set var="phoneCount" value="0" scope="page"/>
@@ -302,18 +309,101 @@
                         </div>
                     </div>
 
+                    <div class="jlab-cell-1"></div>
+
                     <div class="jlab-cell-1">
-                        <div class="imageButton edit" onclick="addView.showEditPhonePopup(this)"></div>
+                        <div class="imageButton edit" onclick="popupPhone.showEditPhonePopup(this)"></div>
                     </div>
                     <div class="jlab-cell-1">
-                        <div class="imageButton delete" onclick="addView.deletePhoneElement(this)"></div>
+                        <div class="imageButton delete" onclick="popupPhone.deletePhoneElement(this)"></div>
+                    </div>
+                </div>
+            </c:forEach>
+            <%--contact phones section end--%>
+        </section>
+
+        <section id="attachmentSection">
+            <div class="jlab-row">
+                <div class="jlab-cell-3 center">
+                    <span class="text-large">Присоединения</span>
+                </div>
+                <div class="jlab-cell-3"></div>
+                <div class="jlab-cell-1"></div>
+                <div class="jlab-cell-1"></div>
+                <div class="jlab-cell-1 center">
+                    <div class="imageButton addAttachment" onclick="popupAttachment.showAddAttachmentPopup()"></div></div>
+            </div>
+
+            <div id="attachmentPopup" class="popupBack">
+                <div class="popup">
+                    <div class="jlab-row">
+                        <div class="jlab-cell-12 align-right">
+                            <a class="text-large" href="#attachmentSection">&times;</a>
+                        </div>
+                    </div>
+                    <div class="jlab-row margin">
+                        <input id="popupAttachment_fileName" type="text" placeholder="Имя файла">
+                    </div>
+
+                    <div class="jlab-row margin">
+                        <input type="text" id="popupAttachment_comment" placeholder="Комментарий">
+                    </div>
+
+                    <div class="jlab-row margin">
+                        <div class="jlab-cell-12 align-right">
+                            <button type="button" id="popupAttachment_ok">Добавить</button>
+                        </div>
+                    </div>
+
+                </div>
+                <%--div id attachmentPopup end--%>
+            </div>
+
+
+            <c:set var="attachmentCount" value="0" scope="page"/>
+            <c:forEach var="i" items="${requestScope.get('attachmentList')}">
+                <c:set var="attachmentCount" value="${attachmentCount + 1}" scope="page"/>
+                <div id="attachment-${attachmentCount}" class="jlab-row margin">
+                    <input type="text" name="name_attachment-${attachmentCount}" id="name_attachment-${attachmentCount}"
+                           value="${i.fileName}" hidden/>
+                    <input type="text" name="id_attachment-${attachmentCount}" id="id_attachment-${attachmentCount}"
+                            value="${i.id}" hidden>
+                    <input type="text" name="path_attachment-${attachmentCount}" id="path_attachment-${attachmentCount}"
+                            value="${i.filePath}" hidden>
+                    <input type="datetime" name="date_attachment-${attachmentCount}" id="date_attachment-${attachmentCount}"
+                           value="${i.uploadDate}" hidden/>
+                    <input type="text" name="comment_attachment-${attachmentCount}" id="comment_attachment-${attachmentCount}"
+                           value="${i.comment}" hidden>
+                    <div id="display_date_attachment-${attachmentCount}" class="jlab-cell-3 align-right text-small">
+                        <fmt:formatDate value="${i.uploadDate}" type="both" dateStyle="long" timeStyle="medium"/>
+                    </div>
+
+                    <div class="jlab-cell-3">
+                        <div id="display_name_attachment-${attachmentCount}" class="jlab-row text-medium">
+                            ${i.fileName}
+                        </div>
+                        <div id="display_comment_attachment-${attachmentCount}" class="jlab-row text text-small">
+                                ${i.comment}
+                        </div>
+                    </div>
+
+                    <div class="jlab-cell-1">
+                        <a href="<c:url value="${i.filePath}"/>" target="_blank">
+                            <div class="imageButton download"></div></a>
+                    </div>
+
+                    <div class="jlab-cell-1">
+                        <div class="imageButton edit" onclick="popupAttachment.showEditAttachmentPopup(this)"></div>
+                    </div>
+                    <div class="jlab-cell-1">
+                        <div class="imageButton delete" onclick="popupAttachment.deleteAttachmentElement(this)"></div>
                     </div>
                 </div>
             </c:forEach>
 
-
-            <%--contact phones section end--%>
+            <%--attachment section --%>
         </section>
+
 
     </form>
     <%--div container end--%>
