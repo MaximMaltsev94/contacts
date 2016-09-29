@@ -25,10 +25,24 @@ public class DocumentHandler implements RequestHandler {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String fileName = "file" + StringUtils.substringAfter(request.getParameter("name"), "file");
-            File file = new File(request.getServletContext().getInitParameter("uploadPath") + fileName);
+            String filePath = request.getServletContext().getInitParameter("uploadPath") + fileName;
+            File file = new File(filePath);
+            FileInputStream in = new FileInputStream(file);
+
+            String mimeType = request.getServletContext().getMimeType(filePath);
+            if (mimeType == null) {
+                // set to binary type if MIME mapping not found
+                mimeType = "application/octet-stream";
+            }
+            response.setContentType(mimeType);
+            response.setContentLength((int) file.length());
+
+            // forces download
+            String headerKey = "Content-Disposition";
+            String headerValue = String.format("attachment; filename=\"%s\"", file.getName());
+            response.setHeader(headerKey, headerValue);
 
             OutputStream out = response.getOutputStream();
-            FileInputStream in = new FileInputStream(file);
             byte[] buffer = new byte[4096];
             int length;
             while ((length = in.read(buffer)) > 0){

@@ -17,6 +17,7 @@
         popupPhone.setPhoneCount(${requestScope.get('phoneList').size()});
         popupAttachment.setAttachmentCount(${requestScope.get('attachmentList').size()})">
 <jsp:include page="header.jsp"/>
+<fmt:setLocale value="ru_RU" scope="session"/>
 
 <div class="container">
     <form action="<c:url value="/contact/?action=edit"/>" method="post" enctype="multipart/form-data">

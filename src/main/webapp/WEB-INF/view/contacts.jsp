@@ -13,6 +13,7 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
+<fmt:setLocale value="ru_RU" scope="session"/>
 
 <div class="container">
 
