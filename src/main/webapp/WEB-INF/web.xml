@@ -25,6 +25,6 @@
 
     <context-param>
         <param-name>uploadPath</param-name>
-        <param-value>C:\Users\maxim\contact_images\</param-value>
+        <param-value>C:\temp\contact_uploads\</param-value>
     </context-param>
 </web-app>
