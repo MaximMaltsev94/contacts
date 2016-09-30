@@ -24,7 +24,7 @@
                     <div class="jlab-row">
 
                         <div class="jlab-cell-1 center">
-                            <input type="checkbox" id="chB${i.id}" data-form="fDelete${i.id}" class="regular-checkbox" onchange="showView.onCheckBoxChecked(this)"/><label for="chB${i.id}"></label>
+                            <input type="checkbox" id="${i.id}" class="regular-checkbox" onchange="showView.onCheckBoxChecked(this)"/><label for="${i.id}"></label>
                         </div>
 
                         <div class="jlab-cell-1 center">
@@ -61,11 +61,9 @@
                             </a>
                         </div>
                         <div class="jlab-cell-1 center ">
-                            <form id="fDelete${i.id}" action="<c:url value="/contact/?action=delete&id=${i.id}"/>" method="post">
-                                <input type="text" name="profilePicture" value="${i.profilePicture}" hidden>
-                                <div class="imageButton delete" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', 'fDelete${i.id}')">
-                                </div>
-                            </form>
+                           <input type="text" name="profilePicture" value="${i.profilePicture}" hidden>
+                            <div class="imageButton delete" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', '${i.id}')">
+                            </div>
                         </div>
                     </div>
                 </section>

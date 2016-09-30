@@ -50,15 +50,17 @@ public class DeleteHandler implements RequestHandler {
         Connection connection = null;
         try {
             connection = MySqlConnectionFactory.getInstance().getConnection();
-            int contactID = Integer.parseInt(request.getParameter("id"));
-            ContactDao contactDao = new MySqlContactDao(connection);
-            deleteProfileImage(request.getServletContext().getInitParameter("uploadPath"), contactID);
-            contactDao.deleteByID(contactID);
-            response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
+            String []splitedIDs = request.getParameter("id").split(",");
+            for (String id : splitedIDs) {
+                int contactID = Integer.parseInt(id);
+                ContactDao contactDao = new MySqlContactDao(connection);
+                deleteProfileImage(request.getServletContext().getInitParameter("uploadPath"), contactID);
+                contactDao.deleteByID(contactID);
+            }
         }catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
-            response.sendRedirect("/contact/?action=show");
         } finally {
+            response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             if(connection != null)
                 try {
                     connection.close();
