@@ -3,26 +3,24 @@
 <div class="nav">
     <div class="container">
         <div class="jlab-row">
-            <div class="jlab-cell-2 center">
+            <div class="element">
                 <a class="text-large" href="<c:url value="/contact/?action=show&page=1" />">
                     Contacts
                 </a>
-                <%--<span class="text-large">--%>
-                    <%--Contacts--%>
-                <%--</span>--%>
             </div>
-            <div class="jlab-cell-2 center">
-
-                <a class="text-medium" href="#">
-                    Отправить письмо
-                </a>
-                <%--<span class="text-medium">--%>
-                    <%--Отправить письмо--%>
-                <%--</span>--%>
-            </div>
-            <div class="jlab-cell-8 center align-right">
-                <input type="text" placeholder="Поиск">
-                <button>Поиск</button>
+            <div class="element right">
+                <div class="element">
+                    <a href="#">
+                        <div class="imageButton email">
+                        </div>
+                    </a>
+                </div>
+                <div class="element">
+                    <a href="<c:url value="/contact/?action=search" />">
+                        <div class="imageButton search">
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
