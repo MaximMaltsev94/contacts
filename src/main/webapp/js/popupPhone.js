@@ -41,15 +41,15 @@ var popupPhone = (function () {
     var createPhoneTemplate = function (targetPhoneId) {
         var mainDiv = main.createDiv(targetPhoneId, 'jlab-row margin');
 
-        var childElement = main.createInput('type_' + targetPhoneId, 'text');
+        var childElement = main.createInput('type_' + targetPhoneId, 'text', 'none');
         mainDiv.appendChild(childElement);
-        childElement = main.createInput('country_code_' + targetPhoneId, 'text');
+        childElement = main.createInput('country_code_' + targetPhoneId, 'text', 'none');
         mainDiv.appendChild(childElement);
-        childElement = main.createInput('op_code_' + targetPhoneId, 'text');
+        childElement = main.createInput('op_code_' + targetPhoneId, 'text', 'none');
         mainDiv.appendChild(childElement);
-        childElement = main.createInput('number_' + targetPhoneId, 'text');
+        childElement = main.createInput('number_' + targetPhoneId, 'text', 'none');
         mainDiv.appendChild(childElement);
-        childElement = main.createInput('comment_' + targetPhoneId, 'text');
+        childElement = main.createInput('comment_' + targetPhoneId, 'text', 'none');
         mainDiv.appendChild(childElement);
 
         childElement = main.createDiv('display_type_' + targetPhoneId, 'jlab-cell-3 align-right text-small');

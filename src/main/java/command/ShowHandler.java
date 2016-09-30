@@ -33,13 +33,14 @@ public class ShowHandler implements RequestHandler {
             int pageNumber = Integer.parseInt(request.getParameter("page"));
             ContactDao contactDao = new MySqlContactDao(connection);
             int rowsCount = contactDao.getRowsCount();
-            int maxPageNumber = (rowsCount / 20) + (rowsCount % 20 == 0 ? 0 : 1);
+            int maxPageNumber = (rowsCount / 10) + (rowsCount % 10 == 0 ? 0 : 1);
             if (pageNumber > maxPageNumber || pageNumber < 1) {
                 throw new NumberFormatException();
             }
             List<Contact> contactList = contactDao.getContactsPage(pageNumber);
             request.setAttribute("contactList", contactList);
             request.setAttribute("maxPageNumber", maxPageNumber);
+            request.getSession().setAttribute("lastVisitedPage", pageNumber);
         } catch (NumberFormatException ex) {
             LOG.warn("incorrect page number {}", request.getParameter("page"), ex);
             response.sendRedirect("/contact/?action=show&page=1");

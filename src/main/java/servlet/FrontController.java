@@ -24,7 +24,7 @@ public class FrontController extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        LOG.info("Received post request - {}{}", request.getRequestURL().toString(), request.getQueryString());
         processRequest(request, response);
     }
 

@@ -261,7 +261,7 @@ public class EditHandler implements RequestHandler {
                 connection.commit();
                 connection.setAutoCommit(true);
 
-                response.sendRedirect("/contact/?action=show&page=1");
+                response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             } catch (SQLException e) {
                 LOG.warn("edit transaction error");
                 try {
@@ -323,7 +323,7 @@ public class EditHandler implements RequestHandler {
             request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
         } catch (NumberFormatException ex) {
             LOG.warn("incorrect contact id {}", request.getParameter("id"), ex);
-            response.sendRedirect("/contact/?action=show&page=1");
+            response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
         } catch (ServletException | IOException e) {
             LOG.warn("can't forward request - {}", "/WEB-INF/view/editContact.jsp", e);
         } catch (NamingException | SQLException e) {

@@ -24,7 +24,7 @@
                     <div class="jlab-row">
 
                         <div class="jlab-cell-1 center">
-                            <input type="checkbox" id="${i.id}" class="regular-checkbox"/><label for="${i.id}"></label>
+                            <input type="checkbox" id="chB${i.id}" data-form="fDelete${i.id}" class="regular-checkbox" onchange="showView.onCheckBoxChecked(this)"/><label for="chB${i.id}"></label>
                         </div>
 
                         <div class="jlab-cell-1 center">
@@ -84,7 +84,7 @@
                     </c:when>
 
                     <c:when test="${currentPage != 1}">
-                        <li><a href="<c:url value="/contact/?action=show&page=${currentPage - 1}" /> ">&Lt;</a></li>
+                        <li><a href="<c:url value="/contact/?action=show&page=${currentPage - 1}" /> ">&lt;</a></li>
                         <li><a href="<c:url value="/contact/?action=show&page=${1}" /> ">1</a></li>
                     </c:when>
                 </c:choose>
@@ -118,7 +118,7 @@
                     <c:choose>
                         <c:when test="${currentPage != lastPage}">
                             <li><a href="<c:url value="/contact/?action=show&page=${lastPage}" /> ">${lastPage}</a></li>
-                            <li><a href="<c:url value="/contact/?action=show&page=${currentPage + 1}" /> ">&Gt;</a></li>
+                            <li><a href="<c:url value="/contact/?action=show&page=${currentPage + 1}" /> ">&gt;</a></li>
                         </c:when>
 
                         <c:when test="${currentPage == lastPage}">
@@ -148,7 +148,7 @@
                         </a>
                     </div>
                     <div class="jlab-row margin">
-                        <button disabled class="jlab-cell-10 align-center">Удалить</button>
+                        <button id="deleteSelected" disabled class="jlab-cell-10 align-center" onclick="showView.onDeleteSelectedClick()">Удалить</button>
                     </div>
             </section>
 
