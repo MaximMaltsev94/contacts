@@ -10,6 +10,7 @@ body {
     background-color: #f0f0f0;
     font-family: OpenSans, sans-serif;
     color: #595954;
+    /*min-height: 530px;*/
 }
 
 form {
@@ -45,8 +46,7 @@ section {
     font-size: 1em;
     border: #dbdbdb solid 1px;
     border-radius: 5px;
-    padding: 5px;
-    /*padding: 10px 10px 0 10px;*/
+    padding: 10px;
     margin: 0 auto 5px;
 }
 
@@ -64,6 +64,11 @@ section {
 .text-small {
     font-size: 0.8em;
     font-weight: lighter;
+}
+
+.text-small-bold {
+    font-size: 0.8em;
+    font-weight: bold;
 }
 
 a {
@@ -252,7 +257,8 @@ button:disabled {
 
 
 input[type="text"], input[type="email"], input[type="date"], select {
-    min-width: 200px;
+    /*width: 240px;*/
+    width: 100%;
     padding: 5px 10px;
     font-family: OpenSans, sans-serif;
     color: #595954;
@@ -261,12 +267,13 @@ input[type="text"], input[type="email"], input[type="date"], select {
     background-color: #f0f0f0;
 }
 
-input[type="text"]:focus, input[type="email"]:focus, input[type="date"], select {
+input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, select:focus {
     outline: none;
 }
 
 select {
-    min-width: 222px;
+    /*width: 262px;*/
+    width: 100%;
 }
 
 input[type='file'].hidden

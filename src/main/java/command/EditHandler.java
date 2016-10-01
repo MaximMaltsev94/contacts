@@ -287,9 +287,7 @@ public class EditHandler implements RequestHandler {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Connection connection = null;
-        try {
-            connection = MySqlConnectionFactory.getInstance().getConnection();
+        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection();){
             ContactDao contactDao = new MySqlContactDao(connection);
             int contactID = Integer.parseInt(request.getParameter("id"));
             int maxID = contactDao.getMaxID();
@@ -320,20 +318,12 @@ public class EditHandler implements RequestHandler {
             List<Attachment> attachmentList = attachmentDao.getByContactId(contactID);
             request.setAttribute("attachmentList", attachmentList);
 
-            request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
         } catch (NumberFormatException ex) {
             LOG.warn("incorrect contact id {}", request.getParameter("id"), ex);
-            response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
-        } catch (ServletException | IOException e) {
-            LOG.warn("can't forward request - {}", "/WEB-INF/view/editContact.jsp", e);
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
         } finally {
-            if (connection != null)
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                }
+            request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
         }
     }
 }

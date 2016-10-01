@@ -29,6 +29,8 @@ div[class*="jlab-cell-"].center {
 .fixed {
     position: fixed;
     right: 10px;
+    /*overflow-y:scroll;*/
+    /*overflow-x:hidden;*/
 }
 
 
