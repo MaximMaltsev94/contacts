@@ -17,12 +17,12 @@ public class DocumentHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(DocumentHandler.class);
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             String fileName = "file" + StringUtils.substringAfter(request.getParameter("name"), "file");
             String filePath = request.getServletContext().getInitParameter("uploadPath") + fileName;

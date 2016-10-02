@@ -24,7 +24,7 @@
                     <span class="text-small">Фотография</span>
 
                 </div>
-                <div class="jlab-cell-9 center">
+                <div class="jlab-cell-3 center">
                     <div class="hiddenFileInputContainter">
 
                         <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>" width="100px"

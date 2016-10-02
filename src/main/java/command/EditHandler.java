@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ContactUtils;
 
 import javax.imageio.ImageIO;
 import javax.naming.NamingException;
@@ -32,24 +33,12 @@ import java.util.List;
 public class EditHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(EditHandler.class);
 
-    private DiskFileItemFactory initDiskFactory(HttpServletRequest request, int maxFileSize) {
-        // Create a factory for disk-based file items
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-
-        // Configure a repository (to ensure a secure temp location is used)
-        ServletContext servletContext = request.getServletContext();
-        File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-        factory.setRepository(repository);
-        factory.setSizeThreshold(maxFileSize);
-        return factory;
-    }
-
     private int parseContactID(List<FileItem> items) throws UnsupportedEncodingException {
         int contactID = 0;
         for (FileItem item : items) {
             if (item.isFormField()) {
                 if (item.getFieldName().equals("id")) {
-                    contactID = Integer.parseInt(new String(item.getString().getBytes("iso-8859-1"), "UTF-8"));
+                    contactID = Integer.parseInt(ContactUtils.getUTF8String(item.getString()));
                 }
             }
         }
@@ -67,11 +56,11 @@ public class EditHandler implements RequestHandler {
 
                     String profPicture = contact.getProfilePicture();
                     File fileToSave;
-                    if (profPicture.contains("pri")) {
-                        String imageName = profPicture.substring(profPicture.indexOf("pri"));
-                        fileToSave = new File(uploadPath + imageName);
-                    } else {
+                    String imageName = ContactUtils.getFileNameFromUrl(profPicture, "pri");
+                    if(imageName == null) {
                         fileToSave = File.createTempFile("pri", ".png", new File(uploadPath));
+                    } else {
+                        fileToSave = new File(uploadPath + imageName);
                     }
                     ImageIO.write(image, "png", fileToSave);
 
@@ -81,7 +70,7 @@ public class EditHandler implements RequestHandler {
                     LOG.warn("can't save profile image", ex);
                 }
             } else {
-                String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
+                String itemValue = ContactUtils.getUTF8String(item.getString());
                 if (StringUtils.isNotBlank(itemValue)) {
                     switch (item.getFieldName()) {
                         case "id":
@@ -140,7 +129,7 @@ public class EditHandler implements RequestHandler {
         List<Phone> phoneList = new ArrayList<>();
         for (FileItem item : items) {
             if (item.isFormField()) {
-                String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
+                String itemValue = ContactUtils.getUTF8String(item.getString());
                 if (StringUtils.startsWith(item.getFieldName(), "type_phone-")) {
                     phoneList.add(new Phone());
                     phoneList.get(phoneList.size() - 1).setContactID(contactID);
@@ -176,7 +165,7 @@ public class EditHandler implements RequestHandler {
                 }
 
             } else {
-                String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
+                String itemValue = ContactUtils.getUTF8String(item.getString());
                 if (StringUtils.isNotBlank(itemValue)) {
                     if (StringUtils.startsWith(item.getFieldName(), "name_attachment")) {
                         attachmentList.add(new Attachment());
@@ -199,15 +188,13 @@ public class EditHandler implements RequestHandler {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
         if (isMultipart) {
             Connection connection = null;
             try {
-                DiskFileItemFactory factory = initDiskFactory(request, 10000);
-                ServletFileUpload upload = new ServletFileUpload(factory);
-                List<FileItem> items = upload.parseRequest(request);
+                List<FileItem> items = ContactUtils.getMultipartItems(request, 10000);
 
                 int contactID = parseContactID(items);
 
@@ -215,7 +202,8 @@ public class EditHandler implements RequestHandler {
 
                 ContactDao contactDao = new MySqlContactDao(connection);
                 Contact contact = contactDao.getByID(contactID);
-                parseContactInfo(contact, items, request.getServletContext().getInitParameter("uploadPath"));
+                String uploadPath = request.getServletContext().getInitParameter("uploadPath");
+                parseContactInfo(contact, items, uploadPath);
                 List<Phone> phoneList = parsePhones(items, contactID);
 
                 connection.setAutoCommit(false);
@@ -229,7 +217,7 @@ public class EditHandler implements RequestHandler {
 
                 AttachmentDao attachmentDao = new MySqlAttachmentDao(connection);
                 List<Attachment> attachmentList = attachmentDao.getByContactId(contactID);
-                List<Attachment> postedAttachments = parseAttachments(items, contactID, request.getServletContext().getInitParameter("uploadPath"));
+                List<Attachment> postedAttachments = parseAttachments(items, contactID, uploadPath);
 
                 List<Attachment> forDelete = new ArrayList<>();
                 for (Attachment attachment : attachmentList) {
@@ -246,9 +234,9 @@ public class EditHandler implements RequestHandler {
 
                 for (Attachment attachment : forDelete) {
                     attachmentDao.delete(connection, attachment);
-                    String fileName = "file" + StringUtils.substringAfter(attachment.getFilePath(), "file");
-                    if(new File(request.getServletContext().getInitParameter("uploadPath") + fileName).delete()) {
-                        LOG.info("file - {} - deleted ", fileName);
+                    boolean deleteResult = ContactUtils.deleteFileByUrl(attachment.getFilePath(), uploadPath, "file");
+                    if(deleteResult == false) {
+                        LOG.warn("can't delete file - {}", attachment.getFilePath());
                     }
                 }
 
@@ -318,12 +306,11 @@ public class EditHandler implements RequestHandler {
             List<Attachment> attachmentList = attachmentDao.getByContactId(contactID);
             request.setAttribute("attachmentList", attachmentList);
 
+            request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
         } catch (NumberFormatException ex) {
             LOG.warn("incorrect contact id {}", request.getParameter("id"), ex);
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
-        } finally {
-            request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
         }
     }
 }

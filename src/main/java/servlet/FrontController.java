@@ -23,19 +23,20 @@ public class FrontController extends HttpServlet {
         return (RequestHandler) cl.newInstance();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         LOG.info("Received post request - {}{}", request.getRequestURL().toString(), request.getQueryString());
         processRequest(request, response);
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) {
         LOG.info("Received get request - {}{}", request.getRequestURL().toString(), request.getQueryString());
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) {
         try {
             RequestHandler handler = getHandlerClass(request);
+
             //change to reflection
             switch (request.getMethod().toLowerCase()) {
                 case "get":
@@ -45,9 +46,20 @@ public class FrontController extends HttpServlet {
                     handler.doPost(request, response);
                     break;
             }
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             LOG.debug("unknown action - {}", request.getParameter("action"), e);
-            response.sendRedirect("/contact/?action=show&page=1");
+            try {
+                response.sendRedirect("/contact/?action=show&page=1");
+            } catch (IOException e1) {
+
+            }
+        } catch (Exception e) {
+            LOG.warn("exception ", e);
+            try {
+                response.sendRedirect("/contact/?action=show&page=1");
+            } catch (IOException e1) {
+
+            }
         }
 
     }

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ContactUtils;
 
 import javax.imageio.ImageIO;
 import javax.naming.NamingException;
@@ -34,18 +35,6 @@ import java.util.List;
 public class AddHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(AddHandler.class);
 
-    private DiskFileItemFactory initDiskFactory(HttpServletRequest request, int maxFileSize) {
-        // Create a factory for disk-based file items
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-
-        // Configure a repository (to ensure a secure temp location is used)
-        ServletContext servletContext = request.getServletContext();
-        File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-        factory.setRepository(repository);
-        factory.setSizeThreshold(maxFileSize);
-        return factory;
-    }
-
     private Contact parseContactInfo(List<FileItem> items, String uploadPath) throws UnsupportedEncodingException, ParseException {
         Contact contact = new Contact();
         contact.setProfilePicture("/sysImages/default.png");
@@ -66,7 +55,7 @@ public class AddHandler implements RequestHandler {
                     LOG.warn("can't save profile image", ex);
                 }
             } else {
-                String itemValue = new String(item.getString().getBytes("iso-8859-1"), "UTF-8");
+                String itemValue = ContactUtils.getUTF8String(item.getString());
                 if(StringUtils.isNotBlank(itemValue)) {
                     switch (item.getFieldName()) {
                         case "firstName":
@@ -123,34 +112,28 @@ public class AddHandler implements RequestHandler {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
         if(isMultipart) {
-            Connection connection = null;
-            try {
-                DiskFileItemFactory factory = initDiskFactory(request, 10000);
-                ServletFileUpload upload = new ServletFileUpload(factory);
-                List<FileItem> items = upload.parseRequest(request);
+            try(Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
+                List<FileItem> items = ContactUtils.getMultipartItems(request, 10000);
 
                 Contact contact = parseContactInfo(items, request.getServletContext().getInitParameter("uploadPath"));
 
-                connection = MySqlConnectionFactory.getInstance().getConnection();
                 ContactDao contactDao = new MySqlContactDao(connection);
                 contactDao.insert(contact);
                 response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             } catch (Exception ex) {
                 LOG.warn("can't add contact", ex);
-            } finally {
-                if(connection != null)
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {}
+                try {
+                    response.getWriter().println("An error occurred while adding contact");
+                    response.getWriter().flush();
+                } catch (IOException e) {
+                }
             }
         }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
-        Connection connection = null;
-        try {
-            connection = MySqlConnectionFactory.getInstance().getConnection();
+        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()){
             RelationshipDao rshDao = new MySqlRelationshipDao(connection);
             List<Relationship> relationshipList = rshDao.getAll();
             request.setAttribute("relationshipList", relationshipList);
@@ -167,11 +150,6 @@ public class AddHandler implements RequestHandler {
             LOG.warn("can't forward request - {}", "/WEB-INF/view/addContact.jsp", e);
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
-        } finally {
-            if(connection != null)
-                try {
-                    connection.close();
-                } catch (SQLException e) {}
         }
     }
 }

@@ -57,7 +57,7 @@ CREATE TABLE `contacts_maltsev`.`phone` (
 	`phone_number` BIGINT UNSIGNED NOT NULL,
 	`id_contact` INT UNSIGNED NOT NULL,
 	`type` BIT(1) NOT NULL,
-	`comment` NVARCHAR(255) NOT NULL,
+	`comment` NVARCHAR(255),
 	
 	PRIMARY KEY (`id`),
 	CONSTRAINT `phone_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country`(`id`) ON DELETE CASCADE,
@@ -70,7 +70,7 @@ CREATE TABLE `contacts_maltsev`.`attachment` (
 	`file_path` NVARCHAR(255) NOT NULL,
 	`id_contact` INT UNSIGNED NOT NULL,
 	`upload_date` DATETIME NOT NULL,
-	`comment` NVARCHAR(255) NOT NULL,
+	`comment` NVARCHAR(255),
 	
 	PRIMARY KEY (`id`),
 	CONSTRAINT `attachment_contact_fk` FOREIGN KEY (`id_contact`) REFERENCES `contacts_maltsev`.`contact`(`id`) ON DELETE CASCADE

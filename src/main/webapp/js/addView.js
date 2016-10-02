@@ -3,10 +3,30 @@ var addView = (function() {
     var i, n;
 
     return { // методы доступные извне
-        selectCountryAndCity: function(countryID, cityID) {
+        selectCountry: function(countryID) {
             document.getElementById('country').selectedIndex = countryID;
             this.onChangeCountry(countryID);
+        },
+
+        selectCity: function (cityID) {
             document.getElementById('city').selectedIndex = cityID;
+        },
+
+        selectRelationship: function (relationshipID) {
+            document.getElementById('relationship').selectedIndex = relationshipID;
+        },
+
+        selectGender: function (genderValue) {
+            if(genderValue == true)
+                genderValue = 1;
+            else if(genderValue == false)
+                genderValue = 0;
+            document.getElementById('r' + genderValue).checked = true;
+        },
+
+        selectAge: function (age1, age2) {
+            document.getElementById('age1').selectedIndex = age1;
+            document.getElementById('age2').selectedIndex = age2;
         },
 
         onChangeCountry: function(selectedValue) {

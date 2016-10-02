@@ -20,7 +20,7 @@ public class ImageHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(ImageHandler.class);
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     }
 

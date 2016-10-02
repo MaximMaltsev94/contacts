@@ -12,7 +12,11 @@
     <script src="<c:url value="/js/addView.js"/>"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
 </head>
-<body onload="addView.selectCountryAndCity(0, 0);">
+<body onload="addView.selectCountry(${requestScope.get('country')});
+        addView.selectCity(${requestScope.get('city')});
+        addView.selectRelationship(${requestScope.get('relationship')});
+        addView.selectGender(${requestScope.get('gender')});
+        addView.selectAge(${requestScope.get('age1')}, ${requestScope.get('age2')});">
 <jsp:include page="header.jsp"/>
 
 <fmt:setLocale value="ru_RU" scope="session"/>
@@ -80,17 +84,17 @@
 
                     <div class="text-small-bold">Имя</div>
                     <div class="jlab-row">
-                        <input type="text" name="firstName" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                        <input type="text" name="firstName" value="${requestScope.get('firstName')}" pattern="[A-Za-zА-яа-я]{2,30}"/>
                     </div>
 
                     <div class="text-small-bold">Фамилия</div>
                     <div class="jlab-row">
-                        <input type="text" name="lastName" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                        <input type="text" name="lastName" value="${requestScope.get('lastName')}" pattern="[A-Za-zА-яа-я]{2,30}"/>
                     </div>
 
                     <div class="text-small-bold">Отчество</div>
                     <div class="jlab-row">
-                        <input type="text" name="patronymic" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                        <input type="text" name="patronymic" value="${requestScope.get('patronymic')}" pattern="[A-Za-zА-яа-я]{2,30}"/>
                     </div>
 
                     <div class="text-small-bold">Возраст</div>
@@ -103,7 +107,7 @@
                         </select>
                         <pre>  -  </pre>
                         <select name="age2" id="age2">
-                            <option value="101">До</option>
+                            <option value="0">До</option>
                             <c:forEach var="i" begin="1" end="100">
                                 <option value="${i}">${i}</option>
                             </c:forEach>
@@ -113,7 +117,7 @@
                     <div class="text-small-bold">Пол</div>
                     <div class="jlab-row text-small">
                         <div class="jlab-cell-12">
-                            <input class="regular-radio" type="radio" name="gender" value="2" checked id="r3"/> <label for="r3"></label>Любой
+                            <input class="regular-radio" type="radio" name="gender" value="2" id="r2"/> <label for="r2"></label>Любой
                         </div>
                    </div>
                     <div class="jlab-row text-small">
@@ -123,34 +127,28 @@
                    </div>
                     <div class="jlab-row text-small">
                         <div class="jlab-cell-12">
-                            <input class="regular-radio" type="radio" name="gender" value="0" id="r2"/> <label for="r2"></label>Женский
+                            <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label>Женский
                         </div>
                    </div>
 
                     <div class="text-small-bold">Гражданство</div>
                     <div class="jlab-row">
-                        <input type="text" name="citizenship"/>
+                        <input type="text" name="citizenship" value="${requestScope.get('citizenship')}"/>
                     </div>
 
                     <div class="text-small-bold">Семейное положение</div>
                     <div class="jlab-row">
-                        <select name="relationship">
+                        <select name="relationship" id="relationship">
+                            <option value="0">Не выбрано</option>
                             <c:forEach var="i" items="${requestScope.get('relationshipList')}">
-                                <c:choose>
-                                    <c:when test="${requestScope.get('contact').relationshipID == i.id}">
-                                        <option value="${i.id}" selected>${i.name}</option>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <option value="${i.id}">${i.name}</option>
-                                    </c:otherwise>
-                                </c:choose>
+                                <option value="${i.id}">${i.name}</option>
                             </c:forEach>
                         </select>
                     </div>
 
                     <div class="text-small-bold">Место работы</div>
                     <div class="jlab-row">
-                        <input type="text" name="companyName"/>
+                        <input type="text" name="companyName" value="${requestScope.get('companyName')}"/>
                     </div>
 
                     <div class="text-small-bold">Страна</div>
@@ -175,12 +173,12 @@
 
                     <div class="text-small-bold">Адрес</div>
                     <div class="jlab-row">
-                        <input type="text" name="street"/>
+                        <input type="text" name="street" value="${requestScope.get('street')}"/>
                     </div>
 
                     <div class="text-small-bold">Почтовый индекс</div>
                     <div class="jlab-row">
-                        <input type="text" name="postcode"/>
+                        <input type="text" name="postcode" value="${requestScope.get('postcode')}"/>
                     </div>
 
                     <div class="jlab-row margin">

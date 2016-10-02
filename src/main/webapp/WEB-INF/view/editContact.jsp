@@ -13,7 +13,11 @@
     <script src="<c:url value="/js/popupPhone.js"/>"></script>
     <script src="<c:url value="/js/popupAttachment.js"/>"></script>
 </head>
-<body onload="addView.selectCountryAndCity(${requestScope.get('contact').countryID}, ${requestScope.get('contact').cityID});
+<body onload="addView.selectCountry(${requestScope.get('contact').countryID});
+        addView.selectCity(${requestScope.get('contact').cityID});
+        addView.selectRelationship(${requestScope.get('contact').relationshipID - 1});
+        addView.selectGender(${requestScope.get('contact').gender});
+
         popupPhone.setPhoneCount(${requestScope.get('phoneList').size()});
         popupAttachment.setAttachmentCount(${requestScope.get('attachmentList').size()})">
 <jsp:include page="header.jsp"/>
@@ -31,7 +35,7 @@
                     <span class="text-small">Фотография</span>
 
                 </div>
-                <div class="jlab-cell-9 center">
+                <div class="jlab-cell-3 center">
                     <div class="hiddenFileInputContainter">
 
                         <img id="blah" class="fileDownload"
@@ -86,20 +90,8 @@
                     <span class="text-small">Пол</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <c:choose>
-                        <c:when test="${requestScope.get('contact').gender == true}">
-                            <input class="regular-radio" type="radio" name="gender" value="1" checked id="r1"/> <label
-                                for="r1"></label> Мужской
-                            <input class="regular-radio" type="radio" name="gender" value="0" id="r2"/> <label
-                                for="r2"></label> Женский
-                        </c:when>
-                        <c:otherwise>
-                            <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label
-                                for="r1"></label> Мужской
-                            <input class="regular-radio" type="radio" name="gender" value="0" checked id="r2"/> <label
-                                for="r2"></label> Женский
-                        </c:otherwise>
-                    </c:choose>
+                    <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label for="r1"></label> Мужской
+                    <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label> Женский
                 </div>
             </div>
 
@@ -118,16 +110,9 @@
                     <span class="text-small">Семейное положение</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <select name="relationship">
+                    <select name="relationship" id="relationship">
                         <c:forEach var="i" items="${requestScope.get('relationshipList')}">
-                            <c:choose>
-                                <c:when test="${requestScope.get('contact').relationshipID == i.id}">
-                                    <option value="${i.id}" selected>${i.name}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option value="${i.id}">${i.name}</option>
-                                </c:otherwise>
-                            </c:choose>
+                            <option value="${i.id}" >${i.name}</option>
                         </c:forEach>
                     </select>
                 </div>

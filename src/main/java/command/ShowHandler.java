@@ -21,7 +21,7 @@ public class ShowHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(ShowHandler.class);
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
