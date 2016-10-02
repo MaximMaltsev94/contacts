@@ -15,7 +15,7 @@
 </head>
 <body onload="addView.selectCountry(${requestScope.get('contact').countryID});
         addView.selectCity(${requestScope.get('contact').cityID});
-        addView.selectRelationship(${requestScope.get('contact').relationshipID - 1});
+        addView.selectRelationship(${requestScope.get('contact').relationshipID});
         addView.selectGender(${requestScope.get('contact').gender});
 
         popupPhone.setPhoneCount(${requestScope.get('phoneList').size()});
@@ -111,6 +111,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <select name="relationship" id="relationship">
+                        <option value="0">Не выбрано</option>
                         <c:forEach var="i" items="${requestScope.get('relationshipList')}">
                             <option value="${i.id}" >${i.name}</option>
                         </c:forEach>

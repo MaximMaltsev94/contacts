@@ -9,7 +9,10 @@
 
     <script src="<c:url value="/js/addView.js"/>"></script>
 </head>
-<body>
+<body onload="addView.selectCountry(0);
+        addView.selectCity(0);
+        addView.selectRelationship(0);
+        addView.selectGender(1);">
 <jsp:include page="header.jsp"/>
 
 <div class="container">
@@ -75,10 +78,8 @@
                     <span class="text-small">Пол</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input class="regular-radio" type="radio" name="gender" value="1" checked id="r1"/> <label
-                        for="r1"></label> Мужской
-                    <input class="regular-radio" type="radio" name="gender" value="0" id="r2"/> <label for="r2"></label>
-                    Женский
+                    <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label for="r1"></label> Мужской
+                    <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label> Женский
                 </div>
             </div>
 
@@ -97,7 +98,8 @@
                     <span class="text-small">Семейное положение</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <select name="relationship">
+                    <select name="relationship" id="relationship">
+                        <option value="0">Не выбрано</option>
                         <c:forEach var="i" items="${requestScope.get('relationshipList')}">
                             <option value="${i.id}">${i.name}</option>
                         </c:forEach>

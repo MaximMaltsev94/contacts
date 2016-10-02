@@ -37,45 +37,19 @@ public class SearchHandler implements RequestHandler {
     private String postcode;
 
     private void parseRequest(HttpServletRequest request) throws UnsupportedEncodingException {
-        firstName = request.getParameter("firstName");
-        lastName = request.getParameter("lastName");
-        patronymic = request.getParameter("patronymic");
-        try {
-            age1 = Integer.parseInt(request.getParameter("age1"));
-        }catch (NumberFormatException e) {
-            age1 = 0;
-        }
-
-        try {
-            age2 = Integer.parseInt(request.getParameter("age2"));
-        } catch (NumberFormatException e) {
-            age2 = 0;
-        }
-        try {
-            gender = Integer.parseInt(request.getParameter("gender"));
-        }catch (NumberFormatException e) {
-            gender = 2;
-        }
-        citizenship = request.getParameter("citizenship");
-        try {
-            relationship = Integer.parseInt(request.getParameter("relationship"));
-        } catch (NumberFormatException e) {
-            relationship = 0;
-        }
-        companyName = request.getParameter("companyName");
-
-        try {
-            country = Integer.parseInt(request.getParameter("country"));
-        } catch (NumberFormatException e) {
-            country = 0;
-        }
-        try {
-            city = Integer.parseInt(request.getParameter("city"));
-        } catch (NumberFormatException e) {
-            city = 0;
-        }
-        street = request.getParameter("street");
-        postcode = request.getParameter("postcode");
+        firstName = ContactUtils.getUTF8String(request.getParameter("firstName"));
+        lastName = ContactUtils.getUTF8String(request.getParameter("lastName"));
+        patronymic = ContactUtils.getUTF8String(request.getParameter("patronymic"));
+        age1 = Integer.parseInt(request.getParameter("age1"));
+        age2 = Integer.parseInt(request.getParameter("age2"));
+        gender = Integer.parseInt(request.getParameter("gender"));
+        citizenship = ContactUtils.getUTF8String(request.getParameter("citizenship"));
+        relationship = Integer.parseInt(request.getParameter("relationship"));
+        companyName = ContactUtils.getUTF8String(request.getParameter("companyName"));
+        country = Integer.parseInt(request.getParameter("country"));
+        city = Integer.parseInt(request.getParameter("city"));
+        street = ContactUtils.getUTF8String(request.getParameter("street"));
+        postcode = ContactUtils.getUTF8String(request.getParameter("postcode"));
     }
 
     private void setRequestAttributes(HttpServletRequest request) {
@@ -110,6 +84,11 @@ public class SearchHandler implements RequestHandler {
             CityDao cityDao = new MySqlCityDao(connection);
             List<City> cityList = cityDao.getAll();
             request.setAttribute("cityList", cityList);
+
+            ContactDao contactDao = new MySqlContactDao(connection);
+            List<Contact> contactList = contactDao.find(firstName, lastName, patronymic, age1, age2, gender, citizenship, relationship, companyName, country, city, street, postcode);
+            request.setAttribute("contactList", contactList);
+
             request.getRequestDispatcher("/WEB-INF/view/search.jsp").forward(request, response);
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);

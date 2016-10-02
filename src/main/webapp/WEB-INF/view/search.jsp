@@ -11,6 +11,9 @@
 
     <script src="<c:url value="/js/addView.js"/>"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
+    <script src="<c:url value="/js/showView.js"/>"></script>
+    <script src="<c:url value="/js/search.js"/>"></script>
+
 </head>
 <body onload="addView.selectCountry(${requestScope.get('country')});
         addView.selectCity(${requestScope.get('city')});
@@ -25,12 +28,16 @@
 
     <div class="jlab-row">
         <div class="jlab-cell-9">
-            <c:if test="${requestScope.get('contactList') == null}">
+            <c:if test="${requestScope.get('contactList') == null || requestScope.get('contactList').size() == 0}">
                 <section><span class="text-medium">По вашему запросу ничего не найдено</span></section>
             </c:if>
             <c:forEach var="i" items="${requestScope.get('contactList')}">
                 <section>
                     <div class="jlab-row">
+
+                        <div class="jlab-cell-1 center">
+                            <input type="checkbox" id="${i.id}" class="regular-checkbox" onchange="searchView.onCheckBoxChecked(this)"/><label for="${i.id}"></label>
+                        </div>
 
                         <div class="jlab-cell-1 center">
                             <img src="<c:url value="${i.profilePicture}" /> " width="50px" height="50px">
@@ -78,10 +85,16 @@
             <%--div.jlab-cell-8 end--%>
         </div>
         <div class="jlab-cell-3">
+            <section id="sectionAction" hidden>
+                <div class="jlab-row margin">
+                    <button id="deleteSelected" class="jlab-cell-10 align-center" onclick="showView.onDeleteSelectedClick()">Удалить</button>
+                </div>
+            </section>
             <section>
                 <form action="<c:url value="/contact/"/>" method="post">
                     <input type="text" name="action" value="search" hidden>
 
+                    <div class="text-medium">Введите параметры поиска</div>
                     <div class="text-small-bold">Имя</div>
                     <div class="jlab-row">
                         <input type="text" name="firstName" value="${requestScope.get('firstName')}" pattern="[A-Za-zА-яа-я]{2,30}"/>
