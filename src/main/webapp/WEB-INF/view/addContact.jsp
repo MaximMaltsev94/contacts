@@ -88,7 +88,7 @@
                     <span class="text-small">Гражданство</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="citizenship"/>
+                    <input type="text" name="citizenship" pattern="[A-Za-zА-яа-я]{2,50}"/>
                 </div>
             </div>
 
@@ -110,7 +110,7 @@
                     <span class="text-small">Веб сайт</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="webSite"/>
+                    <input type="url" name="webSite"/>
                 </div>
             </div>
 
@@ -130,7 +130,7 @@
                     <span class="text-small">Место работы</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="companyName"/>
+                    <input type="text" name="companyName" pattern="[A-Za-zА-яа-я]{2,50}"/>
                 </div>
             </div>
 

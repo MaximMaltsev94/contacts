@@ -101,7 +101,7 @@
                     <span class="text-small">Гражданство</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}"/>
+                    <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}" pattern="[A-Za-zА-яа-я]{2,50}"/>
                 </div>
             </div>
 
@@ -123,7 +123,7 @@
                     <span class="text-small">Веб сайт</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="webSite" value="${requestScope.get('contact').webSite}"/>
+                    <input type="url" name="webSite" value="${requestScope.get('contact').webSite}"/>
                 </div>
             </div>
 
@@ -143,7 +143,7 @@
                     <span class="text-small">Место работы</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="companyName" value="${requestScope.get('contact').companyName}"/>
+                    <input type="text" name="companyName" value="${requestScope.get('contact').companyName}" pattern="[A-Za-zА-яа-я]{2,50}"/>
                 </div>
             </div>
 

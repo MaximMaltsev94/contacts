@@ -79,7 +79,7 @@
         </div>
         <div class="jlab-cell-3">
             <section>
-                <form action="<c:url value="/contact/"/>" method="get">
+                <form action="<c:url value="/contact/"/>" method="post">
                     <input type="text" name="action" value="search" hidden>
 
                     <div class="text-small-bold">Имя</div>
@@ -133,7 +133,7 @@
 
                     <div class="text-small-bold">Гражданство</div>
                     <div class="jlab-row">
-                        <input type="text" name="citizenship" value="${requestScope.get('citizenship')}"/>
+                        <input type="text" name="citizenship" value="${requestScope.get('citizenship')}" pattern="[A-Za-zА-яа-я]{2,50}"/>
                     </div>
 
                     <div class="text-small-bold">Семейное положение</div>
@@ -148,7 +148,7 @@
 
                     <div class="text-small-bold">Место работы</div>
                     <div class="jlab-row">
-                        <input type="text" name="companyName" value="${requestScope.get('companyName')}"/>
+                        <input type="text" name="companyName" value="${requestScope.get('companyName')}" pattern="[A-Za-zА-яа-я]{2,50}"/>
                     </div>
 
                     <div class="text-small-bold">Страна</div>

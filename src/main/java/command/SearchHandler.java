@@ -95,11 +95,7 @@ public class SearchHandler implements RequestHandler {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
-    }
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
             parseRequest(request);
             setRequestAttributes(request);
@@ -114,6 +110,33 @@ public class SearchHandler implements RequestHandler {
             CityDao cityDao = new MySqlCityDao(connection);
             List<City> cityList = cityDao.getAll();
             request.setAttribute("cityList", cityList);
+            request.getRequestDispatcher("/WEB-INF/view/search.jsp").forward(request, response);
+        } catch (NamingException | SQLException e) {
+            LOG.warn("can't get db connection", e);
+        }
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
+            RelationshipDao rshDao = new MySqlRelationshipDao(connection);
+            List<Relationship> relationshipList = rshDao.getAll();
+            request.setAttribute("relationshipList", relationshipList);
+
+            CountryDao countryDao = new MySqlCountryDao(connection);
+            List<Country> countryList = countryDao.getAll();
+            request.setAttribute("countryList", countryList);
+
+            CityDao cityDao = new MySqlCityDao(connection);
+            List<City> cityList = cityDao.getAll();
+            request.setAttribute("cityList", cityList);
+
+            request.setAttribute("gender", 2);
+            request.setAttribute("age1", 0);
+            request.setAttribute("age2", 0);
+            request.setAttribute("country", 0);
+            request.setAttribute("city", 0);
+            request.setAttribute("relationship", 0);
             request.getRequestDispatcher("/WEB-INF/view/search.jsp").forward(request, response);
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);

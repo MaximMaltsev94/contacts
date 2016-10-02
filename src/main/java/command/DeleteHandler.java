@@ -57,8 +57,8 @@ public class DeleteHandler implements RequestHandler {
 
                 ContactDao contactDao = new MySqlContactDao(connection);
                 contactDao.deleteByID(contactID);
-                response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             }
+            response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
         }
