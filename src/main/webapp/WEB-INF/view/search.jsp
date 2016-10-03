@@ -91,8 +91,7 @@
                 </div>
             </section>
             <section>
-                <form action="<c:url value="/contact/"/>" method="post">
-                    <input type="text" name="action" value="search" hidden>
+                <form action="<c:url value="/contact/?action=search"/>" method="post">
 
                     <div class="text-medium">Введите параметры поиска</div>
                     <div class="text-small-bold">Имя</div>

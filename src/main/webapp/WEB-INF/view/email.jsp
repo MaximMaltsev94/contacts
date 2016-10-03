@@ -18,6 +18,8 @@
 
 <div class="container">
     <section>
+        <form action="<c:url value="/contact/?action=submitEmail"/>" method="post">
+        </form>
         <div class="text-large">Отправить письмо</div>
         <div class="jlab-row margin">
             <div class="jlab-cell-1 text-small align-right">Кому</div>

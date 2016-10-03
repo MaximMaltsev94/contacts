@@ -20,8 +20,8 @@ public class ImageHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(ImageHandler.class);
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
-
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect("/contact/?action=show&page=1");
     }
 
     @Override

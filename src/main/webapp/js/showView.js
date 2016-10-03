@@ -4,15 +4,9 @@ var showView = (function() {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
         form.setAttribute('method', 'post');
-        form.setAttribute('action', '/contact/');
+        form.setAttribute('action', '/contact/?action=delete');
 
         var input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('name', 'action');
-        input.value = 'delete';
-        form.appendChild(input);
-
-        input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('name', 'id');
         input.value = id;
@@ -26,15 +20,9 @@ var showView = (function() {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
         form.setAttribute('method', 'post');
-        form.setAttribute('action', '/contact/');
+        form.setAttribute('action', '/contact/?action=email');
 
         var input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('name', 'action');
-        input.value = 'email';
-        form.appendChild(input);
-
-        input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('name', 'id');
         input.value = id;

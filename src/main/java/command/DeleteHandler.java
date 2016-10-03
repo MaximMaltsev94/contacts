@@ -65,7 +65,7 @@ public class DeleteHandler implements RequestHandler {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
-
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect("/contact/?action=show&page=1");
     }
 }
