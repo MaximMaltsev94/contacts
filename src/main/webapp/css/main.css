@@ -256,9 +256,10 @@ button:disabled {
 }
 
 
-input[type="text"], input[type="email"], input[type="date"], input[type="url"], select {
+input[type="text"], input[type="email"], input[type="date"], input[type="url"], select, textarea {
     /*width: 240px;*/
     width: 100%;
+    box-sizing: border-box;
     padding: 5px 10px;
     font-family: OpenSans, sans-serif;
     color: #595954;
@@ -267,13 +268,13 @@ input[type="text"], input[type="email"], input[type="date"], input[type="url"], 
     background-color: #f0f0f0;
 }
 
-input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, input[type="url"]:focus, select:focus {
-    outline: none;
+input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, input[type="url"]:focus, select:focus, textarea:focus {
+    /*outline: none;*/
+    outline-color: #ec1c24;
 }
 
-select {
-    /*width: 262px;*/
-    width: 100%;
+textarea {
+    resize: none;
 }
 
 input[type='file'].hidden

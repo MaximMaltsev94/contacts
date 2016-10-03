@@ -31,7 +31,7 @@
                             <img src="<c:url value="${i.profilePicture}" /> " width="50px" height="50px">
                         </div>
 
-                        <div class="jlab-cell-8 center">
+                        <div class="jlab-cell-7 center">
 
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
@@ -55,13 +55,18 @@
                         </div>
 
                         <div class="jlab-cell-1 center">
+                            <div class="imageButton email" onclick="showView.onEmailContact(${i.id})">
+                            </div>
+                        </div>
+
+                        <div class="jlab-cell-1 center">
                             <a href="<c:url value="/contact/?action=edit&id=${i.id}"/>">
                                 <div class="imageButton edit">
                                 </div>
                             </a>
                         </div>
+
                         <div class="jlab-cell-1 center ">
-                           <input type="text" name="profilePicture" value="${i.profilePicture}" hidden>
                             <div class="imageButton delete" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', '${i.id}')">
                             </div>
                         </div>
@@ -147,6 +152,9 @@
                     </div>
                     <div class="jlab-row margin">
                         <button id="deleteSelected" disabled class="jlab-cell-10 align-center" onclick="showView.onDeleteSelectedClick()">Удалить</button>
+                    </div>
+                    <div class="jlab-row margin">
+                        <button id="sendEmail" disabled class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
                     </div>
             </section>
 

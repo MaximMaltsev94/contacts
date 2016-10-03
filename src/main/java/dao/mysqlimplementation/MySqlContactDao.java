@@ -252,4 +252,19 @@ public class MySqlContactDao implements ContactDao {
         }
         return contactList;
     }
+
+    @Override
+    public List<Contact> getContactsWithEmail() {
+        List<Contact> contactList = new ArrayList<>();
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` WHERE `email` IS NOT NULL");
+            ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                Contact contact = parseResultSet(rs);
+                contactList.add(contact);
+            }
+        } catch (SQLException e) {
+            LOG.warn("can't get contacts with email", e);
+        }
+        return contactList;
+    }
 }

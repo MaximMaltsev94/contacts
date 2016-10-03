@@ -10,7 +10,7 @@
             </div>
             <div class="element right">
                 <div class="element">
-                    <a href="#">
+                    <a href="<c:url value="/contact/?action=email" />">
                         <div class="imageButton email">
                         </div>
                     </a>

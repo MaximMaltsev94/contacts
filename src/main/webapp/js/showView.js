@@ -2,6 +2,7 @@ var showView = (function() {
     var checkedCount = 0;
     var postDeleteRequest = function(id) {
         var form = document.createElement('form');
+        form.style.visibility = 'hidden';
         form.setAttribute('method', 'post');
         form.setAttribute('action', '/contact/');
 
@@ -21,6 +22,28 @@ var showView = (function() {
         form.submit();
     };
 
+    var postEmailRequest = function (id) {
+        var form = document.createElement('form');
+        form.style.visibility = 'hidden';
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/contact/');
+
+        var input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'action');
+        input.value = 'email';
+        form.appendChild(input);
+
+        input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'id');
+        input.value = id;
+        form.appendChild(input);
+
+        document.body.appendChild(form);
+        form.submit();
+    };
+
     return { // методы доступные извне
         onCheckBoxChecked: function(sender) {
             if(sender.checked)
@@ -28,6 +51,7 @@ var showView = (function() {
             else
                 checkedCount--;
             document.getElementById('deleteSelected').disabled = checkedCount == 0;
+            document.getElementById('sendEmail').disabled = checkedCount == 0;
         },
 
         onDeleteSelectedClick : function () {
@@ -45,6 +69,21 @@ var showView = (function() {
             if (confirm('Вы действительно хотите удалить контакт ' + firstName + ' ' + lastName + '?')) {
                 postDeleteRequest(id);
             }
+        },
+
+        onEmailContact: function (id) {
+            postEmailRequest(id);
+        },
+
+        onEmailSelectedClick: function (id) {
+            var checkedBoxes = document.querySelectorAll("input[type=checkbox]:checked");
+            var ids = '';
+            for (var i = 0; i < checkedBoxes.length; ++i) {
+                ids += checkedBoxes[i].id + ',';
+            }
+            postEmailRequest(ids);
         }
+
+
     }
 }());
