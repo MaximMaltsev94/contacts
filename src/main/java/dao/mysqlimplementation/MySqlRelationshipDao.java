@@ -26,6 +26,13 @@ public class MySqlRelationshipDao implements RelationshipDao {
         this.connection = connection;
     }
 
+    private Relationship parseResultSet(ResultSet rs) throws SQLException {
+        Relationship relationship = new Relationship();
+        relationship.setId(rs.getInt("id"));
+        relationship.setName(rs.getString("name"));
+        return relationship;
+    }
+
     @Override
     public List<Relationship> getAll() {
         List<Relationship> relationshipList = new ArrayList<>();
@@ -33,14 +40,32 @@ public class MySqlRelationshipDao implements RelationshipDao {
              ResultSet rs = preparedStatement.executeQuery()) {
 
             while (rs.next()) {
-                Relationship relationship = new Relationship();
-                relationship.setId(rs.getInt("id"));
-                relationship.setName(rs.getString("name"));
+                Relationship relationship = parseResultSet(rs);
                 relationshipList.add(relationship);
             }
         } catch (SQLException e) {
             LOG.warn("can't read relationship list", e);
         }
         return relationshipList;
+    }
+
+    private PreparedStatement createGetByIDStatement(int relationshipID) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`relationship` WHERE `id` = ?");
+        preparedStatement.setObject(1, relationshipID);
+        return preparedStatement;
+    }
+
+    @Override
+    public Relationship getByID(int relationshipID) {
+        Relationship relationship = null;
+        try (PreparedStatement preparedStatement = createGetByIDStatement(relationshipID);
+                ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                relationship = parseResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return relationship;
     }
 }

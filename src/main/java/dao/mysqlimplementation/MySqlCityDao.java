@@ -25,21 +25,46 @@ public class MySqlCityDao implements CityDao {
         this.connection = connection;
     }
 
+    private City parseResultSet(ResultSet rs) throws SQLException {
+        City city = new City();
+        city.setId(rs.getInt("id"));
+        city.setName(rs.getString("name"));
+        city.setCountryID(rs.getInt("id_country"));
+        return city;
+    }
+
     @Override
     public List<City> getAll() {
         List<City> cityList = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city`");
             ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
-                City city = new City();
-                city.setId(rs.getInt("id"));
-                city.setName(rs.getString("name"));
-                city.setCountryID(rs.getInt("id_country"));
+                City city = parseResultSet(rs);
                 cityList.add(city);
             }
         } catch (SQLException e) {
             LOG.warn("can't get city list", e);
         }
         return cityList;
+    }
+
+    private PreparedStatement createGetByIDStatement(int cityID) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city` WHERE `id` = ?");
+        preparedStatement.setObject(1, cityID);
+        return preparedStatement;
+    }
+
+    @Override
+    public City getByID(int cityID) {
+        City city = null;
+        try(PreparedStatement preparedStatement = createGetByIDStatement(cityID);
+            ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                city = parseResultSet(rs);
+            }
+        } catch (SQLException e) {
+            LOG.warn("can't get city by id - ", cityID, e);
+        }
+        return city;
     }
 }

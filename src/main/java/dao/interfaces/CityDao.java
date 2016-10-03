@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CityDao {
     List<City> getAll();
+    City getByID(int cityID);
 }

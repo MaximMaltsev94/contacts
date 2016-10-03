@@ -188,7 +188,7 @@ public class EditHandler implements RequestHandler {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
         if (isMultipart) {
@@ -262,6 +262,7 @@ public class EditHandler implements RequestHandler {
                 }
             } catch (Exception ex) {
                 LOG.warn("can't add contact", ex);
+                response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             } finally {
                 try {
                     if (connection != null)

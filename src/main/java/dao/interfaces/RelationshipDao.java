@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface RelationshipDao {
     List<Relationship> getAll();
+    Relationship getByID(int relationshipID);
 }

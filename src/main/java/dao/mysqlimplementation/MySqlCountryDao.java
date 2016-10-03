@@ -25,22 +25,47 @@ public class MySqlCountryDao implements CountryDao {
         this.connection = connection;
     }
 
+    private Country parseResultSet(ResultSet rs) throws SQLException {
+        Country c = new Country();
+        c.setId(rs.getInt("id"));
+        c.setName(rs.getString("name"));
+        c.setPhoneCode(rs.getInt("phone_code"));
+        return c;
+    }
+
     @Override
     public List<Country> getAll() {
         List<Country> countryList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`country`");
-            ResultSet rs = preparedStatement.executeQuery();) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`country`");
+             ResultSet rs = preparedStatement.executeQuery();) {
 
             while (rs.next()) {
-                Country c = new Country();
-                c.setId(rs.getInt("id"));
-                c.setName(rs.getString("name"));
-                c.setPhoneCode(rs.getInt("phone_code"));
-                countryList.add(c);
+                Country country = parseResultSet(rs);
+                countryList.add(country);
             }
         } catch (SQLException e) {
             LOG.warn("can't read country list", e);
         }
         return countryList;
+    }
+
+    private PreparedStatement createGetByIDStatement(int contactID) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`country` WHERE `id` = ?");
+        preparedStatement.setObject(1, contactID);
+        return preparedStatement;
+    }
+
+    @Override
+    public Country getByID(int countryID) {
+        Country country = null;
+        try (PreparedStatement preparedStatement = createGetByIDStatement(countryID);
+             ResultSet rs = preparedStatement.executeQuery();) {
+            while (rs.next()) {
+                country = parseResultSet(rs);
+            }
+        } catch (SQLException e) {
+            LOG.warn("can't read country by id - {}", countryID, e);
+        }
+        return country;
     }
 }
