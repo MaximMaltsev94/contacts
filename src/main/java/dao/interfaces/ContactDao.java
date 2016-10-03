@@ -18,4 +18,5 @@ public interface ContactDao {
     List<Contact> getContactsPage(int pageNumber);
     List<Contact> find(String firstName, String lastName, String patronymic, int age1, int age2, int gender, String citizenship, int relationship, String companyName, int country, int city, String street, String postcode);
     List<Contact> getContactsWithEmail();
+    List<Contact> getByBirthdayToday();
 }

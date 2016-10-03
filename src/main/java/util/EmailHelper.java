@@ -10,6 +10,7 @@ public class EmailHelper {
     private Properties properties;
     private String senderEmail;
     private String senderPassword;
+    private String adminEmail;
     public EmailHelper() {
         properties = new Properties();
         ResourceBundle resourceBundle = ResourceBundle.getBundle("email");
@@ -22,6 +23,7 @@ public class EmailHelper {
 
         senderEmail = resourceBundle.getString("sender.email");
         senderPassword = resourceBundle.getString("sender.password");
+        adminEmail = resourceBundle.getString("admin.email");
     }
 
     public void sendEmail(String receiverEmail, String subject, String text) throws MessagingException {
@@ -38,5 +40,9 @@ public class EmailHelper {
         message.setText(text);
 
         Transport.send(message);
+    }
+
+    public void sendToAdmin(String subject, String text) throws MessagingException {
+        sendEmail(adminEmail, subject, text);
     }
 }

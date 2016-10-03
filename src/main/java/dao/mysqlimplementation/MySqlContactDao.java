@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
 import javax.naming.NamingException;
 import java.sql.*;
@@ -264,6 +265,21 @@ public class MySqlContactDao implements ContactDao {
             }
         } catch (SQLException e) {
             LOG.warn("can't get contacts with email", e);
+        }
+        return contactList;
+    }
+
+    @Override
+    public List<Contact> getByBirthdayToday() {
+        List<Contact> contactList = new ArrayList<>();
+        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from `contacts_maltsev`.`contact` WHERE day(`birth_date`) = day(current_date()) and month(`birth_date`) = month(current_date())");
+            ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                Contact contact = parseResultSet(rs);
+                contactList.add(contact);
+            }
+        } catch (SQLException e) {
+            LOG.warn("can't get contacs by birthday", e);
         }
         return contactList;
     }
