@@ -29,16 +29,18 @@ public class BirthDateNotifyJob implements Job {
         try(Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
             ContactDao contactDao = new MySqlContactDao(connection);
             List<Contact> contactList = contactDao.getByBirthdayToday();
-            StringBuilder emailText = new StringBuilder();
-            emailText.append("Сегодня свой день рождения отмечают: ");
-            for (Contact contact : contactList) {
-                emailText.append(System.getProperty("line.separator"));
-                emailText.append(contact.getFirstName());
-                emailText.append(" ");
-                emailText.append(contact.getLastName());
+            if(contactList.size() > 0) {
+                StringBuilder emailText = new StringBuilder();
+                emailText.append("Сегодня свой день рождения отмечают: ");
+                for (Contact contact : contactList) {
+                    emailText.append(System.getProperty("line.separator"));
+                    emailText.append(contact.getFirstName());
+                    emailText.append(" ");
+                    emailText.append(contact.getLastName());
+                }
+                EmailHelper emailHelper = new EmailHelper();
+                emailHelper.sendToAdmin("Уведомление о дне рождения", emailText.toString());
             }
-            EmailHelper emailHelper = new EmailHelper();
-            emailHelper.sendToAdmin("Уведомление о дне рождения", emailText.toString());
         } catch (SQLException | NamingException e) {
             LOG.warn("can't get db connection", e);
         } catch (MessagingException e) {

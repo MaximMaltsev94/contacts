@@ -34,6 +34,9 @@ public class ShowHandler implements RequestHandler {
             ContactDao contactDao = new MySqlContactDao(connection);
             int rowsCount = contactDao.getRowsCount();
             int maxPageNumber = (rowsCount / 10) + (rowsCount % 10 == 0 ? 0 : 1);
+            if(maxPageNumber == 0) {
+                maxPageNumber = 1;
+            }
             if (pageNumber > maxPageNumber || pageNumber < 1) {
                 throw new NumberFormatException();
             }

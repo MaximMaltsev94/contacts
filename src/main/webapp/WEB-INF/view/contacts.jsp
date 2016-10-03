@@ -19,6 +19,11 @@
 
     <div class="jlab-row">
         <div class="jlab-cell-9">
+            <c:if test="${requestScope.get('contactList').size() == 0}">
+                <section class="text-large">
+                    Пока нет ни одного контакта
+                </section>
+            </c:if>
             <c:forEach var="i" items="${requestScope.get('contactList')}">
                 <section>
                     <div class="jlab-row">
