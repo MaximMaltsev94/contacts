@@ -64,7 +64,7 @@ public class EditHandler implements RequestHandler {
                     }
                     ImageIO.write(image, "png", fileToSave);
 
-                    contact.setProfilePicture("/contact/?action=image&name=" + fileToSave.getName());
+                    contact.setProfilePicture("?action=image&name=" + fileToSave.getName());
 
                 } catch (Exception ex) {
                     LOG.warn("can't save profile image", ex);
@@ -158,7 +158,7 @@ public class EditHandler implements RequestHandler {
                         String fileExtension = StringUtils.substringAfter(item.getName(), ".");
                         File fileToSave = File.createTempFile("file", "." + fileExtension, new File(uploadPath));
                         item.write(fileToSave);
-                        attachmentList.get(attachmentList.size() - 1).setFilePath("/contact/?action=document&name=" + fileToSave.getName());
+                        attachmentList.get(attachmentList.size() - 1).setFilePath("?action=document&name=" + fileToSave.getName());
                     }
                 } catch (Exception e) {
                     LOG.warn("can't save file - {}", item.getName());
@@ -249,7 +249,7 @@ public class EditHandler implements RequestHandler {
                 connection.commit();
                 connection.setAutoCommit(true);
 
-                response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
+                response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             } catch (SQLException e) {
                 LOG.warn("edit transaction error");
                 try {
@@ -262,7 +262,7 @@ public class EditHandler implements RequestHandler {
                 }
             } catch (Exception ex) {
                 LOG.warn("can't add contact", ex);
-                response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
+                response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             } finally {
                 try {
                     if (connection != null)

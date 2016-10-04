@@ -24,7 +24,7 @@
 <fmt:setLocale value="ru_RU" scope="session"/>
 
 <div class="container">
-    <form action="<c:url value="/contact/?action=edit"/>" method="post" enctype="multipart/form-data">
+    <form action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">
         <section>
             <div class="jlab-row">
                 <span class="text-large">Основное</span>

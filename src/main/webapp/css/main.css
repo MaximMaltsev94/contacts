@@ -1,6 +1,6 @@
 @font-face {
     font-family: OpenSans;
-    src: url("/css/font/OpenSans-Regular.ttf") format('truetype');
+    src: url("./font/OpenSans-Regular.ttf") format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -200,59 +200,59 @@ button:disabled {
 }
 
 .imageButton.edit {
-    background-image: url('/sysImages/edit.png');
+    background-image: url('../sysImages/edit.png');
 }
 
 .imageButton.edit:hover {
-    background-image: url('/sysImages/edit hover.png');
+    background-image: url('../sysImages/edit hover.png');
 }
 
 .imageButton.delete {
-    background-image: url('/sysImages/delete.png');
+    background-image: url('../sysImages/delete.png');
 }
 
 .imageButton.delete:hover {
-    background-image: url('/sysImages/delete hover.png');
+    background-image: url('../sysImages/delete hover.png');
 }
 
 .imageButton.add {
-    background-image: url('/sysImages/add.png');
+    background-image: url('../sysImages/add.png');
 }
 
 .imageButton.add:hover {
-    background-image: url('/sysImages/add hover.png');
+    background-image: url('../sysImages/add hover.png');
 }
 
 .imageButton.addAttachment {
-    background-image: url('/sysImages/add attachment.png');
+    background-image: url('../sysImages/add attachment.png');
 }
 
 .imageButton.addAttachment:hover {
-    background-image: url('/sysImages/add attachment hover.png');
+    background-image: url('../sysImages/add attachment hover.png');
 }
 
 .imageButton.download {
-    background-image: url('/sysImages/download.png');
+    background-image: url('../sysImages/download.png');
 }
 
 .imageButton.download:hover {
-    background-image: url('/sysImages/download hover.png');
+    background-image: url('../sysImages/download hover.png');
 }
 
 .imageButton.search {
-    background-image: url('/sysImages/search.png');
+    background-image: url('../sysImages/search.png');
 }
 
 .imageButton.search:hover {
-    background-image: url('/sysImages/search hover.png');
+    background-image: url('../sysImages/search hover.png');
 }
 
 .imageButton.email {
-    background-image: url('/sysImages/email.png');
+    background-image: url('../sysImages/email.png');
 }
 
 .imageButton.email:hover {
-    background-image: url('/sysImages/email hover.png');
+    background-image: url('../sysImages/email hover.png');
 }
 
 

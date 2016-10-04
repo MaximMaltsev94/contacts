@@ -22,7 +22,7 @@ public class ShowHandler implements RequestHandler {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("/contact/?action=show&page=1");
+        response.sendRedirect("?action=show&page=1");
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ShowHandler implements RequestHandler {
             request.getSession().setAttribute("lastVisitedPage", pageNumber);
         } catch (NumberFormatException ex) {
             LOG.warn("incorrect page number {}", request.getParameter("page"), ex);
-            response.sendRedirect("/contact/?action=show&page=1");
+            response.sendRedirect("?action=show&page=1");
             return;
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);

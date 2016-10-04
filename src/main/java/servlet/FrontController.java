@@ -57,14 +57,14 @@ public class FrontController extends HttpServlet {
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             LOG.debug("unknown action - {}", request.getParameter("action"), e);
             try {
-                response.sendRedirect("/contact/?action=show&page=1");
+                response.sendRedirect("?action=show&page=1");
             } catch (IOException e1) {
 
             }
         } catch (Exception e) {
             LOG.warn("exception ", e);
             try {
-                response.sendRedirect("/contact/?action=show&page=1");
+                response.sendRedirect("?action=show&page=1");
             } catch (IOException e1) {
 
             }

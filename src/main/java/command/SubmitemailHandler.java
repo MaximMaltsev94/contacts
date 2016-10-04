@@ -96,11 +96,11 @@ public class SubmitemailHandler implements RequestHandler {
         } catch (SQLException | NamingException e) {
             LOG.warn("can't get db connection");
         }
-        response.sendRedirect("/contact/?action=show&page=1");
+        response.sendRedirect("?action=show&page=1");
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("/contact/?action=show&page=1");
+        response.sendRedirect("?action=show&page=1");
     }
 }

@@ -87,6 +87,7 @@ var popupAttachment = (function () {
 
         child = main.createDiv('', 'jlab-cell-1');
         subChild = main.createInput('file_' + targetID, 'file', 'block');
+        subChild.required = true;
         child.appendChild(subChild);
         mainDiv.appendChild(child);
 
@@ -108,6 +109,12 @@ var popupAttachment = (function () {
 
         document.getElementById('attachmentSection').appendChild(mainDiv);
     } ;
+
+    var validatePopup = function () {
+            var fileNameRegex = /[A-Za-z]{2,5}/;
+
+            return fileNameRegex.test(document.getElementById('popupAttachment_fileName').value);
+        };
 
     return{
         setAttachmentCount: function (val) {
@@ -141,16 +148,24 @@ var popupAttachment = (function () {
         },
 
         onAddAttachmentSubmit: function () {
-            attachmentCount++;
-            attachmentID = 'attachment-' + attachmentCount;
-            createAttachmentTemplate(attachmentID);
-            parseAttachmentPopup(false);
-            location.hash = '#attachmentSection';
+            if(validatePopup()) {
+                attachmentCount++;
+                attachmentID = 'attachment-' + attachmentCount;
+                createAttachmentTemplate(attachmentID);
+                parseAttachmentPopup(false);
+                location.hash = '#attachmentSection';
+            } else {
+                alert('Enter file name');
+            }
         },
 
         onEditAttachmentSubmit: function () {
-            parseAttachmentPopup(true);
-            location.hash = '#attachmentSection';
+            if(validatePopup()) {
+                parseAttachmentPopup(true);
+                location.hash = '#attachmentSection';
+            } else {
+                alert('Enter file name');
+            }
         }
     }
 }());

@@ -41,7 +41,7 @@
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
                                     <a class="text-medium"
-                                       href="<c:url value="/contact/?action=edit&id=${i.id}" /> "><c:out
+                                       href="<c:url value="?action=edit&id=${i.id}" /> "><c:out
                                             value="${i.firstName} ${i.lastName}"/></a>
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                         </div>
 
                         <div class="jlab-cell-1 center">
-                            <a href="<c:url value="/contact/?action=edit&id=${i.id}"/>">
+                            <a href="<c:url value="?action=edit&id=${i.id}"/>">
                                 <div class="imageButton edit">
                                 </div>
                             </a>
@@ -88,12 +88,12 @@
                 <%-- add first page link--%>
                 <c:choose>
                     <c:when test="${currentPage == 1}">
-                        <li><a class="active" href="<c:url value="/contact/?action=show&page=${1}" /> ">1</a></li>
+                        <li><a class="active" href="<c:url value="?action=show&page=${1}" /> ">1</a></li>
                     </c:when>
 
                     <c:when test="${currentPage != 1}">
-                        <li><a href="<c:url value="/contact/?action=show&page=${currentPage - 1}" /> ">&lt;</a></li>
-                        <li><a href="<c:url value="/contact/?action=show&page=${1}" /> ">1</a></li>
+                        <li><a href="<c:url value="?action=show&page=${currentPage - 1}" /> ">&lt;</a></li>
+                        <li><a href="<c:url value="?action=show&page=${1}" /> ">1</a></li>
                     </c:when>
                 </c:choose>
 
@@ -107,11 +107,11 @@
                            end="${currentPage > lastPage - 3 ? lastPage - 1 : currentPage + 2}">
                     <c:choose>
                         <c:when test="${currentPage == i}">
-                            <li><a class="active" href="<c:url value="/contact/?action=show&page=${i}" /> ">${i}</a>
+                            <li><a class="active" href="<c:url value="?action=show&page=${i}" /> ">${i}</a>
                             </li>
                         </c:when>
                         <c:when test="${currentPage != i}">
-                            <li><a href="<c:url value="/contact/?action=show&page=${i}" /> ">${i}</a></li>
+                            <li><a href="<c:url value="?action=show&page=${i}" /> ">${i}</a></li>
                         </c:when>
                     </c:choose>
                 </c:forEach>
@@ -125,13 +125,13 @@
                 <c:if test="${lastPage != 1}">
                     <c:choose>
                         <c:when test="${currentPage != lastPage}">
-                            <li><a href="<c:url value="/contact/?action=show&page=${lastPage}" /> ">${lastPage}</a></li>
-                            <li><a href="<c:url value="/contact/?action=show&page=${currentPage + 1}" /> ">&gt;</a></li>
+                            <li><a href="<c:url value="?action=show&page=${lastPage}" /> ">${lastPage}</a></li>
+                            <li><a href="<c:url value="?action=show&page=${currentPage + 1}" /> ">&gt;</a></li>
                         </c:when>
 
                         <c:when test="${currentPage == lastPage}">
                             <li><a class="active"
-                                   href="<c:url value="/contact/?action=show&page=${lastPage}" /> ">${lastPage}</a></li>
+                                   href="<c:url value="?action=show&page=${lastPage}" /> ">${lastPage}</a></li>
                         </c:when>
 
                     </c:choose>
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                     <div class="jlab-row margin">
-                        <a class="jlab-cell-10 align-center" href="<c:url value="/contact/?action=add" />">
+                        <a class="jlab-cell-10 align-center" href="<c:url value="?action=add" />">
                             <button class="jlab-cell-12">Создать контакт</button>
                         </a>
                     </div>

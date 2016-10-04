@@ -4,19 +4,19 @@
     <div class="container">
         <div class="jlab-row">
             <div class="element">
-                <a class="text-large" href="<c:url value="/contact/?action=show&page=1" />">
+                <a class="text-large" href="<c:url value="?action=show&page=1" />">
                     Contacts
                 </a>
             </div>
             <div class="element right">
                 <div class="element">
-                    <a href="<c:url value="/contact/?action=email" />">
+                    <a href="<c:url value="?action=email" />">
                         <div class="imageButton email">
                         </div>
                     </a>
                 </div>
                 <div class="element">
-                    <a href="<c:url value="/contact/?action=search" />">
+                    <a href="<c:url value="?action=search" />">
                         <div class="imageButton search">
                         </div>
                     </a>

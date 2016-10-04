@@ -49,7 +49,7 @@ public class AddHandler implements RequestHandler {
                     File fileToSave = File.createTempFile("pri", ".png", new File(uploadPath));
                     ImageIO.write(image, "png", fileToSave);
 
-                    contact.setProfilePicture("/contact/?action=image&name=" + fileToSave.getName());
+                    contact.setProfilePicture("?action=image&name=" + fileToSave.getName());
 
                 } catch (Exception ex) {
                     LOG.warn("can't save profile image", ex);
@@ -119,7 +119,7 @@ public class AddHandler implements RequestHandler {
 
                 ContactDao contactDao = new MySqlContactDao(connection);
                 contactDao.insert(contact);
-                response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
+                response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             } catch (Exception ex) {
                 LOG.warn("can't add contact", ex);
                 try {

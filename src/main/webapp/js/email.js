@@ -8,7 +8,7 @@ var email = (function () {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
         form.setAttribute('method', 'post');
-        form.setAttribute('action', '/contact/?action=submitEmail');
+        form.setAttribute('action', '?action=submitEmail');
 
         var input = document.createElement('input');
         input.setAttribute('type', 'text');

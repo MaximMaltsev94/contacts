@@ -58,7 +58,7 @@ public class DeleteHandler implements RequestHandler {
                 ContactDao contactDao = new MySqlContactDao(connection);
                 contactDao.deleteByID(contactID);
             }
-            response.sendRedirect("/contact/?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
+            response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
         } catch (NamingException | SQLException e) {
             LOG.warn("can't get db connection", e);
         }
@@ -66,6 +66,6 @@ public class DeleteHandler implements RequestHandler {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("/contact/?action=show&page=1");
+        response.sendRedirect("?action=show&page=1");
     }
 }

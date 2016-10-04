@@ -21,7 +21,7 @@ public class BirthDateNotifier {
                     .withIdentity("trigger1", "group1")
                     .startNow()
 //                    .withSchedule(calendarIntervalSchedule().withIntervalInSeconds(30)).forJob(job)
-                    .withSchedule(dailyAtHourAndMinute(9, 0))
+                    .withSchedule(dailyAtHourAndMinute(9, 0)).forJob(job)
                     .build();
             Scheduler scheduler = new StdSchedulerFactory().getScheduler();
             scheduler.start();

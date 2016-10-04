@@ -18,7 +18,7 @@ public class DocumentHandler implements RequestHandler {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("/contact/?action=show&page=1");
+        response.sendRedirect("?action=show&page=1");
     }
 
     @Override

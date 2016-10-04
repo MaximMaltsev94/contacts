@@ -14,6 +14,7 @@
         addView.selectRelationship(0);
         addView.selectGender(1);">
 <jsp:include page="header.jsp"/>
+<fmt:setLocale value="ru_RU" scope="session"/>
 
 <div class="container">
     <section>
