@@ -1,7 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu);
 
 body {
-    margin: 0 0 40px;
+    margin: 0;
     background-color: #f0f0f0;
     font-family: 'Ubuntu', sans-serif;
     color: #595954;
@@ -31,7 +31,20 @@ form {
 
 .container {
     width: 90%;
-    height: 100%;
+    min-height: calc(100vh - 76px);
+    margin: auto auto 20px;
+}
+
+.footer {
+    text-align: center;
+    width: 100%;
+    padding: 5px 0;
+    border-bottom: #e6e6e6 solid 1px;
+    background-color: white;
+}
+
+.container1 {
+    width: 90%;
     margin: auto;
 }
 

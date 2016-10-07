@@ -395,5 +395,6 @@
     </form>
     <%--div container end--%>
 </div>
+<div class="footer text-small">iTechArt Group &copy; 2016 Maltsev Maxim </div>
 </body>
 </html>
