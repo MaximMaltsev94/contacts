@@ -27,6 +27,7 @@ public class BirthDateNotifyJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try(Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
+            LOG.info("start looking for birthday contacts");
             ContactDao contactDao = new MySqlContactDao(connection);
             List<Contact> contactList = contactDao.getByBirthdayToday();
             if(contactList.size() > 0) {
@@ -40,6 +41,7 @@ public class BirthDateNotifyJob implements Job {
                 }
                 EmailHelper emailHelper = new EmailHelper();
                 emailHelper.sendToAdmin("Уведомление о дне рождения", emailText.toString());
+                LOG.info("birthday notify message sended");
             }
         } catch (SQLException | NamingException e) {
             LOG.warn("can't get db connection", e);

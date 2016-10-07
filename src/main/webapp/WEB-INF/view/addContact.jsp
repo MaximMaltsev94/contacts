@@ -44,7 +44,7 @@
                     <span class="text-small">Имя</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="firstName" required pattern="[A-Za-zА-яа-я]{2,30}"/>
+                    <input type="text" name="firstName" required pattern="[A-Za-zА-яа-яЁё]{2,30}" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
             <div class="jlab-row margin">

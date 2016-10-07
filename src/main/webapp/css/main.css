@@ -1,14 +1,9 @@
-@font-face {
-    font-family: OpenSans;
-    src: url("./font/OpenSans-Regular.ttf") format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+@import url(http://fonts.googleapis.com/css?family=Ubuntu);
 
 body {
     margin: 0 0 40px;
     background-color: #f0f0f0;
-    font-family: OpenSans, sans-serif;
+    font-family: 'Ubuntu', sans-serif;
     color: #595954;
     /*min-height: 530px;*/
 }
@@ -161,6 +156,7 @@ label {
 }
 
 button, input[type="submit"] {
+    font-family: 'Ubuntu', sans-serif;
     color: white;
     padding: 8px 25px;
     border: none;
@@ -261,7 +257,7 @@ input[type="text"], input[type="email"], input[type="date"], input[type="url"], 
     width: 100%;
     box-sizing: border-box;
     padding: 5px 10px;
-    font-family: OpenSans, sans-serif;
+    font-family: 'Ubuntu', sans-serif;
     color: #595954;
     border: #dbdbdb solid 1px;
     border-radius: 1px;
@@ -272,6 +268,7 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, i
     /*outline: none;*/
     outline-color: #ec1c24;
 }
+
 
 textarea {
     resize: none;
