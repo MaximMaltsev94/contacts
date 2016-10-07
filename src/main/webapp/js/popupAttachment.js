@@ -69,7 +69,7 @@ var popupAttachment = (function () {
         var child = main.createInput('name_' + targetID, 'text', 'none');
         mainDiv.appendChild(child);
 
-        child = main.createInput('date_' + targetID, 'datetime', 'none');
+        child = main.createInput('date_' + targetID, 'text', 'none');
         mainDiv.appendChild(child);
 
         child = main.createInput('comment_' + targetID, 'text', 'none');

@@ -43,7 +43,7 @@
                             <img src="<c:url value="${i.profilePicture}" /> " width="50px" height="50px">
                         </div>
 
-                        <div class="jlab-cell-9 center">
+                        <div class="jlab-cell-8 center">
 
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
@@ -64,6 +64,12 @@
                                 </div>
                             </div>
 
+                        </div>
+
+
+                        <div class="jlab-cell-1 center">
+                            <div class="imageButton email" onclick="showView.onEmailContact(${i.id})">
+                            </div>
                         </div>
 
                         <div class="jlab-cell-1 center">
@@ -88,6 +94,9 @@
             <section id="sectionAction" hidden>
                 <div class="jlab-row margin">
                     <button id="deleteSelected" class="jlab-cell-10 align-center" onclick="showView.onDeleteSelectedClick()">Удалить</button>
+                </div>
+                <div class="jlab-row margin">
+                    <button id="sendEmail" class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
                 </div>
             </section>
             <section>
