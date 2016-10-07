@@ -4,9 +4,7 @@ import command.RequestHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.BirthDateNotifier;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,13 +13,6 @@ import java.io.IOException;
 public class FrontController extends HttpServlet {
 
     private final static Logger LOG = LoggerFactory.getLogger(FrontController.class);
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        BirthDateNotifier notifier = new BirthDateNotifier();
-        notifier.start();
-    }
 
     private RequestHandler getHandlerClass(HttpServletRequest request) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         String commandName = request.getParameter("action").toLowerCase();
