@@ -4,11 +4,6 @@ var addView = (function() {
 
     var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-    var strToDate = function (str) {
-        var elems = str.split('.');
-        return new Date(elems[2], elems[1] - 1, elems[0]);
-    };
-
     var validateDate = function () {
         var birthDate = document.getElementById('birthDate').value;
         if(birthDate.length == 0)
@@ -22,7 +17,7 @@ var addView = (function() {
         if(mm >= 0 && mm <= 11) {
             if(dd >= 1 && dd <= monthDays[mm]) {
                 var dNow = new Date();
-                var bDateObj = strToDate(birthDate);
+                var bDateObj = new Date(yyyy, mm, dd);
                 console.log("Day + " + bDateObj.getDay());
                 console.log("Month + " + bDateObj.getMonth());
                 return dNow >= bDateObj;
