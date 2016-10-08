@@ -68,7 +68,7 @@ public class AddHandler implements RequestHandler {
                             contact.setPatronymic(itemValue);
                             break;
                         case "birthDate":
-                            Date birthDate =  DateUtils.parseDate(itemValue, "yyyy-MM-dd");
+                            Date birthDate =  DateUtils.parseDate(itemValue, "dd.MM.yyyy");
                             contact.setBirthDate(birthDate);
                             break;
                         case "gender":
@@ -119,7 +119,7 @@ public class AddHandler implements RequestHandler {
 
                 ContactDao contactDao = new MySqlContactDao(connection);
                 contactDao.insert(contact);
-                response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
+                response.sendRedirect("?action=show&page=1");
             } catch (Exception ex) {
                 LOG.warn("can't add contact", ex);
                 try {

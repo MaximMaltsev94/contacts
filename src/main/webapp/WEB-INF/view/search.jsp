@@ -105,17 +105,20 @@
                     <div class="text-medium">Введите параметры поиска</div>
                     <div class="text-small-bold">Имя</div>
                     <div class="jlab-row">
-                        <input type="text" name="firstName" value="${requestScope.get('firstName')}" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                        <input type="text" name="firstName" value="${requestScope.get('firstName')}"
+                               pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                     </div>
 
                     <div class="text-small-bold">Фамилия</div>
                     <div class="jlab-row">
-                        <input type="text" name="lastName" value="${requestScope.get('lastName')}" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                        <input type="text" name="lastName" value="${requestScope.get('lastName')}"
+                               pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                     </div>
 
                     <div class="text-small-bold">Отчество</div>
                     <div class="jlab-row">
-                        <input type="text" name="patronymic" value="${requestScope.get('patronymic')}" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                        <input type="text" name="patronymic" value="${requestScope.get('patronymic')}"
+                               pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                     </div>
 
                     <div class="text-small-bold">Возраст</div>
@@ -154,7 +157,8 @@
 
                     <div class="text-small-bold">Гражданство</div>
                     <div class="jlab-row">
-                        <input type="text" name="citizenship" value="${requestScope.get('citizenship')}" pattern="[A-Za-zА-яа-я]{2,50}"/>
+                        <input type="text" name="citizenship" value="${requestScope.get('citizenship')}"
+                               pattern="^[A-Za-zА-яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
                     </div>
 
                     <div class="text-small-bold">Семейное положение</div>
@@ -169,7 +173,8 @@
 
                     <div class="text-small-bold">Место работы</div>
                     <div class="jlab-row">
-                        <input type="text" name="companyName" value="${requestScope.get('companyName')}" pattern="[A-Za-zА-яа-я]{2,50}"/>
+                        <input type="text" name="companyName" value="${requestScope.get('companyName')}"
+                               pattern="[0-9A-Za-zА-яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
                     </div>
 
                     <div class="text-small-bold">Страна</div>
@@ -194,12 +199,14 @@
 
                     <div class="text-small-bold">Адрес</div>
                     <div class="jlab-row">
-                        <input type="text" name="street" value="${requestScope.get('street')}"/>
+                        <input type="text" name="street" value="${requestScope.get('street')}"
+                               pattern="^[0-9A-Za-zА-яа-яЁё\s\.\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
                     </div>
 
                     <div class="text-small-bold">Почтовый индекс</div>
                     <div class="jlab-row">
-                        <input type="text" name="postcode" value="${requestScope.get('postcode')}"/>
+                        <input type="text" name="postcode" value="${requestScope.get('postcode')}"
+                               pattern="^[0-9A-Za-z]{2,20}$" maxlength="20" title="Английские буквы, цифрыб от 2х до 20 символов"/>
                     </div>
 
                     <div class="jlab-row margin">
@@ -215,7 +222,6 @@
 
     <%--div.container end--%>
 </div>
-
-<div class="footer text-small">iTechArt Group &copy; 2016 Maltsev Maxim </div>
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

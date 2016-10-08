@@ -86,7 +86,7 @@ public class EditHandler implements RequestHandler {
                             contact.setPatronymic(itemValue);
                             break;
                         case "birthDate":
-                            Date birthDate = DateUtils.parseDate(itemValue, "yyyy-MM-dd");
+                            Date birthDate = DateUtils.parseDate(itemValue, "dd.MM.yyyy");
                             contact.setBirthDate(birthDate);
                             break;
                         case "gender":

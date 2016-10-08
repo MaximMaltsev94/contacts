@@ -147,7 +147,7 @@ public class MySqlContactDao implements ContactDao {
 
 
     private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` LIMIT ?, 10");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` ORDER BY `id` desc LIMIT ?, 10");
         preparedStatement.setObject(1, (pageNumber - 1) * 10);
         return preparedStatement;
     }

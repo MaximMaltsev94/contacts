@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE HTML>
 <html>
@@ -21,7 +22,7 @@
         <div class="jlab-row">
             <span class="text-large">Основное</span>
         </div>
-        <form action="<c:url value="/contact/?action=add"/>" method="post" enctype="multipart/form-data">
+        <form id="contactForm" action="<c:url value="/contact/?action=add"/>" method="post" enctype="multipart/form-data">
 
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">
@@ -44,7 +45,7 @@
                     <span class="text-small">Имя</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="firstName" required pattern="[A-Za-zА-яа-яЁё]{2,30}" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                    <input type="text" name="firstName" required pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
             <div class="jlab-row margin">
@@ -52,7 +53,7 @@
                     <span class="text-small">Фамилия</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="lastName" required pattern="[A-Za-zА-яа-я]{2,30}"/>
+                    <input type="text" name="lastName" required pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -61,7 +62,7 @@
                     <span class="text-small">Отчество</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="patronymic" pattern="[A-Za-zА-яа-я]{2,30}"/>
+                    <input type="text" name="patronymic" pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -70,7 +71,7 @@
                     <span class="text-small">День рождения</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="date" name="birthDate"/>
+                    <input type="text" name="birthDate" id="birthDate" placeholder="дд.мм.гггг" pattern="^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$" maxlength="10" title="дд.мм.гггг"/>
                 </div>
             </div>
 
@@ -90,7 +91,7 @@
                     <span class="text-small">Гражданство</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="citizenship" pattern="[A-Za-zА-яа-я]{2,50}"/>
+                    <input type="text" name="citizenship" pattern="^[A-Za-zА-яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -113,7 +114,7 @@
                     <span class="text-small">Веб сайт</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="url" name="webSite"/>
+                    <input type="text" name="webSite" pattern="^https?:\/\/(?:[-\w]+\.)?([-\w]+)\.\w+(?:\.\w+)?\/?.*$" maxlength="255" title="http://... или https://..."/>
                 </div>
             </div>
 
@@ -123,7 +124,7 @@
                     <span class="text-small">Эл. почта</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="email" name="email"/>
+                    <input type="text" name="email" pattern="^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$" maxlength="255"/>
                 </div>
             </div>
 
@@ -133,7 +134,7 @@
                     <span class="text-small">Место работы</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="companyName" pattern="[A-Za-zА-яа-я]{2,50}"/>
+                    <input type="text" name="companyName" pattern="[0-9A-Za-zА-яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -171,7 +172,7 @@
                     <span class="text-small">Адрес</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="street"/>
+                    <input type="text" name="street" pattern="^[0-9A-Za-zА-яа-яЁё\s\.\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -180,7 +181,7 @@
                     <span class="text-small">Почтовый индекс</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="postcode"/>
+                    <input type="text" name="postcode" pattern="^[0-9A-Za-z]{2,20}$" maxlength="20" title="Английские буквы, цифрыб от 2х до 20 символов"/>
                 </div>
             </div>
 
@@ -189,13 +190,13 @@
 
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="submit" value="Добавить"/>
+                    <button type="button" onclick="addView.onSubmitContactForm('contactForm')">Добавить</button>
                 </div>
             </div>
 
         </form>
     </section>
 </div>
-<div class="footer text-small">iTechArt Group &copy; 2016 Maltsev Maxim </div>
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

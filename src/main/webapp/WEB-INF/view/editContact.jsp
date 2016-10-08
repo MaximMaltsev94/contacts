@@ -24,7 +24,7 @@
 <fmt:setLocale value="ru_RU" scope="session"/>
 
 <div class="container">
-    <form action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">
+    <form id="contactForm" action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">
         <section>
             <div class="jlab-row">
                 <span class="text-large">Основное</span>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="firstName" value="${requestScope.get('contact').firstName}" required
-                           pattern="[A-Za-zА-яа-я]{2,30}"/>
+                           pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
             <div class="jlab-row margin">
@@ -62,7 +62,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="lastName" value="${requestScope.get('contact').lastName}" required
-                           pattern="[A-Za-zА-яа-я]{2,30}"/>
+                           pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="patronymic" value="${requestScope.get('contact').patronymic}"
-                           pattern="[A-Za-zА-яа-я]{2,30}"/>
+                           pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -81,7 +81,8 @@
                     <span class="text-small">День рождения</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="date" name="birthDate" value="${requestScope.get('contact').birthDate}"/>
+                    <input type="text" name="birthDate" id="birthDate" value="<fmt:formatDate value="${requestScope.get('contact').birthDate}" pattern="dd.MM.yyyy"/>"
+                           placeholder="дд.мм.гггг" pattern="^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$" maxlength="10" title="дд.мм.гггг"/>
                 </div>
             </div>
 
@@ -101,7 +102,8 @@
                     <span class="text-small">Гражданство</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}" pattern="[A-Za-zА-яа-я]{2,50}"/>
+                    <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}"
+                           pattern="^[A-Za-zА-яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -124,7 +126,8 @@
                     <span class="text-small">Веб сайт</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="url" name="webSite" value="${requestScope.get('contact').webSite}"/>
+                    <input type="text" name="webSite" value="${requestScope.get('contact').webSite}"
+                           pattern="^https?:\/\/(?:[-\w]+\.)?([-\w]+)\.\w+(?:\.\w+)?\/?.*$" maxlength="255" title="http://... или https://..."/>
                 </div>
             </div>
 
@@ -134,7 +137,8 @@
                     <span class="text-small">Эл. почта</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="email" name="email" value="${requestScope.get('contact').email}"/>
+                    <input type="text" name="email" value="${requestScope.get('contact').email}"
+                           pattern="^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$" maxlength="255"/>
                 </div>
             </div>
 
@@ -144,7 +148,8 @@
                     <span class="text-small">Место работы</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="companyName" value="${requestScope.get('contact').companyName}" pattern="[A-Za-zА-яа-я]{2,50}"/>
+                    <input type="text" name="companyName" value="${requestScope.get('contact').companyName}"
+                           pattern="[0-9A-Za-zА-яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -182,7 +187,8 @@
                     <span class="text-small">Адрес</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="street" value="${requestScope.get('contact').street}"/>
+                    <input type="text" name="street" value="${requestScope.get('contact').street}"
+                           pattern="^[0-9A-Za-zА-яа-яЁё\s\.\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -191,7 +197,8 @@
                     <span class="text-small">Почтовый индекс</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="postcode" value="${requestScope.get('contact').postcode}"/>
+                    <input type="text" name="postcode" value="${requestScope.get('contact').postcode}"
+                           pattern="^[0-9A-Za-z]{2,20}$" maxlength="20" title="Английские буквы, цифрыб от 2х до 20 символов"/>
                 </div>
             </div>
 
@@ -200,7 +207,7 @@
 
                 </div>
                 <div class="jlab-cell-3 center">
-                    <input type="submit" value="Сохранить"/>
+                    <button type="button" onclick="addView.onSubmitContactForm('contactForm')">Сохранить</button>
                 </div>
             </div>
             <%--main info section end--%>
@@ -395,6 +402,6 @@
     </form>
     <%--div container end--%>
 </div>
-<div class="footer text-small">iTechArt Group &copy; 2016 Maltsev Maxim </div>
+<jsp:include page="footer.jsp"/>
 </body>
 </html>
