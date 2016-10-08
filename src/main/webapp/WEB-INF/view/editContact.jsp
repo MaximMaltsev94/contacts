@@ -24,7 +24,7 @@
 <fmt:setLocale value="ru_RU" scope="session"/>
 
 <div class="container">
-    <form id="contactForm" action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">
+    <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">
         <section>
             <div class="jlab-row">
                 <span class="text-large">Основное</span>
@@ -207,7 +207,7 @@
 
                 </div>
                 <div class="jlab-cell-3 center">
-                    <button type="button" onclick="addView.onSubmitContactForm('contactForm')">Сохранить</button>
+                    <input type="submit" value="Сохранить"/>
                 </div>
             </div>
             <%--main info section end--%>
@@ -245,9 +245,9 @@
                             </c:forEach>
                         </select>
 
-                        <input id="popupPhone_operatorCode" type="text" pattern="[0-9]{2,5}" placeholder="Код. оп.">
+                        <input id="popupPhone_operatorCode" type="text" pattern="[0-9]{2,5}" placeholder="Код. оп." maxlength="5">
 
-                        <input id="popupPhone_phoneNumber" type="text" pattern="[0-9]{4,9}" placeholder="Номер">
+                        <input id="popupPhone_phoneNumber" type="text" pattern="[0-9]{4,9}" placeholder="Номер" maxlength="9">
                     </div>
 
                     <div class="jlab-row margin">
@@ -336,11 +336,11 @@
                         </div>
                     </div>
                     <div class="jlab-row margin">
-                        <input id="popupAttachment_fileName" type="text" placeholder="Имя файла">
+                        <input id="popupAttachment_fileName" type="text" placeholder="Имя файла" maxlength="50">
                     </div>
 
                     <div class="jlab-row margin">
-                        <input type="text" id="popupAttachment_comment" placeholder="Комментарий">
+                        <input type="text" id="popupAttachment_comment" placeholder="Комментарий" maxlength="255">
                     </div>
 
                     <div class="jlab-row margin">

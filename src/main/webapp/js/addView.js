@@ -4,29 +4,6 @@ var addView = (function() {
 
     var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-    var validateDate = function () {
-        var birthDate = document.getElementById('birthDate').value;
-        if(birthDate.length == 0)
-            return true;
-
-        var elems = birthDate.split('.');
-        var dd = parseInt(elems[0]);
-        var mm = parseInt(elems[1]) - 1;
-        var yyyy = parseInt(elems[2]);
-
-        if(mm >= 0 && mm <= 11) {
-            if(dd >= 1 && dd <= monthDays[mm]) {
-                var dNow = new Date();
-                var bDateObj = new Date(yyyy, mm, dd);
-                console.log("Day + " + bDateObj.getDay());
-                console.log("Month + " + bDateObj.getMonth());
-                return dNow >= bDateObj;
-
-            }
-        }
-        return false;
-    };
-
     return { // методы доступные извне
         selectCountry: function(countryID) {
             document.getElementById('country').selectedIndex = countryID;
@@ -77,12 +54,29 @@ var addView = (function() {
                 reader.readAsDataURL(input.files[0]);
             }
         },
-        onSubmitContactForm: function(formID) {
-            if(validateDate() == true) {
-                document.getElementById(formID).submit();
-            } else {
-                alert("Введена недействительная дата");
+
+        validateDate: function () {
+            var birthDate = document.getElementById('birthDate').value;
+            if(birthDate.length == 0)
+                return true;
+
+            var elems = birthDate.split('.');
+            var dd = parseInt(elems[0]);
+            var mm = parseInt(elems[1]) - 1;
+            var yyyy = parseInt(elems[2]);
+
+            if(mm >= 0 && mm <= 11) {
+                if(dd >= 1 && dd <= monthDays[mm]) {
+                    var dNow = new Date();
+                    var bDateObj = new Date(yyyy, mm, dd);
+                    console.log("Day + " + bDateObj.getDay());
+                    console.log("Month + " + bDateObj.getMonth());
+                    return dNow >= bDateObj;
+
+                }
             }
+            alert("Введена недействительная дата");
+            return false;
         }
     }
 }());

@@ -22,7 +22,7 @@
         <div class="jlab-row">
             <span class="text-large">Основное</span>
         </div>
-        <form id="contactForm" action="<c:url value="/contact/?action=add"/>" method="post" enctype="multipart/form-data">
+        <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="/contact/?action=add"/>" method="post" enctype="multipart/form-data">
 
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">
@@ -32,8 +32,8 @@
                 <div class="jlab-cell-3 center">
                     <div class="hiddenFileInputContainter">
 
-                        <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>" width="100px"
-                             height="100px">
+                        <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>" width="200px"
+                             height="200px">
                         <input type="file" name="fileUp" class="hidden" accept="image/*"
                                onchange="addView.readURL(this)">
                     </div>
@@ -190,7 +190,7 @@
 
                 </div>
                 <div class="jlab-cell-3">
-                    <button type="button" onclick="addView.onSubmitContactForm('contactForm')">Добавить</button>
+                    <input type="submit" value="Сохранить"/>
                 </div>
             </div>
 
