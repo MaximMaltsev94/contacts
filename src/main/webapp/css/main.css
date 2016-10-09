@@ -264,6 +264,14 @@ button:disabled {
     background-image: url('../sysImages/email hover.png');
 }
 
+.imageButton.upload {
+    background-image: url('../sysImages/upload.png');
+}
+
+.imageButton.upload:hover {
+    background-image: url('../sysImages/upload hover.png');
+}
+
 
 input[type="text"], input[type="email"], input[type="date"], input[type="url"], select, textarea {
     /*width: 240px;*/
@@ -326,3 +334,11 @@ div.hiddenFileInputContainter
     cursor: pointer;
 }
 
+.inputfile {
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}

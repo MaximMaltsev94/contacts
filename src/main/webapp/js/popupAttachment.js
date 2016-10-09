@@ -86,9 +86,8 @@ var popupAttachment = (function () {
         mainDiv.appendChild(child);
 
         child = main.createDiv('', 'jlab-cell-1');
-        subChild = main.createInput('file_' + targetID, 'file', 'block');
-        subChild.required = true;
-        child.appendChild(subChild);
+        child.innerHTML = '\<input type="file" name="file_attachment" id="file" required onchange="main.onFileChangeAction()" class="inputfile" />'+
+                            '\<label class="text-small" for="file" id="fileLabel"><div class="imageButton upload"></div></label>';
         mainDiv.appendChild(child);
 
         child = main.createDiv('', 'jlab-cell-1');
@@ -111,7 +110,7 @@ var popupAttachment = (function () {
     } ;
 
     var validatePopup = function () {
-            var fileNameRegex = /[A-Za-z]{2,5}/;
+            var fileNameRegex = /^[a-zа-яё\s]{2,50}$/i;
 
             return fileNameRegex.test(document.getElementById('popupAttachment_fileName').value);
         };
@@ -164,7 +163,7 @@ var popupAttachment = (function () {
                 parseAttachmentPopup(true);
                 location.hash = '#attachmentSection';
             } else {
-                alert('Enter file name');
+                alert('Введено неверное имя файла');
             }
         }
     }

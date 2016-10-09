@@ -15,6 +15,16 @@ var main = (function () {
                 divElement.id = id;
             divElement.className = className;
             return divElement;
+        },
+
+        onFileChangeAction: function() {
+            var fileName = document.getElementById('file').value;
+            fileName = fileName.split('\\');
+            fileName = fileName[fileName.length - 1];
+
+            document.getElementById('fileLabel').innerHTML =  '\<div class="imageButton upload"></div>' + '\<span class="test-medium">' + fileName + '\</span>';
+
+            console.log(document.getElementById('file').value);
         }
     }
 }());
