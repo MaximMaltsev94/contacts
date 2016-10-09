@@ -110,7 +110,7 @@ var popupAttachment = (function () {
     } ;
 
     var validatePopup = function () {
-            var fileNameRegex = /^[a-zа-яё\s]{2,50}$/i;
+            var fileNameRegex = /^[\wа-яА-Я\s\-]{2,50}$/;
 
             return fileNameRegex.test(document.getElementById('popupAttachment_fileName').value);
         };
