@@ -26,15 +26,20 @@ public class MySqlAttachmentDao implements AttachmentDao {
         this.connection = connection;
     }
 
-    private PreparedStatement createGetByContactIdStatement(int contactId) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`attachment` WHERE `id_contact` = ?");
-        preparedStatement.setObject(1, contactId);
-        return preparedStatement;
+    private Attachment parseResultSet(ResultSet rs) throws SQLException {
+        Attachment attachment = new Attachment();
+        attachment.setId(rs.getInt("id"));
+        attachment.setFileName(rs.getString("file_name"));
+        attachment.setFilePath(rs.getString("file_path"));
+        attachment.setContactID(rs.getInt("id_contact"));
+        attachment.setUploadDate(rs.getTimestamp("upload_date"));
+        attachment.setComment(rs.getString("comment"));
+        return attachment;
     }
 
 
     @Override
-    public void insert(Connection connection, Attachment attachment) throws SQLException {
+    public void insert(Attachment attachment) throws SQLException {
         try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `contacts_maltsev`.`attachment` (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES(?, ?, ?, ?, ?)")) {
             preparedStatement.setObject(1, attachment.getFileName());
             preparedStatement.setObject(2, attachment.getFilePath());
@@ -51,7 +56,7 @@ public class MySqlAttachmentDao implements AttachmentDao {
     }
 
     @Override
-    public void delete(Connection connection, Attachment attachment) throws SQLException {
+    public void delete(Attachment attachment) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`attachment` WHERE `id` = ?")) {
             preparedStatement.setObject(1, attachment.getId());
             preparedStatement.executeUpdate();
@@ -61,19 +66,38 @@ public class MySqlAttachmentDao implements AttachmentDao {
         }
     }
 
+
+    @Override
+    public void update(Attachment attachment) {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contacts_maltsev`.`attachment` SET `file_name` = ?, `file_path` = ?,`id_contact` = ?,`upload_date` = ?,`comment` = ? WHERE `id` = ?")) {
+            preparedStatement.setObject(1, attachment.getFileName());
+            preparedStatement.setObject(2, attachment.getFilePath());
+            preparedStatement.setObject(3, attachment.getContactID());
+
+            String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), "yyyy-MM-dd HH:mm:ss");
+            preparedStatement.setObject(4, uploadDate);
+            preparedStatement.setObject(5, attachment.getComment());
+            preparedStatement.setObject(6, attachment.getId());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            LOG.warn("can't update attachment", e);
+        }
+    }
+
+
+    private PreparedStatement createGetByContactIdStatement(int contactId) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`attachment` WHERE `id_contact` = ?");
+        preparedStatement.setObject(1, contactId);
+        return preparedStatement;
+    }
+
     @Override
     public List<Attachment> getByContactId(int contactId) {
         List<Attachment> attachmentList = new ArrayList<>();
         try(PreparedStatement preparedStatement = createGetByContactIdStatement(contactId);
                 ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
-                Attachment attachment = new Attachment();
-                attachment.setId(rs.getInt("id"));
-                attachment.setFileName(rs.getString("file_name"));
-                attachment.setFilePath(rs.getString("file_path"));
-                attachment.setContactID(rs.getInt("id_contact"));
-                attachment.setUploadDate(rs.getTimestamp("upload_date"));
-                attachment.setComment(rs.getString("comment"));
+                Attachment attachment = parseResultSet(rs);
                 attachmentList.add(attachment);
             }
 
@@ -81,5 +105,25 @@ public class MySqlAttachmentDao implements AttachmentDao {
             LOG.warn("can't get attachments list by contact id - {}", contactId, e);
         }
         return attachmentList;
+    }
+
+    private PreparedStatement createFindByFilePathStatement(String filePath) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`attachment` WHERE `file_path` like ?");
+        preparedStatement.setString(1, "%" + filePath + "%");
+        return preparedStatement;
+    }
+
+    @Override
+    public Attachment findByFilePath(String filePath) {
+        Attachment attachment = new Attachment();
+        try(PreparedStatement preparedStatement = createFindByFilePathStatement(filePath);
+            ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                attachment = parseResultSet(rs);
+            }
+        } catch (SQLException e) {
+            LOG.warn("can't find attachment by file path - {}", filePath, e);
+        }
+        return attachment;
     }
 }

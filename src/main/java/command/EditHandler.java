@@ -220,29 +220,38 @@ public class EditHandler implements RequestHandler {
                 List<Attachment> postedAttachments = parseAttachments(items, contactID, uploadPath);
 
                 List<Attachment> forDelete = new ArrayList<>();
+                List<Attachment> forUpdate = new ArrayList<>();
                 for (Attachment attachment : attachmentList) {
                     boolean flag = true;
                     for (Attachment postedAttachment : postedAttachments) {
                         if(postedAttachment.getId() == attachment.getId()) {
+                            attachment.setFileName(postedAttachment.getFileName());
+                            attachment.setComment(postedAttachment.getComment());
                             flag = false;
                             break;
                         }
                     }
                     if(flag)
                         forDelete.add(attachment);
+                    else
+                        forUpdate.add(attachment);
                 }
 
                 for (Attachment attachment : forDelete) {
-                    attachmentDao.delete(connection, attachment);
+                    attachmentDao.delete(attachment);
                     boolean deleteResult = ContactUtils.deleteFileByUrl(attachment.getFilePath(), uploadPath, "file");
                     if(deleteResult == false) {
                         LOG.warn("can't delete file - {}", attachment.getFilePath());
                     }
                 }
 
+                for (Attachment attachment : forUpdate) {
+                    attachmentDao.update(attachment);
+                }
+
                 for (Attachment postedAttachment : postedAttachments) {
                     if(postedAttachment.getId() == 0) {
-                        attachmentDao.insert(connection, postedAttachment);
+                        attachmentDao.insert(postedAttachment);
                     }
                 }
 

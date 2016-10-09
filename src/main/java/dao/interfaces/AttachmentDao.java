@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface AttachmentDao {
-    void insert(Connection connection, Attachment attachment) throws SQLException;
-    void delete(Connection connection, Attachment attachment) throws SQLException;
+    void insert(Attachment attachment) throws SQLException;
+    void delete(Attachment attachment) throws SQLException;
+    void update(Attachment attachment);
     List<Attachment> getByContactId(int contactId);
+    Attachment findByFilePath(String filePath);
 }
