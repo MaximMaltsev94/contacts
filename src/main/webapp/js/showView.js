@@ -1,5 +1,14 @@
 var showView = (function() {
     var checkedCount = 0;
+    window.onhashchange = function () {
+        console.log(onhashchange);
+        checkedCount = document.querySelectorAll("input[type=checkbox]:checked").length;
+        if(checkedCount > 0) {
+            document.getElementById('deleteSelected').disabled = false;
+            document.getElementById('sendEmail').disabled = false;
+        }
+    };
+
     var postDeleteRequest = function(id) {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
@@ -36,8 +45,10 @@ var showView = (function() {
         onCheckBoxChecked: function(sender) {
             if(sender.checked)
                 checkedCount++;
-            else
+            else {
                 checkedCount--;
+                checkedCount = Math.max(checkedCount, 0);
+            }
             document.getElementById('deleteSelected').disabled = checkedCount == 0;
             document.getElementById('sendEmail').disabled = checkedCount == 0;
         },

@@ -32,8 +32,7 @@
                 <div class="jlab-cell-3 center">
                     <div class="hiddenFileInputContainter">
 
-                        <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>" width="200px"
-                             height="200px">
+                        <img id="blah" class="fileDownload" src="<c:url value="/sysImages/default.png"/>">
                         <input type="file" name="fileUp" class="hidden" accept="image/*"
                                onchange="addView.readURL(this)">
                     </div>

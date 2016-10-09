@@ -39,8 +39,7 @@
                     <div class="hiddenFileInputContainter">
 
                         <img id="blah" class="fileDownload"
-                             src="<c:url value="${requestScope.get('contact').profilePicture}"/>" width="100px"
-                             height="100px">
+                             src="<c:url value="${requestScope.get('contact').profilePicture}"/>">
                         <input type="file" name="fileUp" class="hidden" accept="image/*"
                                onchange="addView.readURL(this)">
                     </div>
