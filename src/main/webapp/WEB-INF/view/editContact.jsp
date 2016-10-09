@@ -173,12 +173,17 @@
                 </div>
                 <div class="jlab-cell-3">
                     <select name="city" id="city">
+                        <option value="0" data-country="0">Не выбрано</option>
+                    </select>
 
+                    <%--hidden select with city data--%>
+                    <select hidden id="cityData">
                         <option value="0" data-country="0">Не выбрано</option>
                         <c:forEach var="i" items="${requestScope.get('cityList')}">
                             <option value="${i.id}" data-country="${i.countryID}">${i.name}</option>
                         </c:forEach>
                     </select>
+                    <%--hidden select with city data--%>
                 </div>
             </div>
 

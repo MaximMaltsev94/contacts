@@ -11,7 +11,14 @@ var addView = (function() {
         },
 
         selectCity: function (cityID) {
-            document.getElementById('city').selectedIndex = cityID;
+            var options = document.getElementById('city');
+
+            for(i = 0, n = options.length; i < n; ++i) {
+                if(options[i].value == cityID) {
+                    document.getElementById('city').selectedIndex = i;
+                    return
+                }
+            }
         },
 
         selectRelationship: function (relationshipID) {
@@ -32,14 +39,21 @@ var addView = (function() {
         },
 
         onChangeCountry: function(selectedValue) {
-            cityOptions = document.getElementById('city').options;
+            var citySelect = document.getElementById('city');
+            citySelect.innerHTML = '\<option value="0" data-country="0">Не выбрано</option>';
+            var citySelectHelper = document.getElementById('cityData');
+
+            cityOptions = citySelectHelper.options;
             for(i = 0, n = cityOptions.length; i < n; i++) {
-                cityOptions[i].style.display = 'none';
                 if(cityOptions[i].dataset.country == selectedValue) {
-                    cityOptions[i].style.display = 'block';
+                    var option = document.createElement("option");
+                    option.value = cityOptions[i].value;
+                    option.dataset.country = selectedValue;
+                    option.textContent = cityOptions[i].textContent;
+                    citySelect.appendChild(option);
+                    // citySelect.appendChild(cityOptions[i]);
                 }
             }
-            cityOptions[0].style.display = 'block';
             document.getElementById('city').selectedIndex = 0;
         },
 
