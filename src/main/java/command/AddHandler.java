@@ -34,6 +34,7 @@ import java.util.List;
  */
 public class AddHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(AddHandler.class);
+    private String savedImageUrl = "";
 
     private Contact parseContactInfo(List<FileItem> items, String uploadPath) throws UnsupportedEncodingException, ParseException {
         Contact contact = new Contact();
@@ -50,6 +51,7 @@ public class AddHandler implements RequestHandler {
                     ImageIO.write(image, "png", fileToSave);
 
                     contact.setProfilePicture("?action=image&name=" + fileToSave.getName());
+                    savedImageUrl = contact.getProfilePicture();
 
                 } catch (Exception ex) {
                     LOG.warn("can't save profile image", ex);
@@ -122,6 +124,8 @@ public class AddHandler implements RequestHandler {
                 response.sendRedirect("?action=show&page=1");
             } catch (Exception ex) {
                 LOG.warn("can't add contact", ex);
+                LOG.info("deleting profile image - {}", savedImageUrl);
+                ContactUtils.deleteFileByUrl(savedImageUrl, request.getServletContext().getInitParameter("uploadPath"), "pri");
                 try {
                     response.getWriter().println("An error occurred while adding contact");
                     response.getWriter().flush();

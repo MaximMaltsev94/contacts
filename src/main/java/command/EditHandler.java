@@ -32,6 +32,8 @@ import java.util.List;
 
 public class EditHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(EditHandler.class);
+    private List<String> savedFilesUrls = new ArrayList<>();
+    private String savedImageUrl = "";
 
     private int parseContactID(List<FileItem> items) throws UnsupportedEncodingException {
         int contactID = 0;
@@ -65,6 +67,7 @@ public class EditHandler implements RequestHandler {
                     ImageIO.write(image, "png", fileToSave);
 
                     contact.setProfilePicture("?action=image&name=" + fileToSave.getName());
+                    savedImageUrl = contact.getProfilePicture();
 
                 } catch (Exception ex) {
                     LOG.warn("can't save profile image", ex);
@@ -159,6 +162,7 @@ public class EditHandler implements RequestHandler {
                         File fileToSave = File.createTempFile("file", "." + fileExtension, new File(uploadPath));
                         item.write(fileToSave);
                         attachmentList.get(attachmentList.size() - 1).setFilePath("?action=document&name=" + fileToSave.getName());
+                        savedFilesUrls.add(attachmentList.get(attachmentList.size() - 1).getFilePath());
                     }
                 } catch (Exception e) {
                     LOG.warn("can't save file - {}", item.getName());
@@ -261,6 +265,15 @@ public class EditHandler implements RequestHandler {
                 response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
             } catch (SQLException e) {
                 LOG.warn("edit transaction error");
+                String uploadPath = request.getServletContext().getInitParameter("uploadPath");
+
+                LOG.info("deleting profile image - {}", savedImageUrl);
+                ContactUtils.deleteFileByUrl(savedImageUrl, uploadPath, "pri");
+
+                for (String savedFileUrl : savedFilesUrls) {
+                    LOG.info("deleting uploaded attachment - {}", savedFileUrl);
+                    ContactUtils.deleteFileByUrl(savedFileUrl, uploadPath, "file");
+                }
                 try {
                     if (connection != null) {
                         LOG.info("rolling back transaction ", e);
