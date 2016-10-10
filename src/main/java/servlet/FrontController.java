@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Map;
 
 public class FrontController extends HttpServlet {
 
@@ -22,13 +24,25 @@ public class FrontController extends HttpServlet {
         return (RequestHandler) cl.newInstance();
     }
 
+    private String getParametersString(HttpServletRequest request) {
+        Map<String, String[]> parameters = request.getParameterMap();
+        StringBuilder builder = new StringBuilder();
+        for (String key : parameters.keySet()) {
+            builder.append(key);
+            builder.append(" = ");
+            builder.append(request.getParameter(key));
+            builder.append(";");
+        }
+        return builder.toString();
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        LOG.info("Received post request - {}{}", request.getRequestURL().toString(), request.getQueryString());
+        LOG.info("Received post request - {}{}{}", request.getRequestURL().toString(), request.getQueryString(), getParametersString(request));
         processRequest(request, response);
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
-        LOG.info("Received get request - {}{}", request.getRequestURL().toString(), request.getQueryString());
+        LOG.info("Received get request - {}{}___{}", request.getRequestURL().toString(), request.getQueryString(), getParametersString(request));
         processRequest(request, response);
     }
 
