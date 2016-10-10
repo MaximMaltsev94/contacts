@@ -44,7 +44,7 @@
                     <span class="text-small">Имя</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="firstName" required pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                    <input type="text" name="firstName" required pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
             <div class="jlab-row margin">
@@ -52,7 +52,7 @@
                     <span class="text-small">Фамилия</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="lastName" required pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                    <input type="text" name="lastName" required pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -61,7 +61,7 @@
                     <span class="text-small">Отчество</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="patronymic" pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                    <input type="text" name="patronymic" pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -90,7 +90,7 @@
                     <span class="text-small">Гражданство</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="citizenship" pattern="^[A-Za-zА-яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
+                    <input type="text" name="citizenship" pattern="^[A-Za-zА-Яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -133,7 +133,7 @@
                     <span class="text-small">Место работы</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="companyName" pattern="[0-9A-Za-zА-яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
+                    <input type="text" name="companyName" pattern="[0-9A-Za-zА-Яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -176,7 +176,7 @@
                     <span class="text-small">Адрес</span>
                 </div>
                 <div class="jlab-cell-3">
-                    <input type="text" name="street" pattern="^[0-9A-Za-zА-яа-яЁё\s\.\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
+                    <input type="text" name="street" pattern="^[0-9A-Za-zА-Яа-яЁё\s\\.\\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
                 </div>
             </div>
 

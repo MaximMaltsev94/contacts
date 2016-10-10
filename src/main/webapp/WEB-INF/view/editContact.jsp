@@ -52,7 +52,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="firstName" value="${requestScope.get('contact').firstName}" required
-                           pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                           pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
             <div class="jlab-row margin">
@@ -61,7 +61,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="lastName" value="${requestScope.get('contact').lastName}" required
-                           pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                           pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -71,7 +71,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="patronymic" value="${requestScope.get('contact').patronymic}"
-                           pattern="^[A-Za-zА-яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                           pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                 </div>
             </div>
 
@@ -102,7 +102,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}"
-                           pattern="^[A-Za-zА-яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
+                           pattern="^[A-Za-zА-Яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -148,7 +148,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="companyName" value="${requestScope.get('contact').companyName}"
-                           pattern="[0-9A-Za-zА-яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
+                           pattern="[0-9A-Za-zА-Яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
                 </div>
             </div>
 
@@ -192,7 +192,7 @@
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="street" value="${requestScope.get('contact').street}"
-                           pattern="^[0-9A-Za-zА-яа-яЁё\s\.\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
+                           pattern="^[0-9A-Za-zА-Яа-яЁё\s\\.\\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
                 </div>
             </div>
 

@@ -86,8 +86,27 @@ var popupAttachment = (function () {
         mainDiv.appendChild(child);
 
         child = main.createDiv('', 'jlab-cell-1');
-        child.innerHTML = '\<input type="file" name="file_attachment" id="file" required onchange="main.onFileChangeAction()" class="inputfile" />'+
-                            '\<label class="text-small" for="file" id="fileLabel"><div class="imageButton upload"></div></label>';
+        subChild = document.createElement('input');
+        subChild.type = 'file';
+        subChild.name = 'file_' + targetID;
+        subChild.id = 'file_' + targetID;
+        subChild.required = true;
+        subChild.onchange = function () {
+            return main.onFileChangeAction(targetID);
+        };
+        subChild.className = 'inputfile';
+        child.appendChild(subChild);
+
+        subChild = document.createElement('label');
+        subChild.className = 'text-small';
+        subChild.setAttribute('for', 'file_' + targetID);
+        // subChild.for = 'file_' + targetID;
+        subChild.id = 'fileLabel_' + targetID;
+        subChild.innerHTML = '<div class="imageButton upload"></div>';
+        child.appendChild(subChild);
+
+        // child.innerHTML = '\<input type="file" name="file_' + targetID + '" id="file_' + targetID +' " required onchange="main.onFileChangeAction(\''+ targetID + '\')" class="inputfile" />'+
+        //                     '\<label class="text-small" for="file_' + targetID + '" id="fileLabel_' + targetID + '"><div class="imageButton upload"></div></label>';
         mainDiv.appendChild(child);
 
         child = main.createDiv('', 'jlab-cell-1');

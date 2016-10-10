@@ -17,14 +17,14 @@ var main = (function () {
             return divElement;
         },
 
-        onFileChangeAction: function() {
-            var fileName = document.getElementById('file').value;
+        onFileChangeAction: function(attachmentID) {
+            var fileName = document.getElementById('file_' + attachmentID).value;
             fileName = fileName.split('\\');
             fileName = fileName[fileName.length - 1];
 
-            document.getElementById('fileLabel').innerHTML =  '\<div class="imageButton upload"></div>' + '\<span class="test-medium">' + fileName + '\</span>';
+            document.getElementById('fileLabel_' + attachmentID).innerHTML =  '\<div class="imageButton upload"></div>' + '\<span class="test-medium">' + fileName + '\</span>';
 
-            console.log(document.getElementById('file').value);
+            console.log(document.getElementById('file_' + attachmentID).value);
         }
     }
 }());
