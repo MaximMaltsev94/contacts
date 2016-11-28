@@ -48,7 +48,7 @@
 
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Имя</span>
+                    <span class="text-small">Имя*</span>
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="firstName" value="${requestScope.get('contact').firstName}" required
@@ -57,7 +57,7 @@
             </div>
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Фамилия</span>
+                    <span class="text-small">Фамилия*</span>
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="lastName" value="${requestScope.get('contact').lastName}" required

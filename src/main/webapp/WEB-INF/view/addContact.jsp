@@ -41,7 +41,7 @@
 
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Имя</span>
+                    <span class="text-small">Имя*</span>
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="firstName" required pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
@@ -49,7 +49,7 @@
             </div>
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Фамилия</span>
+                    <span class="text-small">Фамилия*</span>
                 </div>
                 <div class="jlab-cell-3">
                     <input type="text" name="lastName" required pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
