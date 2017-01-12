@@ -2,22 +2,18 @@ package command;
 
 import dao.interfaces.AttachmentDao;
 import dao.interfaces.ContactDao;
-import dao.mysqlimplementation.MySqlAttachmentDao;
-import dao.mysqlimplementation.MySqlConnectionFactory;
-import dao.mysqlimplementation.MySqlContactDao;
+import dao.implementation.AttachmentDaoImpl;
+import dao.implementation.ConnectionFactoryImpl;
+import dao.implementation.ContactDaoImpl;
 import model.Attachment;
 import model.Contact;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactUtils;
 
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -32,13 +28,13 @@ public class DeleteHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(DeleteHandler.class);
 
     private void deleteProfileImage(Connection connection, String uploadPath, int contactId) throws NamingException {
-        ContactDao contactDao = new MySqlContactDao(connection);
+        ContactDao contactDao = new ContactDaoImpl(connection);
         Contact contact = contactDao.getByID(contactId);
         ContactUtils.deleteFileByUrl(contact.getProfilePicture(), uploadPath, "pri");
     }
 
     private void deleteAttachments(Connection connection, String uploadPath, int contactId) {
-        AttachmentDao attachmentDao = new MySqlAttachmentDao(connection);
+        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         List<Attachment> attachmentList = attachmentDao.getByContactId(contactId);
         for (Attachment attachment : attachmentList) {
             ContactUtils.deleteFileByUrl(attachment.getFilePath(), uploadPath, "file");
@@ -47,7 +43,7 @@ public class DeleteHandler implements RequestHandler {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
+        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
             String[] splitedIDs = request.getParameter("id").split(",");
             for (String id : splitedIDs) {
                 int contactID = Integer.parseInt(id);
@@ -55,7 +51,7 @@ public class DeleteHandler implements RequestHandler {
                 deleteProfileImage(connection, uploadPath, contactID);
                 deleteAttachments(connection, uploadPath, contactID);
 
-                ContactDao contactDao = new MySqlContactDao(connection);
+                ContactDao contactDao = new ContactDaoImpl(connection);
                 contactDao.deleteByID(contactID);
             }
             response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));

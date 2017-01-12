@@ -1,21 +1,19 @@
-package dao.mysqlimplementation;
+package dao.implementation;
 
-import dao.interfaces.ConnectionFactory;
 import dao.interfaces.ContactDao;
+import exceptions.DaoException;
 import model.Contact;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 
-import javax.naming.NamingException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlContactDao implements ContactDao {
-    private final static Logger LOG = LoggerFactory.getLogger(MySqlContactDao.class);
+public class ContactDaoImpl implements ContactDao {
+    private final static Logger LOG = LoggerFactory.getLogger(ContactDaoImpl.class);
     private Connection connection;
 
     private Contact parseResultSet(ResultSet rs) throws SQLException {
@@ -66,58 +64,59 @@ public class MySqlContactDao implements ContactDao {
 
     }
 
-    public MySqlContactDao(Connection connection) {
+    public ContactDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void insert(Contact contact) throws SQLException {
-        try (PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contacts_maltsev`.`contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+    public void insert(Contact contact) throws DaoException {
+        try (PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             fillPreparedStatement(pStatement, contact);
             pStatement.executeUpdate();
         } catch (SQLException e) {
-            LOG.warn("can't insert contact", e);
-            throw new SQLException();
+            LOG.error("can't insert contact - {}", contact, e);
+            throw new DaoException("error while inserting contact", e);
         }
 
     }
 
     @Override
-    public void update(Contact contact) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contacts_maltsev`.`contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ? WHERE `id` = ?");) {
+    public void update(Contact contact) throws DaoException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ? WHERE `id` = ?");) {
             fillPreparedStatement(preparedStatement, contact);
             preparedStatement.setObject(16, contact.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOG.warn("can't update contact id - {}", contact.getId(), e);
-            throw new SQLException();
+            LOG.error("can't update contact - {}", contact, e);
+            throw new DaoException();
         }
 
     }
 
     @Override
-    public void delete(Contact contact) {
+    public void delete(Contact contact) throws DaoException {
 
     }
 
     @Override
-    public void deleteByID(int id) {
-        try (PreparedStatement pStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`contact` WHERE id = ?")) {
+    public void deleteByID(int id) throws DaoException {
+        try (PreparedStatement pStatement = connection.prepareStatement("DELETE FROM `contact` WHERE id = ?")) {
             pStatement.setObject(1, id);
             pStatement.execute();
         } catch (SQLException e) {
-            LOG.warn("can't delete contact by id - {}", id, e);
+            LOG.error("can't delete contact by id - {}", id, e);
+            throw new DaoException("error while deleting contact by ID", e);
         }
     }
 
     private PreparedStatement createGetByIDStatement(Connection connection, int id) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` WHERE id = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE id = ?");
         preparedStatement.setObject(1, id);
         return preparedStatement;
     }
 
     @Override
-    public Contact getByID(int id) {
+    public Contact getByID(int id) throws DaoException {
         Contact contact = null;
         try (PreparedStatement preparedStatement = createGetByIDStatement(connection, id);
              ResultSet rs = preparedStatement.executeQuery()) {
@@ -125,35 +124,37 @@ public class MySqlContactDao implements ContactDao {
                 contact = parseResultSet(rs);
             }
         } catch (SQLException e) {
-            LOG.warn("can't get contact by id - {}", id, e);
+            LOG.error("can't get contact by id - {}", id, e);
+            throw new DaoException("error while getting contact by ID", e);
         }
         return contact;
 
     }
 
     @Override
-    public int getMaxID() {
+    public int getMaxID() throws DaoException {
         int maxID = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contacts_maltsev`.`contact`");
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contact`");
              ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 maxID = rs.getInt("mx");
             }
         } catch (SQLException e) {
-            LOG.warn("can't get max ID ", e);
+            LOG.error("can't get max ID", e);
+            throw new DaoException("error while getting maximum ID", e);
         }
         return maxID;
     }
 
 
     private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` ORDER BY `id` desc LIMIT ?, 10");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` ORDER BY `id` desc LIMIT ?, 10");
         preparedStatement.setObject(1, (pageNumber - 1) * 10);
         return preparedStatement;
     }
 
     @Override
-    public List<Contact> getContactsPage(int pageNumber) {
+    public List<Contact> getContactsPage(int pageNumber) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         try (PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber);
              ResultSet rs = preparedStatement.executeQuery()) {
@@ -162,21 +163,23 @@ public class MySqlContactDao implements ContactDao {
                 contactList.add(contact);
             }
         } catch (SQLException e) {
-            LOG.warn("can't get contacts list", e);
+            LOG.error("can't get contacts list by page number - {}", pageNumber, e);
+            throw new DaoException("error while getting contact page", e);
         }
         return contactList;
     }
 
     @Override
-    public int getRowsCount() {
+    public int getRowsCount() throws DaoException {
         int count = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contacts_maltsev`.`contact`");
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`");
              ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 count = rs.getInt("cnt");
             }
         } catch (SQLException e) {
-            LOG.warn("can't get contacts count", e);
+            LOG.error("can't get contacts count", e);
+            throw new DaoException("error while getting contacts count", e);
         }
         return count;
     }
@@ -199,7 +202,7 @@ public class MySqlContactDao implements ContactDao {
     }
 
     private String concatQuery(String firstName, String lastName, String patronymic, int age1, int age2, int gender, String citizenship, int relationship, String companyName, int country, int city, String street, String postcode) {
-        StringBuilder searchQuery = new StringBuilder("SELECT * FROM `contacts_maltsev`.`contact`");
+        StringBuilder searchQuery = new StringBuilder("SELECT * FROM `contact`");
         StringBuilder where = new StringBuilder();
 
         appendString(where, "first_name", firstName);
@@ -239,7 +242,7 @@ public class MySqlContactDao implements ContactDao {
     }
 
     @Override
-    public List<Contact> find(String firstName, String lastName, String patronymic, int age1, int age2, int gender, String citizenship, int relationship, String companyName, int country, int city, String street, String postcode) {
+    public List<Contact> find(String firstName, String lastName, String patronymic, int age1, int age2, int gender, String citizenship, int relationship, String companyName, int country, int city, String street, String postcode) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         String searchQuery = concatQuery(firstName, lastName, patronymic, age1, age2, gender, citizenship, relationship, companyName, country, city, street, postcode);
         try(Statement statement = connection.createStatement();
@@ -249,37 +252,40 @@ public class MySqlContactDao implements ContactDao {
                 contactList.add(contact);
             }
         } catch (SQLException e) {
-            LOG.warn("can't perform search query - {}", searchQuery, e);
+            LOG.error("can't perform search query - {}", searchQuery, e);
+            throw new DaoException("error while searching contacts by critetia", e);
         }
         return contactList;
     }
 
     @Override
-    public List<Contact> getContactsWithEmail() {
+    public List<Contact> getContactsWithEmail() throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`contact` WHERE `email` IS NOT NULL");
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE `email` IS NOT NULL");
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
                 contactList.add(contact);
             }
         } catch (SQLException e) {
-            LOG.warn("can't get contacts with email", e);
+            LOG.error("can't get contacts with email", e);
+            throw new DaoException("error while getting contacts with email", e);
         }
         return contactList;
     }
 
     @Override
-    public List<Contact> getByBirthdayToday() {
+    public List<Contact> getByBirthdayToday() throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from `contacts_maltsev`.`contact` WHERE day(`birth_date`) = day(current_date()) and month(`birth_date`) = month(current_date())");
+        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from `contact` WHERE day(`birth_date`) = day(current_date()) and month(`birth_date`) = month(current_date())");
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
                 contactList.add(contact);
             }
         } catch (SQLException e) {
-            LOG.warn("can't get contacs by birthday", e);
+            LOG.error("can't get contacs by birthday", e);
+            throw new DaoException("error while getting birthday boys");
         }
         return contactList;
     }

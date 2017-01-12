@@ -1,12 +1,11 @@
-package dao.mysqlimplementation;
+package dao.implementation;
 
 import dao.interfaces.CityDao;
-import dao.interfaces.ConnectionFactory;
+import exceptions.DaoException;
 import model.City;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,11 +16,11 @@ import java.util.List;
 /**
  * Created by maxim on 20.09.2016.
  */
-public class MySqlCityDao implements CityDao {
-    private final static Logger LOG = LoggerFactory.getLogger(MySqlCityDao.class);
+public class CityDaoImpl implements CityDao {
+    private final static Logger LOG = LoggerFactory.getLogger(CityDaoImpl.class);
     private Connection connection;
 
-    public MySqlCityDao(Connection connection) {
+    public CityDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
@@ -34,28 +33,29 @@ public class MySqlCityDao implements CityDao {
     }
 
     @Override
-    public List<City> getAll() {
+    public List<City> getAll() throws DaoException {
         List<City> cityList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city`");
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `city`");
             ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 City city = parseResultSet(rs);
                 cityList.add(city);
             }
         } catch (SQLException e) {
-            LOG.warn("can't get city list", e);
+            LOG.error("can't get city list", e);
+            throw new DaoException("error while getting city list", e);
         }
         return cityList;
     }
 
     private PreparedStatement createGetByIDStatement(int cityID) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`city` WHERE `id` = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `city` WHERE `id` = ?");
         preparedStatement.setObject(1, cityID);
         return preparedStatement;
     }
 
     @Override
-    public City getByID(int cityID) {
+    public City getByID(int cityID) throws DaoException {
         City city = null;
         try(PreparedStatement preparedStatement = createGetByIDStatement(cityID);
             ResultSet rs = preparedStatement.executeQuery()) {
@@ -63,7 +63,8 @@ public class MySqlCityDao implements CityDao {
                 city = parseResultSet(rs);
             }
         } catch (SQLException e) {
-            LOG.warn("can't get city by id - ", cityID, e);
+            LOG.error("can't get city by id - {}", cityID, e);
+            throw new DaoException("error while getting city", e);
         }
         return city;
     }

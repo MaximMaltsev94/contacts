@@ -1,10 +1,9 @@
 package command;
 
 import dao.interfaces.*;
-import dao.mysqlimplementation.*;
+import dao.implementation.*;
 import model.*;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -14,7 +13,6 @@ import util.ContactUtils;
 
 import javax.imageio.ImageIO;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +24,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -114,12 +111,12 @@ public class AddHandler implements RequestHandler {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
         if(isMultipart) {
-            try(Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
+            try(Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
                 List<FileItem> items = ContactUtils.getMultipartItems(request, 10000);
 
                 Contact contact = parseContactInfo(items, request.getServletContext().getInitParameter("uploadPath"));
 
-                ContactDao contactDao = new MySqlContactDao(connection);
+                ContactDao contactDao = new ContactDaoImpl(connection);
                 contactDao.insert(contact);
                 response.sendRedirect("?action=show&page=1");
             } catch (Exception ex) {
@@ -137,16 +134,16 @@ public class AddHandler implements RequestHandler {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()){
-            RelationshipDao rshDao = new MySqlRelationshipDao(connection);
+        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()){
+            RelationshipDao rshDao = new RelationshipDaoImpl(connection);
             List<Relationship> relationshipList = rshDao.getAll();
             request.setAttribute("relationshipList", relationshipList);
 
-            CountryDao countryDao = new MySqlCountryDao(connection);
+            CountryDao countryDao = new CountryDaoImpl(connection);
             List<Country> countryList = countryDao.getAll();
             request.setAttribute("countryList", countryList);
 
-            CityDao cityDao = new MySqlCityDao(connection);
+            CityDao cityDao = new CityDaoImpl(connection);
             List<City> cityList = cityDao.getAll();
             request.setAttribute("cityList", cityList);
             request.getRequestDispatcher("/WEB-INF/view/addContact.jsp").forward(request, response);

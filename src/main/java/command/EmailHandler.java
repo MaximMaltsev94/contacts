@@ -1,12 +1,10 @@
 package command;
 import dao.interfaces.ContactDao;
-import dao.mysqlimplementation.MySqlConnectionFactory;
-import dao.mysqlimplementation.MySqlContactDao;
+import dao.implementation.ConnectionFactoryImpl;
+import dao.implementation.ContactDaoImpl;
 import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import servlet.FrontController;
-import util.ContactUtils;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -23,8 +21,8 @@ import java.util.regex.Pattern;
 public class EmailHandler implements RequestHandler {
     private final static Logger LOG = LoggerFactory.getLogger(EmailHandler.class);
     private void processRequest(HttpServletRequest request, HttpServletResponse response, List<Integer> contactIds) throws ServletException, IOException {
-        try(Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
-            ContactDao contactDao = new MySqlContactDao(connection);
+        try(Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+            ContactDao contactDao = new ContactDaoImpl(connection);
             List<Contact> contactsWithEmail = contactDao.getContactsWithEmail();
 
             request.setAttribute("contactList", contactsWithEmail);

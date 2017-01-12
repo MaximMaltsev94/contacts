@@ -1,9 +1,8 @@
 package command;
 
-import dao.interfaces.ConnectionFactory;
 import dao.interfaces.ContactDao;
-import dao.mysqlimplementation.MySqlConnectionFactory;
-import dao.mysqlimplementation.MySqlContactDao;
+import dao.implementation.ConnectionFactoryImpl;
+import dao.implementation.ContactDaoImpl;
 import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +28,9 @@ public class ShowHandler implements RequestHandler {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Connection connection = null;
         try {
-            connection = MySqlConnectionFactory.getInstance().getConnection();
+            connection = ConnectionFactoryImpl.getInstance().getConnection();
             int pageNumber = Integer.parseInt(request.getParameter("page"));
-            ContactDao contactDao = new MySqlContactDao(connection);
+            ContactDao contactDao = new ContactDaoImpl(connection);
             int rowsCount = contactDao.getRowsCount();
             int maxPageNumber = (rowsCount / 10) + (rowsCount % 10 == 0 ? 0 : 1);
             if(maxPageNumber == 0) {

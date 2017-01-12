@@ -1,4 +1,4 @@
-package dao.mysqlimplementation;
+package dao.implementation;
 
 import dao.interfaces.ConnectionFactory;
 
@@ -9,8 +9,8 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class MySqlConnectionFactory implements ConnectionFactory{
-    private static volatile MySqlConnectionFactory instance;
+public class ConnectionFactoryImpl implements ConnectionFactory{
+    private static volatile ConnectionFactoryImpl instance;
     private static DataSource dataSource;
 
     private static void configureDataSource() throws NamingException {
@@ -19,13 +19,13 @@ public class MySqlConnectionFactory implements ConnectionFactory{
         dataSource = (DataSource) envContext.lookup("jdbc/contactsDB_maltsev");
     }
 
-    public static MySqlConnectionFactory getInstance() throws NamingException {
-        MySqlConnectionFactory localInstance = instance;
+    public static ConnectionFactoryImpl getInstance() throws NamingException {
+        ConnectionFactoryImpl localInstance = instance;
         if(localInstance == null) {
-            synchronized (MySqlConnectionFactory.class) {
+            synchronized (ConnectionFactoryImpl.class) {
                 localInstance = instance;
                 if(localInstance == null) {
-                    instance = localInstance = new MySqlConnectionFactory();
+                    instance = localInstance = new ConnectionFactoryImpl();
                     configureDataSource();
                 }
             }
@@ -34,7 +34,7 @@ public class MySqlConnectionFactory implements ConnectionFactory{
     }
 
 
-    private MySqlConnectionFactory() {
+    private ConnectionFactoryImpl() {
     }
 
     @Override

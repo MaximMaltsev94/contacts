@@ -4,7 +4,7 @@ import dao.interfaces.CityDao;
 import dao.interfaces.ContactDao;
 import dao.interfaces.CountryDao;
 import dao.interfaces.RelationshipDao;
-import dao.mysqlimplementation.*;
+import dao.implementation.*;
 import model.Contact;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -56,11 +56,11 @@ public class SubmitemailHandler implements RequestHandler {
         String emailSubject = ContactUtils.getUTF8String(request.getParameter("subject"));
         String emailText = ContactUtils.getUTF8String(request.getParameter("text"));
         String []splitedIds = request.getParameter("id").split(",");
-        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
-            ContactDao contactDao = new MySqlContactDao(connection);
-            RelationshipDao relationshipDao = new MySqlRelationshipDao(connection);
-            CountryDao countryDao = new MySqlCountryDao(connection);
-            CityDao cityDao = new MySqlCityDao(connection);
+        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+            ContactDao contactDao = new ContactDaoImpl(connection);
+            RelationshipDao relationshipDao = new RelationshipDaoImpl(connection);
+            CountryDao countryDao = new CountryDaoImpl(connection);
+            CityDao cityDao = new CityDaoImpl(connection);
             for (String id : splitedIds) {
                 int contactId = Integer.parseInt(id);
                 Contact contact = contactDao.getByID(contactId);

@@ -1,12 +1,11 @@
-package dao.mysqlimplementation;
+package dao.implementation;
 
-import dao.interfaces.ConnectionFactory;
 import dao.interfaces.PhoneDao;
+import exceptions.DaoException;
 import model.Phone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,11 +16,11 @@ import java.util.List;
 /**
  * Created by maxim on 25.09.2016.
  */
-public class MySqlPhoneDao implements PhoneDao {
-    private final static Logger LOG = LoggerFactory.getLogger(MySqlPhoneDao.class);
+public class PhoneDaoImpl implements PhoneDao {
+    private final static Logger LOG = LoggerFactory.getLogger(PhoneDaoImpl.class);
     private Connection connection;
 
-    public MySqlPhoneDao(Connection connection) {
+    public PhoneDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
@@ -38,15 +37,15 @@ public class MySqlPhoneDao implements PhoneDao {
     }
 
     private PreparedStatement createGetPhoneByContactIDStatement(int id) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`phone` WHERE `id_contact` = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `phone` WHERE `id_contact` = ?");
         preparedStatement.setObject(1, id);
         return preparedStatement;
     }
 
     @Override
-    public List<Phone> getPhoneByContactID(int id) {
+    public List<Phone> getPhoneByContactID(int contactId) throws DaoException {
         List<Phone> phoneList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetPhoneByContactIDStatement(id);
+        try(PreparedStatement preparedStatement = createGetPhoneByContactIDStatement(contactId);
             ResultSet rs = preparedStatement.executeQuery()){
             while (rs.next()) {
                 Phone phone = parseResultSet(rs);
@@ -54,25 +53,26 @@ public class MySqlPhoneDao implements PhoneDao {
             }
 
         } catch (SQLException e) {
-            LOG.warn("can't get user's phones - {}", id, e);
+            LOG.error("can't get phones by contactID - {}", contactId, e);
+            throw new DaoException("error while getting phones by contact ID",e);
         }
         return phoneList;
     }
 
     @Override
-    public void deleteByContactID(int contactID) throws SQLException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `contacts_maltsev`.`phone` WHERE `id_contact` = ?");) {
+    public void deleteByContactID(int contactID) throws DaoException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `phone` WHERE `id_contact` = ?");) {
             preparedStatement.setObject(1, contactID);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOG.warn("can't delete phones by contact id ", e);
-            throw new SQLException();
+            LOG.error("can't delete phones by contact id - {} ", contactID, e);
+            throw new DaoException("error while deleting phones by contact ID", e);
         }
     }
 
     @Override
-    public void insert(Phone phone) throws SQLException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `contacts_maltsev`.`phone` (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES(?, ?, ?, ?, ?, ?)")) {
+    public void insert(Phone phone) throws DaoException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `phone` (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES(?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setObject(1, phone.getCountryID());
             preparedStatement.setObject(2, phone.getOperatorCode());
             preparedStatement.setObject(3, phone.getPhoneNumber());
@@ -81,8 +81,8 @@ public class MySqlPhoneDao implements PhoneDao {
             preparedStatement.setObject(6, phone.getComment());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOG.warn("can't insert phone ", e);
-            throw new SQLException();
+            LOG.error("can't insert phone - {}", phone, e);
+            throw new DaoException();
         }
     }
 }

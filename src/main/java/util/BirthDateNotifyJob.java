@@ -1,22 +1,19 @@
 package util;
 
 import dao.interfaces.ContactDao;
-import dao.mysqlimplementation.MySqlConnectionFactory;
-import dao.mysqlimplementation.MySqlContactDao;
+import dao.implementation.ConnectionFactoryImpl;
+import dao.implementation.ContactDaoImpl;
 import model.Contact;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,9 +23,9 @@ public class BirthDateNotifyJob implements Job {
     private final static Logger LOG = LoggerFactory.getLogger(BirthDateNotifyJob.class);
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        try(Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
+        try(Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
             LOG.info("start looking for birthday contacts");
-            ContactDao contactDao = new MySqlContactDao(connection);
+            ContactDao contactDao = new ContactDaoImpl(connection);
             List<Contact> contactList = contactDao.getByBirthdayToday();
             if(contactList.size() > 0) {
                 StringBuilder emailText = new StringBuilder();

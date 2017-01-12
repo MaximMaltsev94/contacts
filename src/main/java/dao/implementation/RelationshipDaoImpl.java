@@ -1,12 +1,11 @@
-package dao.mysqlimplementation;
+package dao.implementation;
 
-import dao.interfaces.ConnectionFactory;
 import dao.interfaces.RelationshipDao;
+import exceptions.DaoException;
 import model.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,12 +16,12 @@ import java.util.List;
 /**
  * Created by maxim on 19.09.2016.
  */
-public class MySqlRelationshipDao implements RelationshipDao {
-    private final static Logger LOG = LoggerFactory.getLogger(MySqlRelationshipDao.class);
+public class RelationshipDaoImpl implements RelationshipDao {
+    private final static Logger LOG = LoggerFactory.getLogger(RelationshipDaoImpl.class);
 
     private Connection connection;
 
-    public MySqlRelationshipDao(Connection connection) {
+    public RelationshipDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
@@ -34,9 +33,9 @@ public class MySqlRelationshipDao implements RelationshipDao {
     }
 
     @Override
-    public List<Relationship> getAll() {
+    public List<Relationship> getAll() throws DaoException {
         List<Relationship> relationshipList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`relationship`");
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `relationship`");
              ResultSet rs = preparedStatement.executeQuery()) {
 
             while (rs.next()) {
@@ -44,19 +43,20 @@ public class MySqlRelationshipDao implements RelationshipDao {
                 relationshipList.add(relationship);
             }
         } catch (SQLException e) {
-            LOG.warn("can't read relationship list", e);
+            LOG.error("can't read relationship list", e);
+            throw new DaoException("error while getting relationship list", e);
         }
         return relationshipList;
     }
 
     private PreparedStatement createGetByIDStatement(int relationshipID) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contacts_maltsev`.`relationship` WHERE `id` = ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `relationship` WHERE `id` = ?");
         preparedStatement.setObject(1, relationshipID);
         return preparedStatement;
     }
 
     @Override
-    public Relationship getByID(int relationshipID) {
+    public Relationship getByID(int relationshipID) throws DaoException {
         Relationship relationship = null;
         try (PreparedStatement preparedStatement = createGetByIDStatement(relationshipID);
                 ResultSet rs = preparedStatement.executeQuery()) {
@@ -64,7 +64,8 @@ public class MySqlRelationshipDao implements RelationshipDao {
                 relationship = parseResultSet(rs);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.error("can't get relationship by id - {}", relationshipID, e);
+            throw new DaoException("error while getting relationship by Id", e);
         }
         return relationship;
     }

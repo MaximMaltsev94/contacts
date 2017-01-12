@@ -1,7 +1,7 @@
 package command;
 
 import dao.interfaces.*;
-import dao.mysqlimplementation.*;
+import dao.implementation.*;
 import model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,22 +70,22 @@ public class SearchHandler implements RequestHandler {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
+        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
             parseRequest(request);
             setRequestAttributes(request);
-            RelationshipDao rshDao = new MySqlRelationshipDao(connection);
+            RelationshipDao rshDao = new RelationshipDaoImpl(connection);
             List<Relationship> relationshipList = rshDao.getAll();
             request.setAttribute("relationshipList", relationshipList);
 
-            CountryDao countryDao = new MySqlCountryDao(connection);
+            CountryDao countryDao = new CountryDaoImpl(connection);
             List<Country> countryList = countryDao.getAll();
             request.setAttribute("countryList", countryList);
 
-            CityDao cityDao = new MySqlCityDao(connection);
+            CityDao cityDao = new CityDaoImpl(connection);
             List<City> cityList = cityDao.getAll();
             request.setAttribute("cityList", cityList);
 
-            ContactDao contactDao = new MySqlContactDao(connection);
+            ContactDao contactDao = new ContactDaoImpl(connection);
             List<Contact> contactList = contactDao.find(firstName, lastName, patronymic, age1, age2, gender, citizenship, relationship, companyName, country, city, street, postcode);
             request.setAttribute("contactList", contactList);
 
@@ -97,16 +97,16 @@ public class SearchHandler implements RequestHandler {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (Connection connection = MySqlConnectionFactory.getInstance().getConnection()) {
-            RelationshipDao rshDao = new MySqlRelationshipDao(connection);
+        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+            RelationshipDao rshDao = new RelationshipDaoImpl(connection);
             List<Relationship> relationshipList = rshDao.getAll();
             request.setAttribute("relationshipList", relationshipList);
 
-            CountryDao countryDao = new MySqlCountryDao(connection);
+            CountryDao countryDao = new CountryDaoImpl(connection);
             List<Country> countryList = countryDao.getAll();
             request.setAttribute("countryList", countryList);
 
-            CityDao cityDao = new MySqlCityDao(connection);
+            CityDao cityDao = new CityDaoImpl(connection);
             List<City> cityList = cityDao.getAll();
             request.setAttribute("cityList", cityList);
 
