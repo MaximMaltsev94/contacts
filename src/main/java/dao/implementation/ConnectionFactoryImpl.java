@@ -1,6 +1,9 @@
 package dao.implementation;
 
 import dao.interfaces.ConnectionFactory;
+import exceptions.ConnectionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -10,35 +13,41 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class ConnectionFactoryImpl implements ConnectionFactory{
-    private static volatile ConnectionFactoryImpl instance;
+    private final static Logger LOG = LoggerFactory.getLogger(ConnectionFactoryImpl.class);
+    private static final ConnectionFactoryImpl instance;
+
+    static {
+        try {
+            instance = new ConnectionFactoryImpl();
+        } catch (ConnectionException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     private static DataSource dataSource;
 
-    private static void configureDataSource() throws NamingException {
-        Context initContext = new InitialContext();
-        Context envContext = (Context) initContext.lookup("java:comp/env");
-        dataSource = (DataSource) envContext.lookup("jdbc/contactsDB_maltsev");
+    public static ConnectionFactoryImpl getInstance() {
+        return instance;
     }
 
-    public static ConnectionFactoryImpl getInstance() throws NamingException {
-        ConnectionFactoryImpl localInstance = instance;
-        if(localInstance == null) {
-            synchronized (ConnectionFactoryImpl.class) {
-                localInstance = instance;
-                if(localInstance == null) {
-                    instance = localInstance = new ConnectionFactoryImpl();
-                    configureDataSource();
-                }
-            }
+    private ConnectionFactoryImpl() throws ConnectionException {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/contactsDB_maltsev");
+        } catch (NamingException e) {
+            LOG.error("can't find datasource in environment context", e);
+            throw new ConnectionException("error while finding datasource in environment context", e);
         }
-        return localInstance;
-    }
-
-
-    private ConnectionFactoryImpl() {
     }
 
     @Override
-    synchronized public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    synchronized public Connection getConnection() throws ConnectionException {
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            LOG.error("can't get connection to database", e);
+            throw new ConnectionException("error while getting connection to database", e);
+        }
     }
 }
