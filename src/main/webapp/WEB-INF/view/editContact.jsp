@@ -7,6 +7,7 @@
     <title>Редактировать контакт</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css" />">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
     <script src="<c:url value="/js/addView.js"/>"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
@@ -22,6 +23,8 @@
         popupAttachment.setAttachmentCount(${requestScope.get('attachmentList').size()})">
 <jsp:include page="header.jsp"/>
 <fmt:setLocale value="ru_RU" scope="session"/>
+
+<span id="tooltip"></span>
 
 <div class="container">
     <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">

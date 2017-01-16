@@ -1,8 +1,10 @@
 package util;
 
 import dao.interfaces.ContactDao;
-import dao.implementation.ConnectionFactoryImpl;
+import dao.implementation.ConnectionFactory;
 import dao.implementation.ContactDaoImpl;
+import exceptions.ConnectionException;
+import exceptions.DaoException;
 import model.Contact;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -23,7 +25,7 @@ public class BirthDateNotifyJob implements Job {
     private final static Logger LOG = LoggerFactory.getLogger(BirthDateNotifyJob.class);
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        try(Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+        try(Connection connection = ConnectionFactory.getInstance().getConnection()) {
             LOG.info("start looking for birthday contacts");
             ContactDao contactDao = new ContactDaoImpl(connection);
             List<Contact> contactList = contactDao.getByBirthdayToday();
@@ -38,12 +40,16 @@ public class BirthDateNotifyJob implements Job {
                 }
                 EmailHelper emailHelper = new EmailHelper();
                 emailHelper.sendToAdmin("Уведомление о дне рождения", emailText.toString());
-                LOG.info("birthday notify message sended");
+                LOG.info("birthday notify message sent to admin's email - {}", emailHelper.getAdminEmail());
             }
-        } catch (SQLException | NamingException e) {
-            LOG.warn("can't get db connection", e);
+        } catch (SQLException e ) {
+            LOG.error("can't close connection to database", e);
         } catch (MessagingException e) {
-            LOG.warn("can't send birthday notify email", e);
+            LOG.error("can't send birthday notify email", e);
+        } catch (ConnectionException e) {
+            LOG.error("can't get connection to database", e);
+        } catch (DaoException e) {
+            LOG.error("error while accessing to database", e);
         }
     }
 }

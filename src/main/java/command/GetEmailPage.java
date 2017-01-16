@@ -1,27 +1,34 @@
 package command;
-import dao.interfaces.ContactDao;
-import dao.implementation.ConnectionFactoryImpl;
+
+import dao.implementation.ConnectionFactory;
 import dao.implementation.ContactDaoImpl;
+import dao.interfaces.ContactDao;
+import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
+import exceptions.DaoException;
+import exceptions.DataNotFoundException;
 import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EmailHandler implements RequestHandler {
-    private final static Logger LOG = LoggerFactory.getLogger(EmailHandler.class);
-    private void processRequest(HttpServletRequest request, HttpServletResponse response, List<Integer> contactIds) throws ServletException, IOException {
-        try(Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+public class GetEmailPage implements Command {
+    private final static Logger LOG = LoggerFactory.getLogger(GetEmailPage.class);
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response, List<Integer> contactIds) throws CommandExecutionException{
+        try(Connection connection = ConnectionFactory.getInstance().getConnection()) {
             ContactDao contactDao = new ContactDaoImpl(connection);
             List<Contact> contactsWithEmail = contactDao.getContactsWithEmail();
 
@@ -31,9 +38,15 @@ public class EmailHandler implements RequestHandler {
             Map<String, String> templates = readTemplates();
             request.setAttribute("templates", templates);
 
-            request.getRequestDispatcher("/WEB-INF/view/email.jsp").forward(request, response);
-        } catch (SQLException | NamingException e) {
-            LOG.warn("can't get db connection", e);
+        }  catch (DaoException e) {
+            LOG.error("error while accessing database", e);
+            throw new CommandExecutionException("error while accessing database",e);
+        } catch (ConnectionException e) {
+            LOG.error("can't get connection to database", e);
+            throw new CommandExecutionException("error while connecting to database", e);
+        } catch (SQLException e) {
+            LOG.error("can't close connection to database", e);
+            throw new CommandExecutionException("error while closing database connection", e);
         }
     }
 
@@ -61,23 +74,26 @@ public class EmailHandler implements RequestHandler {
                 }
             }
         } catch (URISyntaxException e) {
-            LOG.warn("can't find resource folder", e);
+            LOG.error("can't find resource folder", e);
         }
         return templates;
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String[] splitedIDs = request.getParameter("id").split(",");
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+        String VIEW_NAME = "email";
+
+        String idListString = request.getParameter("id");
+
         List<Integer> contactIds = new ArrayList<>();
-        for (String id : splitedIDs) {
-            contactIds.add(Integer.parseInt(id));
+        if(idListString != null) {
+            String[] splitedIDs = idListString.split(",");
+            for (String id : splitedIDs) {
+                contactIds.add(Integer.parseInt(id));
+            }
         }
         processRequest(request, response, contactIds);
-    }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response, new ArrayList<>());
+        return VIEW_NAME;
     }
 }

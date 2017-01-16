@@ -1,9 +1,12 @@
 package command;
 
-
-import dao.interfaces.AttachmentDao;
 import dao.implementation.AttachmentDaoImpl;
-import dao.implementation.ConnectionFactoryImpl;
+import dao.implementation.ConnectionFactory;
+import dao.interfaces.AttachmentDao;
+import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
+import exceptions.DaoException;
+import exceptions.DataNotFoundException;
 import model.Attachment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,24 +17,19 @@ import util.ContactUtils;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * Created by Student on 9/29/2016.
- */
-public class DocumentHandler implements RequestHandler {
-    private final static Logger LOG = LoggerFactory.getLogger(DocumentHandler.class);
+public class GetDocument implements Command {
+    private final static Logger LOG = LoggerFactory.getLogger(GetDocument.class);
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("?action=show&page=1");
-    }
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+        try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
             String fileName = "file" + StringUtils.substringAfter(request.getParameter("name"), "file");
             String filePath = request.getServletContext().getInitParameter("uploadPath") + fileName;
             File file = new File(filePath);
@@ -67,11 +65,17 @@ public class DocumentHandler implements RequestHandler {
             in.close();
             out.flush();
         } catch (IOException e) {
-            LOG.warn("can't find file - ", request.getParameter("name"), e);
+            LOG.warn("can't find file - {} in filesystem", request.getParameter("name"), e);
         } catch (SQLException e) {
-            LOG.warn("can't get db connection", e);
-        } catch (NamingException e) {
-            e.printStackTrace();
+            LOG.warn("can't close db connection", e);
+            throw new CommandExecutionException("error while closing connection to database", e);
+        } catch (DaoException e) {
+            LOG.error("error while accessing database", e);
+            throw new CommandExecutionException("error while accessing database", e);
+        } catch (ConnectionException e) {
+            LOG.error("can't get connection to database", e);
+            throw new CommandExecutionException("error while getting connection to database", e);
         }
+        return null;
     }
 }

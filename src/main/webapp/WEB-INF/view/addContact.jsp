@@ -6,8 +6,10 @@
 <head>
     <title>Добавить контакт</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
 
+    <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/addView.js"/>"></script>
 </head>
 <body onload="addView.selectCountry(0);
@@ -16,13 +18,14 @@
         addView.selectGender(1);">
 <jsp:include page="header.jsp"/>
 <fmt:setLocale value="ru_RU" scope="session"/>
+<span id="tooltip"></span>
 
 <div class="container">
     <section>
         <div class="jlab-row">
             <span class="text-large">Основное</span>
         </div>
-        <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="/contact/?action=add"/>" method="post" enctype="multipart/form-data">
+        <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="?action=add"/>" method="post" enctype="multipart/form-data">
 
             <div class="jlab-row margin">
                 <div class="jlab-cell-3 align-right">

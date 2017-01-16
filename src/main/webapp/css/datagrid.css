@@ -6,7 +6,7 @@
 div[class*="jlab-cell-"] {
     /*display: inline-block;*/
     box-sizing: border-box;
-    margin: 0 5px;
+    margin: 0;
 }
 
 div[class*="jlab-cell-"].center {
@@ -28,7 +28,7 @@ div[class*="jlab-cell-"].center {
 
 .fixed {
     position: fixed;
-    right: 10px;
+    left: 75%;
     /*overflow-y:scroll;*/
     /*overflow-x:hidden;*/
 }

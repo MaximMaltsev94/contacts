@@ -81,16 +81,17 @@ var addView = (function() {
 
             if(mm >= 0 && mm <= 11) {
                 if(dd >= 1 && dd <= monthDays[mm]) {
-                    if(yyyy > 1900) {
+                    if(yyyy > 1950) {
                         var dNow = new Date();
                         var bDateObj = new Date(yyyy, mm, dd);
                         console.log("Day + " + bDateObj.getDay());
                         console.log("Month + " + bDateObj.getMonth());
-                        return dNow >= bDateObj;
+                        if(bDateObj <= dNow)
+                            return true;
                     }
                 }
             }
-            alert("Введена недействительная дата");
+            main.showTooltip("Введена недействительная дата", "danger");
             return false;
         }
     }

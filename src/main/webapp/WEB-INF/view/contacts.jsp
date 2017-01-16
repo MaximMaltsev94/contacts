@@ -8,12 +8,20 @@
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/pagination.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
 
+    <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/showView.js"/>"></script>
 </head>
-<body>
+
+<body onload="main.showTooltip('${sessionScope.get('tooltip-text')}', '${sessionScope.get('tooltip-type')}')">
+<c:remove var="tooltip-text" scope="session"/>
+<c:remove var="tooltip-type" scope="session"/>
+
 <jsp:include page="header.jsp"/>
 <fmt:setLocale value="ru_RU" scope="session"/>
+
+<span id="tooltip"></span>
 
 <div class="container">
 

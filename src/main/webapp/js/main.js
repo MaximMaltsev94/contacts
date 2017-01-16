@@ -1,5 +1,22 @@
 var main = (function () {
     return {
+        showTooltip: function (tooltipText, tooltipType) {
+            if(tooltipText == '')
+                return;
+
+            var bgColor = tooltipType === 'success' ? "rgb(133, 219, 24)" : "rgb(226, 26, 34)";
+
+            var tooltipElement = document.getElementById('tooltip');
+            tooltipElement.style.display = "block";
+            tooltipElement.innerHTML = tooltipText;
+            tooltipElement.style.backgroundColor = bgColor;
+            tooltipElement.className = 'tooltip-animation';
+
+            setTimeout(function(){
+                console.log('hiding');
+                tooltipElement.style.display = 'none';
+            }, 5000);
+        },
         createInput: function (id, type, display) {
             var inputElement = document.createElement('input');
             inputElement.type = type;

@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.Serializable;
 
 public class Country implements Serializable {
@@ -38,5 +41,17 @@ public class Country implements Serializable {
     }
 
     public Country() {
+    }
+
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        String result = "";
+        try {
+            result = mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

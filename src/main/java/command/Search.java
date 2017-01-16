@@ -1,27 +1,32 @@
 package command;
 
-import dao.interfaces.*;
 import dao.implementation.*;
-import model.*;
+import dao.interfaces.CityDao;
+import dao.interfaces.ContactDao;
+import dao.interfaces.CountryDao;
+import dao.interfaces.RelationshipDao;
+import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
+import exceptions.DaoException;
+import exceptions.DataNotFoundException;
+import model.City;
+import model.Contact;
+import model.Country;
+import model.Relationship;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactUtils;
 
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Created by maxim on 30.09.2016.
- */
-public class SearchHandler implements RequestHandler {
-    private final static Logger LOG = LoggerFactory.getLogger(SearchHandler.class);
+public class Search implements Command {
+    private final static Logger LOG = LoggerFactory.getLogger(Search.class);
+
     private String firstName;
     private String lastName;
     private String patronymic;
@@ -69,8 +74,10 @@ public class SearchHandler implements RequestHandler {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+        String VIEW_NAME = "search";
+
+        try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
             parseRequest(request);
             setRequestAttributes(request);
             RelationshipDao rshDao = new RelationshipDaoImpl(connection);
@@ -89,36 +96,20 @@ public class SearchHandler implements RequestHandler {
             List<Contact> contactList = contactDao.find(firstName, lastName, patronymic, age1, age2, gender, citizenship, relationship, companyName, country, city, street, postcode);
             request.setAttribute("contactList", contactList);
 
-            request.getRequestDispatcher("/WEB-INF/view/search.jsp").forward(request, response);
-        } catch (NamingException | SQLException e) {
-            LOG.warn("can't get db connection", e);
+        } catch (DaoException e) {
+            LOG.error("error while accessing database", e);
+            throw new CommandExecutionException("error while accessing database",e);
+        } catch (ConnectionException e) {
+            LOG.error("can't get connection to database", e);
+            throw new CommandExecutionException("error while connecting to database", e);
+        } catch (SQLException e) {
+            LOG.error("can't close connection to database", e);
+            throw new CommandExecutionException("error while closing database connection", e);
+        } catch (UnsupportedEncodingException e) {
+            LOG.error("encoding is not supported", e);
+            throw new CommandExecutionException("error while parsing parameters encoding", e);
         }
-    }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
-            RelationshipDao rshDao = new RelationshipDaoImpl(connection);
-            List<Relationship> relationshipList = rshDao.getAll();
-            request.setAttribute("relationshipList", relationshipList);
-
-            CountryDao countryDao = new CountryDaoImpl(connection);
-            List<Country> countryList = countryDao.getAll();
-            request.setAttribute("countryList", countryList);
-
-            CityDao cityDao = new CityDaoImpl(connection);
-            List<City> cityList = cityDao.getAll();
-            request.setAttribute("cityList", cityList);
-
-            request.setAttribute("gender", 2);
-            request.setAttribute("age1", 0);
-            request.setAttribute("age2", 0);
-            request.setAttribute("country", 0);
-            request.setAttribute("city", 0);
-            request.setAttribute("relationship", 0);
-            request.getRequestDispatcher("/WEB-INF/view/search.jsp").forward(request, response);
-        } catch (NamingException | SQLException e) {
-            LOG.warn("can't get db connection", e);
-        }
+        return VIEW_NAME;
     }
 }

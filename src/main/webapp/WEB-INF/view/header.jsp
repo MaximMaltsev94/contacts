@@ -5,7 +5,7 @@
         <div class="jlab-row">
             <div class="element">
                 <a class="text-large" href="<c:url value="?action=show&page=1" />">
-                    Contacts
+                    Контакты
                 </a>
             </div>
             <div class="element right">

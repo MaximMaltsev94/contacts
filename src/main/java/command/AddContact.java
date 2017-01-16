@@ -1,24 +1,28 @@
 package command;
 
-import dao.interfaces.*;
-import dao.implementation.*;
-import model.*;
+import dao.implementation.ConnectionFactory;
+import dao.implementation.ContactDaoImpl;
+import dao.interfaces.ContactDao;
+import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
+import exceptions.DaoException;
+import exceptions.DataNotFoundException;
+import model.Contact;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactUtils;
+import util.TooltipType;
 
 import javax.imageio.ImageIO;
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -26,21 +30,23 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by maxim on 19.09.2016.
- */
-public class AddHandler implements RequestHandler {
-    private final static Logger LOG = LoggerFactory.getLogger(AddHandler.class);
+public class AddContact implements Command {
+    private final static Logger LOG = LoggerFactory.getLogger(AddContact.class);
+
     private String savedImageUrl = "";
 
-    private Contact parseContactInfo(List<FileItem> items, String uploadPath) throws UnsupportedEncodingException, ParseException {
+    private Contact parseContactInfo(List<FileItem> items, String uploadPath) throws UnsupportedEncodingException, ParseException, FileUploadException {
         Contact contact = new Contact();
         contact.setProfilePicture("/sysImages/default.png");
-        for(FileItem item: items) {
+        for (FileItem item : items) {
             if (!item.isFormField()) {
                 try {
                     //read image from input
                     BufferedImage image = ImageIO.read(item.getInputStream());
+                    if(image == null) {
+                        LOG.info("profile image not specified");
+                        continue;
+                    }
                     //check if loaded file is actually image
                     image.toString();
 
@@ -50,12 +56,12 @@ public class AddHandler implements RequestHandler {
                     contact.setProfilePicture("?action=image&name=" + fileToSave.getName());
                     savedImageUrl = contact.getProfilePicture();
 
-                } catch (Exception ex) {
-                    LOG.warn("can't save profile image", ex);
+                } catch (Exception e) {
+                    LOG.error("can't save profile image", e);
                 }
             } else {
                 String itemValue = ContactUtils.getUTF8String(item.getString());
-                if(StringUtils.isNotBlank(itemValue)) {
+                if (StringUtils.isNotBlank(itemValue)) {
                     switch (item.getFieldName()) {
                         case "firstName":
                             contact.setFirstName(itemValue);
@@ -67,7 +73,7 @@ public class AddHandler implements RequestHandler {
                             contact.setPatronymic(itemValue);
                             break;
                         case "birthDate":
-                            Date birthDate =  DateUtils.parseDate(itemValue, "dd.MM.yyyy");
+                            Date birthDate = DateUtils.parseDate(itemValue, "dd.MM.yyyy");
                             contact.setBirthDate(birthDate);
                             break;
                         case "gender":
@@ -107,50 +113,49 @@ public class AddHandler implements RequestHandler {
         return contact;
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    @Override
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-
-        if(isMultipart) {
-            try(Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+        Contact contact = null;
+        boolean isErrorOccurred = true;
+        if (isMultipart) {
+            try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
                 List<FileItem> items = ContactUtils.getMultipartItems(request, 10000);
 
-                Contact contact = parseContactInfo(items, request.getServletContext().getInitParameter("uploadPath"));
+                contact = parseContactInfo(items, request.getServletContext().getInitParameter("uploadPath"));
 
                 ContactDao contactDao = new ContactDaoImpl(connection);
                 contactDao.insert(contact);
-                response.sendRedirect("?action=show&page=1");
-            } catch (Exception ex) {
-                LOG.warn("can't add contact", ex);
-                LOG.info("deleting profile image - {}", savedImageUrl);
-                ContactUtils.deleteFileByUrl(savedImageUrl, request.getServletContext().getInitParameter("uploadPath"), "pri");
-                try {
-                    response.getWriter().println("An error occurred while adding contact");
-                    response.getWriter().flush();
-                } catch (IOException e) {
+                request.getSession().setAttribute("tooltip-type", TooltipType.success.toString());
+                request.getSession().setAttribute("tooltip-text", "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно сохранен");
+                isErrorOccurred = false;
+            } catch (DaoException e) {
+                LOG.error("can't insert contact - {} to database", contact, e);
+                throw new CommandExecutionException("error while inserting contacts to database", e);
+            } catch (ConnectionException e) {
+                LOG.error("can't get connection to database", e);
+                throw new CommandExecutionException("error while connecting to database", e);
+            } catch (SQLException e) {
+                LOG.error("can't close connection to database", e);
+                throw new CommandExecutionException("error while closing database connection", e);
+            } catch (FileUploadException e) {
+                LOG.error("can't save profile image", e);
+                throw new CommandExecutionException("error while saving profile image", e);
+            } catch (UnsupportedEncodingException e) {
+                LOG.error("some problems with parameters encoding", e);
+                throw new CommandExecutionException("error while process parameter's encoding", e);
+            } catch (ParseException e) {
+                // TODO: 14.01.2017 change date when params will be in request attributes
+                LOG.error("can't parse date - {}", "!!!", e);
+                throw new CommandExecutionException("error while parsing contact's birth date", e);
+            } finally {
+                if(isErrorOccurred) {
+                    LOG.info("deleting profile image from file system - {}", savedImageUrl);
+                    ContactUtils.deleteFileByUrl(savedImageUrl, request.getServletContext().getInitParameter("uploadPath"), "pri");
                 }
             }
         }
-    }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
-        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()){
-            RelationshipDao rshDao = new RelationshipDaoImpl(connection);
-            List<Relationship> relationshipList = rshDao.getAll();
-            request.setAttribute("relationshipList", relationshipList);
-
-            CountryDao countryDao = new CountryDaoImpl(connection);
-            List<Country> countryList = countryDao.getAll();
-            request.setAttribute("countryList", countryList);
-
-            CityDao cityDao = new CityDaoImpl(connection);
-            List<City> cityList = cityDao.getAll();
-            request.setAttribute("cityList", cityList);
-            request.getRequestDispatcher("/WEB-INF/view/addContact.jsp").forward(request, response);
-        } catch (ServletException | IOException e) {
-            LOG.warn("can't forward request - {}", "/WEB-INF/view/addContact.jsp", e);
-        } catch (NamingException | SQLException e) {
-            LOG.warn("can't get db connection", e);
-        }
+        return null;
     }
 }

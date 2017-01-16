@@ -1,10 +1,14 @@
 package command;
 
+import dao.implementation.*;
 import dao.interfaces.CityDao;
 import dao.interfaces.ContactDao;
 import dao.interfaces.CountryDao;
 import dao.interfaces.RelationshipDao;
-import dao.implementation.*;
+import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
+import exceptions.DaoException;
+import exceptions.DataNotFoundException;
 import model.Contact;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -12,18 +16,17 @@ import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 import util.ContactUtils;
 import util.EmailHelper;
+import util.TooltipType;
 
 import javax.mail.MessagingException;
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SubmitemailHandler implements RequestHandler {
-    private final static Logger LOG = LoggerFactory.getLogger(SubmitemailHandler.class);
+public class SendEmail implements Command {
+    private final static Logger LOG = LoggerFactory.getLogger(SendEmail.class);
 
     private String processMessage(Contact contact, String relationship, String country, String city, String message) {
         ST template = new ST(message);
@@ -51,19 +54,23 @@ public class SubmitemailHandler implements RequestHandler {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        EmailHelper emailHelper = new EmailHelper();
-        String emailSubject = ContactUtils.getUTF8String(request.getParameter("subject"));
-        String emailText = ContactUtils.getUTF8String(request.getParameter("text"));
-        String []splitedIds = request.getParameter("id").split(",");
-        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection()) {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+
+        Contact contact = null;
+        boolean isErrorOccurred = true;
+        try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
+            EmailHelper emailHelper = new EmailHelper();
+            String emailSubject = ContactUtils.getUTF8String(request.getParameter("subject"));
+            String emailText = ContactUtils.getUTF8String(request.getParameter("text"));
+            String []splitedIds = request.getParameter("id").split(",");
+
             ContactDao contactDao = new ContactDaoImpl(connection);
             RelationshipDao relationshipDao = new RelationshipDaoImpl(connection);
             CountryDao countryDao = new CountryDaoImpl(connection);
             CityDao cityDao = new CityDaoImpl(connection);
             for (String id : splitedIds) {
                 int contactId = Integer.parseInt(id);
-                Contact contact = contactDao.getByID(contactId);
+                contact = contactDao.getByID(contactId);
                 String relationship;
                 try {
                     relationship = relationshipDao.getByID(contact.getRelationshipID()).getName();
@@ -87,20 +94,33 @@ public class SubmitemailHandler implements RequestHandler {
 
                 String message = processMessage(contact, relationship, country, city, emailText);
 
-                try {
-                    emailHelper.sendEmail(contact.getEmail(), emailSubject, message);
-                } catch (MessagingException e) {
-                    LOG.warn("can't send email to - ", contact.getEmail(), e);
-                }
-            }
-        } catch (SQLException | NamingException e) {
-            LOG.warn("can't get db connection");
-        }
-        response.sendRedirect("?action=show&page=1");
-    }
+                emailHelper.sendEmail(contact.getEmail(), emailSubject, message);
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("?action=show&page=1");
+            }
+            isErrorOccurred = false;
+        }  catch (DaoException e) {
+            LOG.error("error while accessing database", e);
+            throw new CommandExecutionException("error while accessing database",e);
+        } catch (ConnectionException e) {
+            LOG.error("can't get connection to database", e);
+            throw new CommandExecutionException("error while connecting to database", e);
+        } catch (SQLException e) {
+            LOG.error("can't close connection to database", e);
+            throw new CommandExecutionException("error while closing database connection", e);
+        } catch (MessagingException e) {
+            LOG.error("can't send email to address - ", contact.getEmail(), e);
+        } catch (UnsupportedEncodingException e) {
+            LOG.error("error while parsing encoding parameters", e);
+        }
+
+        if(isErrorOccurred) {
+            request.getSession().setAttribute("tooltip-type", TooltipType.danger.toString());
+            request.getSession().setAttribute("tooltip-text", "Произошла ошибка при отправке письма");
+        } else {
+            request.getSession().setAttribute("tooltip-type", TooltipType.success.toString());
+            request.getSession().setAttribute("tooltip-text", "Письмо успешно отправлено");
+        }
+
+        return null;
     }
 }

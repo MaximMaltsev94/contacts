@@ -11,6 +11,23 @@ public class EmailHelper {
     private String senderEmail;
     private String senderPassword;
     private String adminEmail;
+
+    public String getSenderEmail() {
+        return senderEmail;
+    }
+
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
+    public String getAdminEmail() {
+        return adminEmail;
+    }
+
+    public void setAdminEmail(String adminEmail) {
+        this.adminEmail = adminEmail;
+    }
+
     public EmailHelper() {
         properties = new Properties();
         ResourceBundle resourceBundle = ResourceBundle.getBundle("email");
@@ -25,6 +42,7 @@ public class EmailHelper {
         senderPassword = resourceBundle.getString("sender.password");
         adminEmail = resourceBundle.getString("admin.email");
     }
+
 
     public void sendEmail(String receiverEmail, String subject, String text) throws MessagingException {
         Session session = Session.getDefaultInstance(properties, new Authenticator(){

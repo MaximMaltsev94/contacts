@@ -1,0 +1,61 @@
+@-webkit-keyframes blink {
+    0% {
+        opacity:0;
+    }
+    10% {
+        opacity:1;
+    }
+    90% {
+        opacity:1;
+    }
+    100% {
+        opacity:0;
+    }
+}
+@-moz-keyframes blink {
+    0% {
+        opacity:0;
+    }
+    10% {
+        opacity:1;
+    }
+    90% {
+        opacity:1;
+    }
+    100% {
+        opacity:0;
+    }
+}
+#tooltip {
+    position: fixed;
+    top: -5px;
+    margin-left: 5%;
+    /*background-color: rgba(226, 26, 34, 0.7);*/
+    border-radius: 5px;
+    padding: 10px;
+    color: white;
+    max-width: 200px;
+    z-index: 1;
+    opacity: 0;
+}
+
+.tooltip-animation {
+/*#tooltip:target {*/
+    -webkit-transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    -ms-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
+
+    -webkit-animation-direction: normal;
+    -webkit-animation-duration: 5s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-name: blink;
+    -webkit-animation-timing-function: ease-in-out;
+
+    -moz-animation-direction: normal;
+    -moz-animation-duration: 5s;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-name: blink;
+    -moz-animation-timing-function: ease-in-out;
+}

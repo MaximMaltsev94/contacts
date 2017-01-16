@@ -8,9 +8,9 @@ public class EncodingFilter implements Filter {
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws ServletException, IOException {
-        servletRequest.setCharacterEncoding("UTF-8");
-        servletResponse.setContentType("text/html; charset=UTF-8");
-        servletResponse.setCharacterEncoding("UTF-8");
+//        servletRequest.setCharacterEncoding("UTF-8");
+//        servletResponse.setContentType("text/html; charset=UTF-8");
+//        servletResponse.setCharacterEncoding("UTF-8");
 
         servletRequest.getParameterMap().forEach((key, values) -> {
 

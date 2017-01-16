@@ -1,34 +1,45 @@
 package command;
 
-import dao.interfaces.*;
-import dao.implementation.*;
-import model.*;
+import dao.implementation.AttachmentDaoImpl;
+import dao.implementation.ConnectionFactory;
+import dao.implementation.ContactDaoImpl;
+import dao.implementation.PhoneDaoImpl;
+import dao.interfaces.AttachmentDao;
+import dao.interfaces.ContactDao;
+import dao.interfaces.PhoneDao;
+import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
+import exceptions.DaoException;
+import exceptions.DataNotFoundException;
+import model.Attachment;
+import model.Contact;
+import model.Phone;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactUtils;
+import util.TooltipType;
 
 import javax.imageio.ImageIO;
-import javax.naming.NamingException;
-import javax.servlet.ServletException;
+import java.sql.SQLException;
+import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EditHandler implements RequestHandler {
-    private final static Logger LOG = LoggerFactory.getLogger(EditHandler.class);
+public class EditContact implements Command {
+    private final static Logger LOG = LoggerFactory.getLogger(EditContact.class);
+
     private List<String> savedFilesUrls = new ArrayList<>();
     private String savedImageUrl = "";
 
@@ -189,7 +200,7 @@ public class EditHandler implements RequestHandler {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
         if (isMultipart) {
@@ -199,7 +210,7 @@ public class EditHandler implements RequestHandler {
 
                 int contactID = parseContactID(items);
 
-                connection = ConnectionFactoryImpl.getInstance().getConnection();
+                connection = ConnectionFactory.getInstance().getConnection();
 
                 ContactDao contactDao = new ContactDaoImpl(connection);
                 Contact contact = contactDao.getByID(contactID);
@@ -258,9 +269,11 @@ public class EditHandler implements RequestHandler {
 
                 connection.commit();
                 connection.setAutoCommit(true);
+                request.getSession().setAttribute("tooltip-type", TooltipType.success.toString());
+                request.getSession().setAttribute("tooltip-text", "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно редактирован");
 
-                response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
-            } catch (SQLException e) {
+
+            } catch (SQLException | DaoException e) {
                 LOG.warn("edit transaction error");
                 String uploadPath = request.getServletContext().getInitParameter("uploadPath");
 
@@ -279,9 +292,22 @@ public class EditHandler implements RequestHandler {
                 } catch (SQLException e1) {
                     LOG.warn("error while rolling back transaction ", e1);
                 }
-            } catch (Exception ex) {
-                LOG.warn("can't add contact", ex);
-                response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
+                request.getSession().setAttribute("tooltip-type", TooltipType.danger.toString());
+                request.getSession().setAttribute("tooltip-text", "Произошла ошибка при редактировании. Информация контакта не обновлена");
+
+            } catch (ConnectionException e) {
+                LOG.error("can't get connection to database", e);
+                throw new CommandExecutionException("error while connecting to database", e);
+            } catch (FileUploadException e) {
+                LOG.error("can't save profile image", e);
+                throw new CommandExecutionException("error while saving profile image", e);
+            } catch (UnsupportedEncodingException e) {
+                LOG.error("some problems with parameters encoding", e);
+                throw new CommandExecutionException("error while process parameter's encoding", e);
+            } catch (ParseException e) {
+                // TODO: 14.01.2017 change date when params will be in request attributes
+                LOG.error("can't parse date - {}", "!!!", e);
+                throw new CommandExecutionException("error while parsing contact's birth date", e);
             } finally {
                 try {
                     if (connection != null)
@@ -291,46 +317,7 @@ public class EditHandler implements RequestHandler {
                 }
             }
         }
-    }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try (Connection connection = ConnectionFactoryImpl.getInstance().getConnection();){
-            ContactDao contactDao = new ContactDaoImpl(connection);
-            int contactID = Integer.parseInt(request.getParameter("id"));
-            int maxID = contactDao.getMaxID();
-            if (contactID < 1 || contactID > maxID) {
-                throw new NumberFormatException("id out of range");
-            }
-
-            Contact contact = contactDao.getByID(contactID);
-            request.setAttribute("contact", contact);
-
-            RelationshipDao rshDao = new RelationshipDaoImpl(connection);
-            List<Relationship> relationshipList = rshDao.getAll();
-            request.setAttribute("relationshipList", relationshipList);
-
-            CountryDao countryDao = new CountryDaoImpl(connection);
-            List<Country> countryList = countryDao.getAll();
-            request.setAttribute("countryList", countryList);
-
-            CityDao cityDao = new CityDaoImpl(connection);
-            List<City> cityList = cityDao.getAll();
-            request.setAttribute("cityList", cityList);
-
-            PhoneDao phoneDao = new PhoneDaoImpl(connection);
-            List<Phone> phoneList = phoneDao.getPhoneByContactID(contactID);
-            request.setAttribute("phoneList", phoneList);
-
-            AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
-            List<Attachment> attachmentList = attachmentDao.getByContactId(contactID);
-            request.setAttribute("attachmentList", attachmentList);
-
-            request.getRequestDispatcher("/WEB-INF/view/editContact.jsp").forward(request, response);
-        } catch (NumberFormatException ex) {
-            LOG.warn("incorrect contact id {}", request.getParameter("id"), ex);
-        } catch (NamingException | SQLException e) {
-            LOG.warn("can't get db connection", e);
-        }
+        return null;
     }
 }

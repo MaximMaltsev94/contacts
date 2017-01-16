@@ -1,6 +1,5 @@
 package dao.implementation;
 
-import dao.interfaces.ConnectionFactory;
 import exceptions.ConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +11,13 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionFactoryImpl implements ConnectionFactory{
-    private final static Logger LOG = LoggerFactory.getLogger(ConnectionFactoryImpl.class);
-    private static final ConnectionFactoryImpl instance;
+public class ConnectionFactory {
+    private final static Logger LOG = LoggerFactory.getLogger(ConnectionFactory.class);
+    private static final ConnectionFactory instance;
 
     static {
         try {
-            instance = new ConnectionFactoryImpl();
+            instance = new ConnectionFactory();
         } catch (ConnectionException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -26,11 +25,11 @@ public class ConnectionFactoryImpl implements ConnectionFactory{
 
     private static DataSource dataSource;
 
-    public static ConnectionFactoryImpl getInstance() {
+    public static ConnectionFactory getInstance() {
         return instance;
     }
 
-    private ConnectionFactoryImpl() throws ConnectionException {
+    private ConnectionFactory() throws ConnectionException {
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:comp/env");
@@ -41,7 +40,6 @@ public class ConnectionFactoryImpl implements ConnectionFactory{
         }
     }
 
-    @Override
     synchronized public Connection getConnection() throws ConnectionException {
         try {
             return dataSource.getConnection();

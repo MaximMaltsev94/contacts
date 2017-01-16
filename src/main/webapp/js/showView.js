@@ -1,7 +1,6 @@
 var showView = (function() {
     var checkedCount = 0;
     window.onhashchange = function () {
-        console.log(onhashchange);
         checkedCount = document.querySelectorAll("input[type=checkbox]:checked").length;
         if(checkedCount > 0) {
             document.getElementById('deleteSelected').disabled = false;
