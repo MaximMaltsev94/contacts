@@ -22,6 +22,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactUtils;
+import util.RequestUtils;
 import util.TooltipType;
 
 import javax.imageio.ImageIO;
@@ -269,10 +270,7 @@ public class EditContact implements Command {
 
                 connection.commit();
                 connection.setAutoCommit(true);
-                request.getSession().setAttribute("tooltip-type", TooltipType.success.toString());
-                request.getSession().setAttribute("tooltip-text", "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно редактирован");
-
-
+                RequestUtils.setMessageText(request, "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно редактирован", TooltipType.success);
             } catch (SQLException | DaoException e) {
                 LOG.warn("edit transaction error");
                 String uploadPath = request.getServletContext().getInitParameter("uploadPath");
@@ -292,9 +290,7 @@ public class EditContact implements Command {
                 } catch (SQLException e1) {
                     LOG.warn("error while rolling back transaction ", e1);
                 }
-                request.getSession().setAttribute("tooltip-type", TooltipType.danger.toString());
-                request.getSession().setAttribute("tooltip-text", "Произошла ошибка при редактировании. Информация контакта не обновлена");
-
+                RequestUtils.setMessageText(request, "Произошла ошибка при редактировании. Информация контакта не обновлена", TooltipType.danger);
             } catch (ConnectionException e) {
                 LOG.error("can't get connection to database", e);
                 throw new CommandExecutionException("error while connecting to database", e);

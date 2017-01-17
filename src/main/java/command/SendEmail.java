@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 import util.ContactUtils;
 import util.EmailHelper;
+import util.RequestUtils;
 import util.TooltipType;
 
 import javax.mail.MessagingException;
@@ -114,11 +115,9 @@ public class SendEmail implements Command {
         }
 
         if(isErrorOccurred) {
-            request.getSession().setAttribute("tooltip-type", TooltipType.danger.toString());
-            request.getSession().setAttribute("tooltip-text", "Произошла ошибка при отправке письма");
+            RequestUtils.setMessageText(request, "Произошла ошибка при отправке письма", TooltipType.danger);
         } else {
-            request.getSession().setAttribute("tooltip-type", TooltipType.success.toString());
-            request.getSession().setAttribute("tooltip-text", "Письмо успешно отправлено");
+            RequestUtils.setMessageText(request, "Письмо успешно отправлено", TooltipType.success);
         }
 
         return null;

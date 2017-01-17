@@ -43,7 +43,7 @@
 
                         <img id="blah" class="fileDownload"
                              src="<c:url value="${requestScope.get('contact').profilePicture}"/>">
-                        <input type="file" name="fileUp" class="hidden" accept="image/*"
+                        <input type="file" name="profileImage" class="hidden" accept="image/*"
                                onchange="addView.readURL(this)">
                     </div>
                 </div>

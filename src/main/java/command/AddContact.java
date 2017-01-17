@@ -16,6 +16,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactUtils;
+import util.RequestUtils;
 import util.TooltipType;
 
 import javax.imageio.ImageIO;
@@ -126,8 +127,7 @@ public class AddContact implements Command {
 
                 ContactDao contactDao = new ContactDaoImpl(connection);
                 contactDao.insert(contact);
-                request.getSession().setAttribute("tooltip-type", TooltipType.success.toString());
-                request.getSession().setAttribute("tooltip-text", "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно сохранен");
+                RequestUtils.setMessageText(request, "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно сохранен", TooltipType.success);
                 isErrorOccurred = false;
             } catch (DaoException e) {
                 LOG.error("can't insert contact - {} to database", contact, e);

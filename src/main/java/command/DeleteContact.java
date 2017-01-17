@@ -14,6 +14,7 @@ import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactUtils;
+import util.RequestUtils;
 import util.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,10 +53,7 @@ public class DeleteContact implements Command {
                 ContactDao contactDao = new ContactDaoImpl(connection);
                 contactDao.deleteByID(contactID);
             }
-
-            request.getSession().setAttribute("tooltip-type", TooltipType.success.toString());
-            request.getSession().setAttribute("tooltip-text", "Выбранные контакты успешно удалены");
-
+            RequestUtils.setMessageText(request, "Выбранные контакты успешно удалены", TooltipType.success);
         } catch (SQLException e) {
             LOG.error("can't close connection to database", e);
             throw new CommandExecutionException("error while closing connection to database", e);

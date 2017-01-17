@@ -1,15 +1,16 @@
 package servlet;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.Command;
 import command.CommandFactory;
 import command.RequestHandler;
 import exceptions.CommandExecutionException;
 import exceptions.DataNotFoundException;
-import org.apache.commons.lang3.StringUtils;
+import exceptions.RequestMapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.RequestMapper;
+import util.RequestUtils;
 import util.TooltipType;
 
 import javax.servlet.ServletException;
@@ -17,9 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Enumeration;
-import java.util.Map;
 
 public class FrontController extends HttpServlet {
 
@@ -53,6 +51,9 @@ public class FrontController extends HttpServlet {
         String viewName = null;
 
         try {
+            RequestMapper mapper = new RequestMapper();
+            mapper.mapRequestParamsToAttributes(request);
+
             CommandFactory commandFactory = new CommandFactory();
             Command command = commandFactory.getCommand(request);
 
@@ -64,11 +65,13 @@ public class FrontController extends HttpServlet {
 
         } catch (DataNotFoundException e) {
             LOG.error("", e);
-            request.getSession().setAttribute("tooltip-type", TooltipType.danger.toString());
-            request.getSession().setAttribute("tooltip-text", "Произведено неизвестное действие");
+            RequestUtils.setMessageText(request, "Произведено неизвестное действие", TooltipType.danger);
             viewName = null;
         } catch (CommandExecutionException e) {
-            LOG.error("");
+            LOG.error("some problems during command execution", e);
+            viewName = "error";
+        } catch (RequestMapperException e) {
+            LOG.error("error while mapping request parameters to request attributes");
             viewName = "error";
         }
 
