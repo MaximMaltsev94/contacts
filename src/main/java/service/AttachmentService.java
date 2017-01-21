@@ -1,18 +1,22 @@
-package dao.interfaces;
+package service;
 
 import exceptions.DaoException;
+import exceptions.RequestParseException;
 import model.Attachment;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public interface AttachmentDao {
+public interface AttachmentService {
+    List<Attachment> parseRequest(HttpServletRequest request, int contactId) throws RequestParseException;
+    void deleteAttachmentFile(Attachment attachment);
+
+
     void insert(Attachment attachment) throws DaoException;
     void insert(List<Attachment> attachmentList) throws DaoException;
 
-    void delete(Attachment attachment) throws DaoException;
-    void delete(List<Attachment> attachmentList) throws DaoException;
+    void delete(Attachment attachment, boolean deleteFile) throws DaoException;
+    void delete(List<Attachment> attachmentList, boolean deleteFile) throws DaoException;
 
     void update(Attachment attachment) throws DaoException;
     void update(List<Attachment> attachmentList) throws DaoException;

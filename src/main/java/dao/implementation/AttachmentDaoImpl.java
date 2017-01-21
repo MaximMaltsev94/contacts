@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by maxim on 27.09.2016.
@@ -55,8 +56,31 @@ public class AttachmentDaoImpl implements AttachmentDao {
     }
 
     @Override
+    public void insert(List<Attachment> attachmentList) throws DaoException {
+        if(attachmentList.size() == 0) {
+            return;
+        }
+        try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `attachment` (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES(?, ?, ?, ?, ?)")) {
+            for (Attachment attachment : attachmentList) {
+                preparedStatement.setObject(1, attachment.getFileName());
+                preparedStatement.setObject(2, attachment.getFilePath());
+                preparedStatement.setObject(3, attachment.getContactID());
+
+                String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), "yyyy-MM-dd HH:mm:ss");
+                preparedStatement.setObject(4, uploadDate);
+                preparedStatement.setObject(5, attachment.getComment());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+        } catch (SQLException e) {
+            LOG.error("can't insert attachment list - {}", attachmentList, e);
+            throw new DaoException("error while inserting attachment", e);
+        }
+    }
+
+    @Override
     public void delete(Attachment attachment) throws DaoException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM attachment` WHERE `id` = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `attachment` WHERE `id` = ?")) {
             preparedStatement.setObject(1, attachment.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -65,6 +89,36 @@ public class AttachmentDaoImpl implements AttachmentDao {
         }
     }
 
+    private String createDeleteSql(int size) {
+        StringBuilder sqlBuilder = new StringBuilder("DELETE FROM `attachment` WHERE `id` in (");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(")");
+        return sqlBuilder.toString();
+    }
+
+    @Override
+    public void delete(List<Attachment> attachmentList) throws DaoException {
+        if(attachmentList.size() == 0)
+            return;
+        String sql = createDeleteSql(attachmentList.size());
+
+        List<Integer> idList = attachmentList.stream().map(Attachment::getId).collect(Collectors.toList());
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            for(int i = 1; i <= idList.size(); ++i) {
+                preparedStatement.setObject(i, idList.get(i - 1));
+            }
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            LOG.error("can't delete attachment list - {}", attachmentList, e);
+            throw new DaoException("error while deleting attachment", e);
+        }
+    }
 
     @Override
     public void update(Attachment attachment) throws DaoException {
@@ -84,6 +138,29 @@ public class AttachmentDaoImpl implements AttachmentDao {
         }
     }
 
+    @Override
+    public void update(List<Attachment> attachmentList) throws DaoException {
+        if(attachmentList.size() == 0)
+            return;
+
+        try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `attachment` SET `file_name` = ?, `file_path` = ?,`id_contact` = ?,`upload_date` = ?,`comment` = ? WHERE `id` = ?")) {
+            for (Attachment attachment : attachmentList) {
+                preparedStatement.setObject(1, attachment.getFileName());
+                preparedStatement.setObject(2, attachment.getFilePath());
+                preparedStatement.setObject(3, attachment.getContactID());
+
+                String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), "yyyy-MM-dd HH:mm:ss");
+                preparedStatement.setObject(4, uploadDate);
+                preparedStatement.setObject(5, attachment.getComment());
+                preparedStatement.setObject(6, attachment.getId());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+        } catch (SQLException e) {
+            LOG.error("can't update attachment list - {}", attachmentList, e);
+            throw new DaoException("error while updating attachment", e);
+        }
+    }
 
     private PreparedStatement createGetByContactIdStatement(int contactId) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `attachment` WHERE `id_contact` = ?");

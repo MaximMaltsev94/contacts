@@ -28,8 +28,8 @@ public class GetDocument implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(GetDocument.class);
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
-        try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
+        try {
             String fileName = "file" + StringUtils.substringAfter(request.getParameter("name"), "file");
             String filePath = request.getServletContext().getInitParameter("uploadPath") + fileName;
             File file = new File(filePath);
@@ -66,15 +66,9 @@ public class GetDocument implements Command {
             out.flush();
         } catch (IOException e) {
             LOG.warn("can't find file - {} in filesystem", request.getParameter("name"), e);
-        } catch (SQLException e) {
-            LOG.warn("can't close db connection", e);
-            throw new CommandExecutionException("error while closing connection to database", e);
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database", e);
-        } catch (ConnectionException e) {
-            LOG.error("can't get connection to database", e);
-            throw new CommandExecutionException("error while getting connection to database", e);
         }
         return null;
     }

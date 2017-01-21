@@ -74,10 +74,10 @@ public class Search implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         String VIEW_NAME = "search";
 
-        try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
+        try {
             parseRequest(request);
             setRequestAttributes(request);
             RelationshipDao rshDao = new RelationshipDaoImpl(connection);
@@ -98,13 +98,7 @@ public class Search implements Command {
 
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
-            throw new CommandExecutionException("error while accessing database",e);
-        } catch (ConnectionException e) {
-            LOG.error("can't get connection to database", e);
-            throw new CommandExecutionException("error while connecting to database", e);
-        } catch (SQLException e) {
-            LOG.error("can't close connection to database", e);
-            throw new CommandExecutionException("error while closing database connection", e);
+            throw new CommandExecutionException("error while accessing database", e);
         } catch (UnsupportedEncodingException e) {
             LOG.error("encoding is not supported", e);
             throw new CommandExecutionException("error while parsing parameters encoding", e);

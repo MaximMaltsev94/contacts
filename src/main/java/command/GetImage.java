@@ -12,12 +12,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Connection;
 
 public class GetImage implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(GetImage.class);
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         try {
             String imageName = request.getParameter("name");
             response.setContentType("image/png");

@@ -80,7 +80,7 @@ public class GetEmailPage implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         String VIEW_NAME = "email";
 
         String idListString = request.getParameter("id");

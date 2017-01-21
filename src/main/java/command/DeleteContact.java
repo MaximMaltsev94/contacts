@@ -41,8 +41,8 @@ public class DeleteContact implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
-        try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
+        try {
             String[] splitedIDs = request.getParameter("id").split(",");
             for (String id : splitedIDs) {
                 int contactID = Integer.parseInt(id);
@@ -54,12 +54,6 @@ public class DeleteContact implements Command {
                 contactDao.deleteByID(contactID);
             }
             RequestUtils.setMessageText(request, "Выбранные контакты успешно удалены", TooltipType.success);
-        } catch (SQLException e) {
-            LOG.error("can't close connection to database", e);
-            throw new CommandExecutionException("error while closing connection to database", e);
-        } catch (ConnectionException e) {
-            LOG.error("can't get connection to database", e);
-            throw new CommandExecutionException("error while connecting to database", e);
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database",e);

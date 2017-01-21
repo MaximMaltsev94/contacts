@@ -55,11 +55,11 @@ public class SendEmail implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
 
         Contact contact = null;
         boolean isErrorOccurred = true;
-        try (Connection connection = ConnectionFactory.getInstance().getConnection()) {
+        try {
             EmailHelper emailHelper = new EmailHelper();
             String emailSubject = ContactUtils.getUTF8String(request.getParameter("subject"));
             String emailText = ContactUtils.getUTF8String(request.getParameter("text"));
@@ -102,12 +102,6 @@ public class SendEmail implements Command {
         }  catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database",e);
-        } catch (ConnectionException e) {
-            LOG.error("can't get connection to database", e);
-            throw new CommandExecutionException("error while connecting to database", e);
-        } catch (SQLException e) {
-            LOG.error("can't close connection to database", e);
-            throw new CommandExecutionException("error while closing database connection", e);
         } catch (MessagingException e) {
             LOG.error("can't send email to address - ", contact.getEmail(), e);
         } catch (UnsupportedEncodingException e) {

@@ -27,10 +27,10 @@ public class GetAddContactPage implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(GetAddContactPage.class);
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         String VIEW_PAGE = "addContact";
 
-        try (Connection connection = ConnectionFactory.getInstance().getConnection()){
+        try {
             RelationshipDao rshDao = new RelationshipDaoImpl(connection);
             List<Relationship> relationshipList = rshDao.getAll();
             request.setAttribute("relationshipList", relationshipList);
@@ -45,12 +45,6 @@ public class GetAddContactPage implements Command {
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database",e);
-        } catch (ConnectionException e) {
-            LOG.error("can't get connection to database", e);
-            throw new CommandExecutionException("error while connecting to database", e);
-        } catch (SQLException e) {
-            LOG.error("can't close connection to database", e);
-            throw new CommandExecutionException("error while closing database connection", e);
         }
 
         return VIEW_PAGE;

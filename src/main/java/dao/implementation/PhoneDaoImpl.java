@@ -82,7 +82,26 @@ public class PhoneDaoImpl implements PhoneDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOG.error("can't insert phone - {}", phone, e);
-            throw new DaoException();
+            throw new DaoException("error while insertion phone", e);
+        }
+    }
+
+    @Override
+    public void insert(List<Phone> phoneList) throws DaoException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `phone` (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES(?, ?, ?, ?, ?, ?)")) {
+            for (Phone phone : phoneList) {
+                preparedStatement.setObject(1, phone.getCountryID());
+                preparedStatement.setObject(2, phone.getOperatorCode());
+                preparedStatement.setObject(3, phone.getPhoneNumber());
+                preparedStatement.setObject(4, phone.getContactID());
+                preparedStatement.setObject(5, phone.getType());
+                preparedStatement.setObject(6, phone.getComment());
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+        } catch (SQLException e) {
+            LOG.error("can't insert phones list - {}", phoneList, e);
+            throw new DaoException("error while inserting phone list", e);
         }
     }
 }

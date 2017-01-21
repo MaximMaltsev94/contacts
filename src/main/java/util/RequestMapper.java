@@ -5,12 +5,14 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -29,10 +31,9 @@ public class RequestMapper {
 
     public void mapRequestParamsToAttributes(HttpServletRequest request) throws RequestMapperException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        mapRegularParamsToAttributes(request);
         if(isMultipart) {
             mapMultipartParamsToAttributes(request);
-        } else {
-            mapRegularParamsToAttributes(request);
         }
     }
 
@@ -48,9 +49,15 @@ public class RequestMapper {
             List<FileItem> itemList = upload.parseRequest(request);
             for (FileItem fileItem : itemList) {
                 if (fileItem.isFormField()) {
-                    request.setAttribute(fileItem.getFieldName(), fileItem.getString());
+                    String elem = null;
+                    if(StringUtils.isNotBlank(fileItem.getString())) {
+                        elem = ContactUtils.getUTF8String(fileItem.getString());
+                    }
+                    request.setAttribute(fileItem.getFieldName(), elem);
                 } else {
                     request.setAttribute(fileItem.getFieldName(), fileItem.getInputStream());
+                    String fileExtension = "." + StringUtils.substringAfter(fileItem.getName(), ".");
+                    request.setAttribute(fileItem.getFieldName() + ":fileExtension", fileExtension);
                 }
             }
         } catch (FileUploadException e) {
@@ -63,7 +70,11 @@ public class RequestMapper {
     }
 
     private void mapRegularParamsToAttributes(HttpServletRequest request) {
-        request.getParameterMap().forEach((key, values) -> request.setAttribute(key, request.getParameter(key)));
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String name = parameterNames.nextElement();
+            request.setAttribute(name, request.getParameter(name));
+        }
     }
 
 

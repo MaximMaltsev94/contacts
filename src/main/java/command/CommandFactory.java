@@ -13,7 +13,6 @@ public class CommandFactory {
 
     public CommandFactory() {
         commands = new HashMap<>();
-        // TODO: 13.01.2017 add map filling
         commands.put("get/show", GetContactListPage.class);
         commands.put("get/image", GetImage.class);
         commands.put("get/document", GetDocument.class);
@@ -36,9 +35,7 @@ public class CommandFactory {
     }
 
     public Command getCommand(HttpServletRequest request) {
-        // TODO: 13.01.2017 change request.getParameter to request.getAttribute
-//        String commandKey = request.getMethod() + "/" + request.getAttribute("action");
-        String commandKey = request.getMethod() + "/" + request.getParameter("action");
+        String commandKey = request.getMethod() + "/" + request.getAttribute("action");
         Class<? extends Command> commandClass = commands.get(commandKey.toLowerCase());
 
         if(commandClass == null) {

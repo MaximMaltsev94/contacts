@@ -21,9 +21,9 @@ public class GetContactListPage implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(GetContactListPage.class);
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws CommandExecutionException, DataNotFoundException {
+    public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         String VIEW_PAGE = "contacts";
-        try (Connection connection = ConnectionFactory.getInstance().getConnection();) {
+        try {
 
             int pageNumber = Integer.parseInt(request.getParameter("page"));
             ContactDao contactDao = new ContactDaoImpl(connection);
@@ -47,12 +47,6 @@ public class GetContactListPage implements Command {
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database", e);
-        } catch (ConnectionException e) {
-            LOG.error("can't get connection to database", e);
-            throw new CommandExecutionException("error while connecting to database", e);
-        } catch (SQLException e) {
-            LOG.error("can't close connection to database", e);
-            throw new CommandExecutionException("error while closing database connection", e);
         }
 
         return VIEW_PAGE;

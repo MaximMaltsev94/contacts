@@ -1,10 +1,12 @@
 package servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import command.Command;
 import command.CommandFactory;
-import command.RequestHandler;
+import dao.implementation.ConnectionFactory;
 import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
 import exceptions.DataNotFoundException;
 import exceptions.RequestMapperException;
 import org.slf4j.Logger;
@@ -18,18 +20,31 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FrontController extends HttpServlet {
 
     private final static Logger LOG = LoggerFactory.getLogger(FrontController.class);
 
     private String getParametersString(HttpServletRequest request) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        Enumeration<String> parameterNames = request.getAttributeNames();
+        Map<String, Object> parameterMap = new HashMap<>();
+        while (parameterNames.hasMoreElements()) {
+            String name = parameterNames.nextElement();
+            parameterMap.put(name, request.getAttribute(name));
+        }
+
         String result = "";
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         try {
-            result = objectMapper.writeValueAsString(request.getParameterMap());
+            result = objectMapper.writeValueAsString(parameterMap);
         } catch (IOException e) {
-            LOG.error("error while converting request parameters to json");
+            LOG.error("error while converting request parameters to json", e);
         }
         return result;
     }
@@ -44,24 +59,26 @@ public class FrontController extends HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) {
 
-        LOG.info("Received {} request - {} {}", request.getMethod(),
-                                                request.getRequestURL().toString(),
-                                                getParametersString(request));
 
         String viewName = null;
 
-        try {
+        try(Connection connection = ConnectionFactory.getInstance().getConnection()) {
             RequestMapper mapper = new RequestMapper();
             mapper.mapRequestParamsToAttributes(request);
+
+            LOG.info("Received {} request - {} {}", request.getMethod(),
+                    request.getRequestURL().toString(),
+                    getParametersString(request));
 
             CommandFactory commandFactory = new CommandFactory();
             Command command = commandFactory.getCommand(request);
 
+
             if(command == null) {
-                throw new DataNotFoundException("command not found for method " + request.getMethod() + " and action " + request.getParameter("action"));
+                throw new DataNotFoundException("command not found for method " + request.getMethod() + " and action " + request.getAttribute("action"));
             }
 
-            viewName = command.execute(request, response);
+            viewName = command.execute(request, response, connection);
 
         } catch (DataNotFoundException e) {
             LOG.error("", e);
@@ -72,6 +89,15 @@ public class FrontController extends HttpServlet {
             viewName = "error";
         } catch (RequestMapperException e) {
             LOG.error("error while mapping request parameters to request attributes");
+            viewName = "error";
+        } catch (ConnectionException e) {
+            LOG.error("can't get connection to database", e);
+            viewName = "error";
+        } catch (SQLException e) {
+            LOG.error("can't close connection to database", e);
+            viewName = "error";
+        } catch (Exception e) {
+            LOG.error("some other problem", e);
             viewName = "error";
         }
 

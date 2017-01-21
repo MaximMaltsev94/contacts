@@ -14,4 +14,5 @@ public interface PhoneDao {
     List<Phone> getPhoneByContactID(int contactID) throws DaoException;
     void deleteByContactID(int contactID) throws DaoException;
     void insert(Phone phone) throws DaoException;
+    void insert(List<Phone> phone) throws DaoException;
 }
