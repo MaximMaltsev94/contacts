@@ -148,6 +148,12 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
+    public List<Attachment> getByContactIdIn(List<Integer> contactIdList) throws DaoException {
+        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
+        return attachmentDao.getByContactIdIn(contactIdList);
+    }
+
+    @Override
     public Attachment getByFilePath(String filePath) throws DaoException {
         AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         return attachmentDao.getByFilePath(filePath);

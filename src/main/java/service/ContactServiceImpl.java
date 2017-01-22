@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.text.ParseException;
+import java.util.List;
 
 public class ContactServiceImpl implements ContactService {
     private final static Logger LOG = LoggerFactory.getLogger(ContactServiceImpl.class);
@@ -36,6 +37,12 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public void delete(List<Integer> idList) throws DaoException {
+        ContactDao contactDao = new ContactDaoImpl(connection);
+        contactDao.delete(idList);
+    }
+
+    @Override
     public void update(Contact contact) throws DaoException {
         ContactDao contactDao = new ContactDaoImpl(connection);
         contactDao.update(contact);
@@ -45,6 +52,12 @@ public class ContactServiceImpl implements ContactService {
     public Contact getByID(int id) throws DaoException {
         ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getByID(id);
+    }
+
+    @Override
+    public List<Contact> getByIdIn(List<Integer> idList) throws DaoException {
+        ContactDao contactDao = new ContactDaoImpl(connection);
+        return contactDao.getByIdIn(idList);
     }
 
     @Override

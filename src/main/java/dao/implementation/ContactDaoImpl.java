@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -109,6 +110,35 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
+    private String createDeleteSql(int size) {
+        StringBuilder sqlBuilder = new StringBuilder("DELETE FROM `contact` WHERE `id` in (");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(")");
+        return sqlBuilder.toString();
+    }
+
+    @Override
+    public void delete(List<Integer> idList) throws DaoException {
+        if(idList.isEmpty())
+            return;
+
+        String sql = createDeleteSql(idList.size());
+        try (PreparedStatement pStatement = connection.prepareStatement(sql)) {
+            for (int i = 1; i <= idList.size(); i++) {
+                pStatement.setObject(i, idList.get(i - 1));
+            }
+            pStatement.execute();
+        } catch (SQLException e) {
+            LOG.error("can't delete contact by id list - {}", idList, e);
+            throw new DaoException("error while deleting contacts by ID list", e);
+        }
+    }
+
     private PreparedStatement createGetByIDStatement(Connection connection, int id) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE id = ?");
         preparedStatement.setObject(1, id);
@@ -128,7 +158,52 @@ public class ContactDaoImpl implements ContactDao {
             throw new DaoException("error while getting contact by ID", e);
         }
         return contact;
+    }
 
+    private String createGetByIdInSQL(int size) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `contact` WHERE `id` in (");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(")");
+        return sqlBuilder.toString();
+    }
+
+    private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList) throws SQLException {
+        String sql = createGetByIdInSQL(idList.size());
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        for (int i = 1; i <= idList.size(); i++) {
+            statement.setObject(i, idList.get(i - 1));
+        }
+        return statement;
+    }
+
+
+    @Override
+    public List<Contact> getByIdIn(List<Integer> idList) throws DaoException {
+        List<Contact> contactList = new ArrayList<>();
+        if(idList.isEmpty()) {
+            return contactList;
+        }
+
+        try(PreparedStatement statement = createGetByIdInStatement(connection, idList);
+            ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                Contact contact = parseResultSet(rs);
+                contactList.add(contact);
+            }
+
+        } catch (SQLException e) {
+            LOG.error("can't get contacts by id list - {}", idList, e);
+            throw new DaoException("error while getting contacts by id list", e);
+        }
+
+        return contactList;
     }
 
     @Override

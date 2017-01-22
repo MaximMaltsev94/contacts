@@ -100,7 +100,7 @@ public class EditContact implements Command {
             attachmentService.update(forUpdate);
 
             connection.commit();
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(true);
 
             RequestUtils.setMessageText(request, "Контакт " + newContact.getFirstName() + " " + newContact.getLastName() + " успешно редактирован", TooltipType.success);
             isErrorOccurred = false;

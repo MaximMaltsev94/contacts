@@ -22,5 +22,6 @@ public interface AttachmentService {
     void update(List<Attachment> attachmentList) throws DaoException;
 
     List<Attachment> getByContactId(int contactId) throws DaoException;
+    List<Attachment> getByContactIdIn(List<Integer> contactIdList) throws DaoException;
     Attachment getByFilePath(String filePath) throws DaoException;
 }

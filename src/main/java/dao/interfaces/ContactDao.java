@@ -13,8 +13,11 @@ public interface ContactDao {
     void insert(Contact contact) throws DaoException;
     void update(Contact contact) throws DaoException;
     void delete(Contact contact) throws DaoException;
+    void delete(List<Integer> idList) throws DaoException;
     void deleteByID(int id) throws DaoException;
+
     Contact getByID(int id) throws DaoException;
+    List<Contact> getByIdIn(List<Integer> idList) throws DaoException;
     int getMaxID() throws DaoException;
     int getRowsCount() throws DaoException;
     List<Contact> getContactsPage(int pageNumber) throws DaoException;

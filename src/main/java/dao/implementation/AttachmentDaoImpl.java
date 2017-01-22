@@ -57,7 +57,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
 
     @Override
     public void insert(List<Attachment> attachmentList) throws DaoException {
-        if(attachmentList.size() == 0) {
+        if(attachmentList.isEmpty()) {
             return;
         }
         try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `attachment` (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES(?, ?, ?, ?, ?)")) {
@@ -103,7 +103,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
 
     @Override
     public void delete(List<Attachment> attachmentList) throws DaoException {
-        if(attachmentList.size() == 0)
+        if(attachmentList.isEmpty())
             return;
         String sql = createDeleteSql(attachmentList.size());
 
@@ -140,7 +140,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
 
     @Override
     public void update(List<Attachment> attachmentList) throws DaoException {
-        if(attachmentList.size() == 0)
+        if(attachmentList.isEmpty())
             return;
 
         try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `attachment` SET `file_name` = ?, `file_path` = ?,`id_contact` = ?,`upload_date` = ?,`comment` = ? WHERE `id` = ?")) {
@@ -182,6 +182,51 @@ public class AttachmentDaoImpl implements AttachmentDao {
             LOG.error("can't get attachments list by contact id - {}", contactId, e);
             throw new DaoException("error while getting attachments by id", e);
         }
+        return attachmentList;
+    }
+
+    private String createGetByContactIdInSQL(int size) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `attachment` WHERE `id_contact` in (");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(")");
+        return sqlBuilder.toString();
+    }
+
+    private PreparedStatement createGetByContactIdInStatement(Connection connection, List<Integer> contactIdList) throws SQLException {
+        String sql = createGetByContactIdInSQL(contactIdList.size());
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        for (int i = 1; i <= contactIdList.size(); i++) {
+            statement.setObject(i, contactIdList.get(i - 1));
+        }
+
+        return statement;
+    }
+
+    @Override
+    public List<Attachment> getByContactIdIn(List<Integer> contactIdList) throws DaoException {
+        List<Attachment> attachmentList = new ArrayList<>();
+        if(contactIdList.isEmpty()) {
+            return attachmentList;
+        }
+
+        try(PreparedStatement statement = createGetByContactIdInStatement(connection, contactIdList);
+            ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                Attachment attachment = parseResultSet(rs);
+                attachmentList.add(attachment);
+            }
+        } catch (SQLException e) {
+            LOG.error("can't get attachments by contact id list - {}", contactIdList, e);
+            throw new DaoException("error while getting attachments by contact id list", e);
+        }
+
         return attachmentList;
     }
 
