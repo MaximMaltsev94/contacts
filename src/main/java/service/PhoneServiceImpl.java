@@ -59,7 +59,7 @@ public class PhoneServiceImpl implements PhoneService {
     @Override
     public List<Phone> getByContactID(int contactID) throws DaoException {
         PhoneDao phoneDao = new PhoneDaoImpl(connection);
-        return phoneDao.getPhoneByContactID(contactID);
+        return phoneDao.getByContactID(contactID);
     }
 
     @Override

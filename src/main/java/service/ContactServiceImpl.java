@@ -49,6 +49,13 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public List<Contact> get(int pageNumber, int limit) throws DaoException {
+        ContactDao contactDao = new ContactDaoImpl(connection);
+        return contactDao.get(pageNumber, limit);
+
+    }
+
+    @Override
     public Contact getByID(int id) throws DaoException {
         ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getByID(id);
@@ -58,6 +65,18 @@ public class ContactServiceImpl implements ContactService {
     public List<Contact> getByIdIn(List<Integer> idList) throws DaoException {
         ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getByIdIn(idList);
+    }
+
+    @Override
+    public long getMaxID() throws DaoException {
+        ContactDao contactDao = new ContactDaoImpl(connection);
+        return contactDao.getMaxID();
+    }
+
+    @Override
+    public long getCount() throws DaoException {
+        ContactDao contactDao = new ContactDaoImpl(connection);
+        return contactDao.getCount();
     }
 
     @Override

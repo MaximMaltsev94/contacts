@@ -207,12 +207,12 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public int getMaxID() throws DaoException {
-        int maxID = 0;
+    public long getMaxID() throws DaoException {
+        long maxID = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contact`");
              ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
-                maxID = rs.getInt("mx");
+                maxID = rs.getLong("mx");
             }
         } catch (SQLException e) {
             LOG.error("can't get max ID", e);
@@ -222,16 +222,16 @@ public class ContactDaoImpl implements ContactDao {
     }
 
 
-    private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber) throws SQLException {
+    private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber, int limit) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` ORDER BY `id` desc LIMIT ?, 10");
-        preparedStatement.setObject(1, (pageNumber - 1) * 10);
+        preparedStatement.setObject(1, (pageNumber - 1) * limit);
         return preparedStatement;
     }
 
     @Override
-    public List<Contact> getContactsPage(int pageNumber) throws DaoException {
+    public List<Contact> get(int pageNumber, int limit) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber);
+        try (PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber, limit);
              ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
@@ -245,12 +245,12 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public int getRowsCount() throws DaoException {
-        int count = 0;
+    public long getCount() throws DaoException {
+        long count = 0;
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`");
              ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
-                count = rs.getInt("cnt");
+                count = rs.getLong("cnt");
             }
         } catch (SQLException e) {
             LOG.error("can't get contacts count", e);

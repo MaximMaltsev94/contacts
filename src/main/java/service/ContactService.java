@@ -17,6 +17,10 @@ public interface ContactService {
     void update(Contact contact) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;
 
+    List<Contact> get(int pageNumber, int limit) throws DaoException;
+//    List<Contact> get(SearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException;
     Contact getByID(int id) throws DaoException;
     List<Contact> getByIdIn(List<Integer> idList) throws DaoException;
+    long getCount() throws DaoException;
+    long getMaxID() throws DaoException;
 }

@@ -43,7 +43,7 @@ public class PhoneDaoImpl implements PhoneDao {
     }
 
     @Override
-    public List<Phone> getPhoneByContactID(int contactId) throws DaoException {
+    public List<Phone> getByContactID(int contactId) throws DaoException {
         List<Phone> phoneList = new ArrayList<>();
         try(PreparedStatement preparedStatement = createGetPhoneByContactIDStatement(contactId);
             ResultSet rs = preparedStatement.executeQuery()){
