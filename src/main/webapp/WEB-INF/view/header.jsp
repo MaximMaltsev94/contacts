@@ -8,20 +8,27 @@
                     Контакты
                 </a>
             </div>
-            <div class="element right">
-                <div class="element">
-                    <a href="<c:url value="?action=email" />">
-                        <div class="imageButton email">
-                        </div>
-                    </a>
-                </div>
-                <div class="element">
-                    <a href="<c:url value="?action=search" />">
-                        <div class="imageButton search">
-                        </div>
-                    </a>
-                </div>
+
+            <div class="element text-medium">|</div>
+
+            <div class="element">
+                <a class="text-small-bold" href="<c:url value="?action=email" />">Написать письмо</a>
             </div>
+            <div class="element">
+                <a class="text-small-bold" href="<c:url value="?action=search" />">Поиск</a>
+            </div>
+            <div class="element">
+                <a class="text-small-bold" href="#">Импорт контактов</a>
+            </div>
+
+            <%--<div class="element">--%>
+                <%--<a class="text-large" style="border-right: thin solid #595954;" href="<c:url value="?action=show&page=1" />">--%>
+                    <%--Контакты--%>
+                <%--</a>--%>
+            <%--</div>--%>
+                <div class="element">
+                </div>
+
         </div>
     </div>
 </div>

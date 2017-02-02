@@ -21,12 +21,52 @@ form {
     background-color: white;
 }
 
+a {
+    color: #595954;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 .element {
     display: flex;
-    margin: auto 5px;
+    margin: auto 10px;
 }
 .element.right {
     margin-left: auto;
+}
+
+.element > a {
+    position: relative;
+    color: #595954;
+    text-decoration: none;
+}
+
+.element > a:hover {
+    color: #595954;
+}
+
+.element > a:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #595954;
+    visibility: hidden;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transition: all 0.2s ease-in-out 0s;
+    transition: all 0.2s ease-in-out 0s;
+}
+
+.element > a:hover:before {
+    visibility: visible;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
 }
 
 .container {
@@ -77,15 +117,6 @@ section {
 .text-small-bold {
     font-size: 0.8em;
     font-weight: bold;
-}
-
-a {
-    color: #595954;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
 }
 
 
