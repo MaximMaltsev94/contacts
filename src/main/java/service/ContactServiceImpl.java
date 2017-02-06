@@ -25,69 +25,59 @@ import java.util.List;
 public class ContactServiceImpl implements ContactService {
     private final static Logger LOG = LoggerFactory.getLogger(ContactServiceImpl.class);
 
-    private Connection connection;
+    private ContactDao contactDao;
 
     public ContactServiceImpl(Connection connection) {
-        this.connection = connection;
+        contactDao = new ContactDaoImpl(connection);
     }
 
     @Override
     public void insert(Contact contact) throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         contactDao.insert(contact);
     }
 
     @Override
     public void delete(List<Integer> idList) throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         contactDao.delete(idList);
     }
 
     @Override
     public void update(Contact contact) throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         contactDao.update(contact);
     }
 
     @Override
     public List<Contact> get(int pageNumber, int limit) throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.get(pageNumber, limit);
     }
 
     @Override
     public List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.get(searchCriteria, pageNumber, limit);
     }
 
     @Override
     public Contact getByID(int id) throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getByID(id);
     }
 
     @Override
     public List<Contact> getByIdIn(List<Integer> idList) throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getByIdIn(idList);
     }
 
     @Override
     public List<Contact> getByEmailNotNull() throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getByEmailNotNull();
     }
 
     @Override
     public long getMaxID() throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getMaxID();
     }
 
     @Override
     public long getCount() throws DaoException {
-        ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getCount();
     }
 

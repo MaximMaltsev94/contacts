@@ -9,21 +9,20 @@ import java.sql.Connection;
 import java.util.List;
 
 public class RelationshipServiceImpl implements RelationshipService {
-    private Connection connection;
+
+    private RelationshipDao relationshipDao;
 
     public RelationshipServiceImpl(Connection connection) {
-        this.connection = connection;
+        relationshipDao = new RelationshipDaoImpl(connection);
     }
 
     @Override
     public List<Relationship> getAll() throws DaoException {
-        RelationshipDao relationshipDao = new RelationshipDaoImpl(connection);
         return relationshipDao.getAll();
     }
 
     @Override
     public Relationship getByID(int relationshipID) throws DaoException {
-        RelationshipDao relationshipDao = new RelationshipDaoImpl(connection);
         return relationshipDao.getByID(relationshipID);
     }
 }

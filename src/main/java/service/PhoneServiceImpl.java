@@ -13,10 +13,11 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class PhoneServiceImpl implements PhoneService {
-    private Connection connection;
+
+    private PhoneDao phoneDao;
 
     public PhoneServiceImpl(Connection connection) {
-        this.connection = connection;
+        phoneDao = new PhoneDaoImpl(connection);
     }
 
     @Override
@@ -46,25 +47,21 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     public void insert(Phone phone) throws DaoException{
-        PhoneDao phoneDao = new PhoneDaoImpl(connection);
         phoneDao.insert(phone);
     }
 
     @Override
     public void insert(List<Phone> phoneList) throws DaoException {
-        PhoneDao phoneDao = new PhoneDaoImpl(connection);
         phoneDao.insert(phoneList);
     }
 
     @Override
     public List<Phone> getByContactID(int contactID) throws DaoException {
-        PhoneDao phoneDao = new PhoneDaoImpl(connection);
         return phoneDao.getByContactID(contactID);
     }
 
     @Override
     public void deleteByContactID(int contactID) throws DaoException {
-        PhoneDao phoneDao = new PhoneDaoImpl(connection);
         phoneDao.deleteByContactID(contactID);
     }
 }

@@ -25,10 +25,10 @@ import java.util.List;
 public class AttachmentServiceImpl implements AttachmentService {
     private final static Logger LOG = LoggerFactory.getLogger(AttachmentServiceImpl.class);
 
-    private Connection connection;
+    private AttachmentDao attachmentDao;
 
     public AttachmentServiceImpl(Connection connection) {
-        this.connection = connection;
+        attachmentDao = new AttachmentDaoImpl(connection);
     }
 
     private String writeFileToFileSystem(InputStream inputStream, String fileExtension) {
@@ -96,13 +96,11 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     public void insert(Attachment attachment) throws DaoException {
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         attachmentDao.insert(attachment);
     }
 
     @Override
     public void insert(List<Attachment> attachmentList) throws DaoException {
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         attachmentDao.insert(attachmentList);
     }
 
@@ -112,7 +110,6 @@ public class AttachmentServiceImpl implements AttachmentService {
             deleteAttachmentFile(attachment);
         }
 
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         attachmentDao.delete(attachment);
     }
 
@@ -124,38 +121,32 @@ public class AttachmentServiceImpl implements AttachmentService {
             }
         }
 
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         attachmentDao.delete(attachmentList);
     }
 
     @Override
     public void update(Attachment attachment) throws DaoException {
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         attachmentDao.update(attachment);
 
     }
 
     @Override
     public void update(List<Attachment> attachmentList) throws DaoException {
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         attachmentDao.update(attachmentList);
     }
 
     @Override
     public List<Attachment> getByContactId(int contactId) throws DaoException {
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         return attachmentDao.getByContactId(contactId);
     }
 
     @Override
     public List<Attachment> getByContactIdIn(List<Integer> contactIdList) throws DaoException {
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         return attachmentDao.getByContactIdIn(contactIdList);
     }
 
     @Override
     public Attachment getByFilePath(String filePath) throws DaoException {
-        AttachmentDao attachmentDao = new AttachmentDaoImpl(connection);
         return attachmentDao.getByFilePath(filePath);
     }
 }

@@ -9,27 +9,25 @@ import java.sql.Connection;
 import java.util.List;
 
 public class CityServiceImpl implements CityService {
-    private Connection connection;
+
+    private CityDao cityDao;
 
     public CityServiceImpl(Connection connection) {
-        this.connection = connection;
+        cityDao = new CityDaoImpl(connection);
     }
 
     @Override
     public List<City> getAll() throws DaoException {
-        CityDao cityDao = new CityDaoImpl(connection);
         return cityDao.getAll();
     }
 
     @Override
     public City getByID(int cityID) throws DaoException {
-        CityDao cityDao = new CityDaoImpl(connection);
         return cityDao.getByID(cityID);
     }
 
     @Override
     public List<City> getByIDIn(List<Integer> idList) throws DaoException {
-        CityDao cityDao = new CityDaoImpl(connection);
         return cityDao.getByIDIn(idList);
     }
 }

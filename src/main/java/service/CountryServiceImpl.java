@@ -9,27 +9,25 @@ import java.sql.Connection;
 import java.util.List;
 
 public class CountryServiceImpl implements CountryService {
-    private Connection connection;
+
+    private CountryDao countryDao;
 
     public CountryServiceImpl(Connection connection) {
-        this.connection = connection;
+        countryDao = new CountryDaoImpl(connection);
     }
 
     @Override
     public List<Country> getAll() throws DaoException {
-        CountryDao countryDao = new CountryDaoImpl(connection);
         return countryDao.getAll();
     }
 
     @Override
     public Country getByID(int countyID) throws DaoException {
-        CountryDao countryDao = new CountryDaoImpl(connection);
         return countryDao.getByID(countyID);
     }
 
     @Override
     public List<Country> getByIDIn(List<Integer> idList) throws DaoException {
-        CountryDao countryDao = new CountryDaoImpl(connection);
         return countryDao.getByIDIn(idList);
     }
 }
