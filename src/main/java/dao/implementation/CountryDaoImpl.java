@@ -69,4 +69,42 @@ public class CountryDaoImpl implements CountryDao {
         }
         return country;
     }
+
+    private String createGetByIdInSQL(int size) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `country` WHERE `id` in (");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(")");
+        return sqlBuilder.toString();
+    }
+
+    private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList) throws SQLException {
+        String sql = createGetByIdInSQL(idList.size());
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        for (int i = 1; i <= idList.size(); i++) {
+            statement.setObject(i, idList.get(i - 1));
+        }
+
+        return statement;
+    }
+
+    @Override
+    public List<Country> getByIDIn(List<Integer> idList) throws DaoException {
+        List<Country> countryList = new ArrayList<>();
+        try (PreparedStatement preparedStatement = createGetByIdInStatement(connection, idList);
+             ResultSet rs = preparedStatement.executeQuery();) {
+            while (rs.next()) {
+                countryList.add(parseResultSet(rs));
+            }
+        } catch (SQLException e) {
+            LOG.error("can't get countries by id list - {}", idList, e);
+            throw new DaoException("error while getting country by ID list", e);
+        }
+        return countryList;
+    }
 }

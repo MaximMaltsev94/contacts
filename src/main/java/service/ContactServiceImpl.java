@@ -5,6 +5,7 @@ import dao.interfaces.ContactDao;
 import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.Contact;
+import model.ContactSearchCriteria;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -52,7 +53,12 @@ public class ContactServiceImpl implements ContactService {
     public List<Contact> get(int pageNumber, int limit) throws DaoException {
         ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.get(pageNumber, limit);
+    }
 
+    @Override
+    public List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
+        ContactDao contactDao = new ContactDaoImpl(connection);
+        return contactDao.get(searchCriteria, pageNumber, limit);
     }
 
     @Override
@@ -65,6 +71,12 @@ public class ContactServiceImpl implements ContactService {
     public List<Contact> getByIdIn(List<Integer> idList) throws DaoException {
         ContactDao contactDao = new ContactDaoImpl(connection);
         return contactDao.getByIdIn(idList);
+    }
+
+    @Override
+    public List<Contact> getByEmailNotNull() throws DaoException {
+        ContactDao contactDao = new ContactDaoImpl(connection);
+        return contactDao.getByEmailNotNull();
     }
 
     @Override

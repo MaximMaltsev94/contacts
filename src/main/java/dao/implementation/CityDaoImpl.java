@@ -68,4 +68,42 @@ public class CityDaoImpl implements CityDao {
         }
         return city;
     }
+
+    private String createGetByIdInSQL(int size) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `city` WHERE `id` in (");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(")");
+        return sqlBuilder.toString();
+    }
+
+    private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList) throws SQLException {
+        String sql = createGetByIdInSQL(idList.size());
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        for (int i = 1; i <= idList.size(); i++) {
+            statement.setObject(i, idList.get(i - 1));
+        }
+
+        return statement;
+    }
+
+    @Override
+    public List<City> getByIDIn(List<Integer> idList) throws DaoException {
+        List<City> cityList = new ArrayList<>();
+        try(PreparedStatement preparedStatement = createGetByIdInStatement(connection, idList);
+            ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                cityList.add(parseResultSet(rs));
+            }
+        } catch (SQLException e) {
+            LOG.error("can't get city by id list - {}", idList, e);
+            throw new DaoException("error while getting city list", e);
+        }
+        return cityList;
+    }
 }

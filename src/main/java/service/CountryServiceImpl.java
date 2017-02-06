@@ -26,4 +26,10 @@ public class CountryServiceImpl implements CountryService {
         CountryDao countryDao = new CountryDaoImpl(connection);
         return countryDao.getByID(countyID);
     }
+
+    @Override
+    public List<Country> getByIDIn(List<Integer> idList) throws DaoException {
+        CountryDao countryDao = new CountryDaoImpl(connection);
+        return countryDao.getByIDIn(idList);
+    }
 }

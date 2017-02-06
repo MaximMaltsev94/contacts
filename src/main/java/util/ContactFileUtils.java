@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ResourceBundle;
 
 public class ContactFileUtils {
-    private final static String UPLOAD_PATH;
+    public final static String UPLOAD_PATH;
 
     static {
         ResourceBundle bundle = ResourceBundle.getBundle("fileUpload");
@@ -16,6 +16,13 @@ public class ContactFileUtils {
 
     public static File createTempFile(String prefix, String suffix) throws IOException {
         return File.createTempFile(prefix, suffix, new File(UPLOAD_PATH));
+    }
+
+    public static String getSystemFilePath(String fileName) {
+        if(fileName != null) {
+            return UPLOAD_PATH + fileName;
+        }
+        return null;
     }
 
 
@@ -31,7 +38,7 @@ public class ContactFileUtils {
         String fileName = getFileNameFromUrl(url, filePrefix);
         boolean deleteResult = false;
         if (fileName != null) {
-            deleteResult = new File(UPLOAD_PATH + fileName).delete();
+            deleteResult = new File(getSystemFilePath(fileName)).delete();
         }
         return deleteResult;
     }

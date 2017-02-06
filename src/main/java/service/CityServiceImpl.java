@@ -26,4 +26,10 @@ public class CityServiceImpl implements CityService {
         CityDao cityDao = new CityDaoImpl(connection);
         return cityDao.getByID(cityID);
     }
+
+    @Override
+    public List<City> getByIDIn(List<Integer> idList) throws DaoException {
+        CityDao cityDao = new CityDaoImpl(connection);
+        return cityDao.getByIDIn(idList);
+    }
 }

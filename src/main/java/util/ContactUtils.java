@@ -32,24 +32,6 @@ public class ContactUtils {
         return upload.parseRequest(request);
     }
 
-
-    public static String getFileNameFromUrl(String url, String filePrefix) {
-        if (StringUtils.contains(url, filePrefix)) {
-            return filePrefix + StringUtils.substringAfter(url, filePrefix);
-        } else {
-            return null;
-        }
-    }
-
-    public static synchronized boolean deleteFileByUrl(String url, String uploadPath, String filePrefix) {
-        String fileName = getFileNameFromUrl(url, filePrefix);
-        boolean deleteResult = false;
-        if (fileName != null) {
-            deleteResult = new File(uploadPath + fileName).delete();
-        }
-        return deleteResult;
-    }
-
     public static String cyr2lat(char ch){
         ch = Character.toUpperCase(ch);
         switch (ch){

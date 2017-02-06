@@ -3,11 +3,11 @@ package dao.implementation;
 import dao.interfaces.ContactDao;
 import exceptions.DaoException;
 import model.Contact;
+import model.ContactSearchCriteria;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -223,8 +223,9 @@ public class ContactDaoImpl implements ContactDao {
 
 
     private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber, int limit) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` ORDER BY `id` desc LIMIT ?, 10");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` ORDER BY `id` desc LIMIT ?, ?");
         preparedStatement.setObject(1, (pageNumber - 1) * limit);
+        preparedStatement.setObject(2, limit);
         return preparedStatement;
     }
 
@@ -259,82 +260,76 @@ public class ContactDaoImpl implements ContactDao {
         return count;
     }
 
-    private void appendString(StringBuilder where, String fieldName, String value) {
-        if (StringUtils.isNotBlank(value)) {
-            where.append(" and LOWER(");
-            where.append(fieldName);
-            where.append(") LIKE '%");
-            where.append(StringUtils.lowerCase(value));
-            where.append("%' ");
-        }
+    private String surroundPercentString(String val) {
+        return StringUtils.isBlank(val) ? "%" : "%" + val.toLowerCase() + "%";
     }
 
-    private void appendInt(StringBuilder where, String fieldName, int value) {
-        where.append(" and ");
-        where.append(fieldName);
-        where.append(" = ");
-        where.append(value);
+    private String surroundPercentInt(int val, int template) {
+        return val == template ? "%" : "%" + val + "%";
     }
 
-    private String concatQuery(String firstName, String lastName, String patronymic, int age1, int age2, int gender, String citizenship, int relationship, String companyName, int country, int city, String street, String postcode) {
-        StringBuilder searchQuery = new StringBuilder("SELECT * FROM `contact`");
-        StringBuilder where = new StringBuilder();
+    private PreparedStatement concatSearchQuery(Connection connection, ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws SQLException {
+        String sql = "SELECT * FROM `contact` WHERE " +
+                "first_name like ? and " +
+                "last_name like ? and " +
+                "ifnull(patronymic, '') like ? and " +
+                "ifnull(timestampdiff(YEAR, birth_date, current_date()), -1) between ? and ? and " +
+                "cast((gender | 0) as char) like ? and " +
+                "ifnull(citizenship, '') like ? and " +
+                "ifnull(cast(id_relationship as char), '') like ? and " +
+                "ifnull(company_name, '') like ? and " +
+                "ifnull(cast(id_country as char), '') like ? and " +
+                "ifnull(cast(id_city as char), '') like ? and " +
+                "ifnull(street, '') like ? and " +
+                "ifnull(postcode, '') like ? LIMIT ?, ?";
 
-        appendString(where, "first_name", firstName);
-        appendString(where, "last_name", lastName);
-        appendString(where, "patronymic", patronymic);
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setObject(1, surroundPercentString(searchCriteria.getFirstName()));
+        statement.setObject(2, surroundPercentString(searchCriteria.getLastName()));
+        statement.setObject(3, surroundPercentString(searchCriteria.getPatronymic()));
 
-        if(!(age1 == 0 && age2 == 0)) {
-            if (age2 == 0) age2 = 200;
-            where.append("and timestampdiff(YEAR, birth_date, current_date()) between ");
-            where.append(age1);
-            where.append(" and ");
-            where.append(age2);
+        int age1 = searchCriteria.getAge1();
+        int age2 = searchCriteria.getAge2();
+
+        if(age1 == 0 && age2 == 0) {
+            age2 = 200;
         }
 
-        if(gender != 2) {
-            appendInt(where, "gender", gender);
-        }
-        appendString(where, "citizenship", citizenship);
-        if(relationship != 0)
-            appendInt(where, "id_relationship", relationship);
-        appendString(where, "company_name", companyName);
-        if(country != 0)
-            appendInt(where, "id_country", country);
-        if(city != 0)
-            appendInt(where, "id_city", city);
-        appendString(where, "street", street);
-        appendString(where, "postcode", postcode);
+        statement.setObject(4, age1);
+        statement.setObject(5, age2);
+        statement.setObject(6, surroundPercentInt(searchCriteria.getGender(), 2));
+        statement.setObject(7, surroundPercentString(searchCriteria.getCitizenship()));
+        statement.setObject(8, surroundPercentInt(searchCriteria.getRelationship(), 0));
+        statement.setObject(9, surroundPercentString(searchCriteria.getCompanyName()));
+        statement.setObject(10, surroundPercentInt(searchCriteria.getCountry(), 0));
+        statement.setObject(11, surroundPercentInt(searchCriteria.getCity(), 0));
+        statement.setObject(12, surroundPercentString(searchCriteria.getStreet()));
+        statement.setObject(13, surroundPercentString(searchCriteria.getPostcode()));
+        statement.setObject(14, (pageNumber - 1) * limit);
+        statement.setObject(15, limit);
 
-        String whereStr = where.toString();
-
-        if(StringUtils.contains(whereStr, "and")) {
-            searchQuery.append(" WHERE ");
-            searchQuery.append(StringUtils.substringAfter(whereStr, "and"));
-        }
-
-        return searchQuery.toString();
+        LOG.info("search query: " + statement);
+        return statement;
     }
 
     @Override
-    public List<Contact> find(String firstName, String lastName, String patronymic, int age1, int age2, int gender, String citizenship, int relationship, String companyName, int country, int city, String street, String postcode) throws DaoException {
+    public List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        String searchQuery = concatQuery(firstName, lastName, patronymic, age1, age2, gender, citizenship, relationship, companyName, country, city, street, postcode);
-        try(Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(searchQuery)) {
+        try(PreparedStatement statement = concatSearchQuery(connection, searchCriteria, pageNumber, limit);
+            ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
                 contactList.add(contact);
             }
         } catch (SQLException e) {
-            LOG.error("can't perform search query - {}", searchQuery, e);
-            throw new DaoException("error while searching contacts by critetia", e);
+            LOG.error("can't perform search query", e);
+            throw new DaoException("error while searching contacts by criteria", e);
         }
         return contactList;
     }
 
     @Override
-    public List<Contact> getContactsWithEmail() throws DaoException {
+    public List<Contact> getByEmailNotNull() throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE `email` IS NOT NULL");
             ResultSet rs = preparedStatement.executeQuery()) {

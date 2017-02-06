@@ -4,6 +4,7 @@ import exceptions.CommandExecutionException;
 import exceptions.DataNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ContactFileUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -20,17 +21,16 @@ public class GetImage implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         try {
-            String imageName = request.getParameter("name");
-            response.setContentType("image/png");
+            String imageName = (String) request.getAttribute("name");
+            File f = new File(ContactFileUtils.getSystemFilePath(imageName));
 
-            String uploadPath = request.getServletContext().getInitParameter("uploadPath");
-            File f = new File(uploadPath + imageName);
+            response.setContentType("image/png");
             BufferedImage bi = ImageIO.read(f);
             OutputStream out = response.getOutputStream();
             ImageIO.write(bi, "png", out);
-            out.close();
+            out.flush();
         } catch (IOException e) {
-            LOG.error("can't find image - ", request.getParameter("name"), e);
+            LOG.error("can't find image - ", request.getAttribute("name"), e);
             throw new DataNotFoundException("requested image is not found", e);
         }
         return null;

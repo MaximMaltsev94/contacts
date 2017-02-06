@@ -11,4 +11,5 @@ import java.util.List;
 public interface CountryDao {
     List<Country> getAll() throws DaoException;
     Country getByID(int countyID) throws DaoException;
+    List<Country> getByIDIn(List<Integer> idList) throws DaoException;
 }

@@ -2,6 +2,7 @@ package dao.interfaces;
 
 import exceptions.DaoException;
 import model.Contact;
+import model.ContactSearchCriteria;
 
 import javax.naming.NamingException;
 import java.sql.Connection;
@@ -18,11 +19,11 @@ public interface ContactDao {
 
 
     List<Contact> get(int pageNumber, int limit) throws DaoException;
+    List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException;
     Contact getByID(int id) throws DaoException;
     List<Contact> getByIdIn(List<Integer> idList) throws DaoException;
     long getMaxID() throws DaoException;
     long getCount() throws DaoException;
-    List<Contact> find(String firstName, String lastName, String patronymic, int age1, int age2, int gender, String citizenship, int relationship, String companyName, int country, int city, String street, String postcode) throws DaoException;
-    List<Contact> getContactsWithEmail() throws DaoException;
+    List<Contact> getByEmailNotNull() throws DaoException;
     List<Contact> getByBirthdayToday() throws DaoException;
 }
