@@ -104,25 +104,25 @@
 
                     <div class="text-medium">Введите параметры поиска</div>
                     <div class="text-small-bold">Имя</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <input type="text" name="firstName" value="${requestScope.get('firstName')}"
                                pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                     </div>
 
                     <div class="text-small-bold">Фамилия</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <input type="text" name="lastName" value="${requestScope.get('lastName')}"
                                pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                     </div>
 
                     <div class="text-small-bold">Отчество</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <input type="text" name="patronymic" value="${requestScope.get('patronymic')}"
                                pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
                     </div>
 
                     <div class="text-small-bold">Возраст</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <select name="age1" id="age1">
                             <option value="0">От</option>
                             <c:forEach var="i" begin="1" end="100">
@@ -139,7 +139,7 @@
                     </div>
 
                     <div class="text-small-bold">Пол</div>
-                    <div class="jlab-row text-small">
+                    <div class="jlab-row margin text-small">
                         <div class="jlab-cell-12">
                             <input class="regular-radio" type="radio" name="gender" value="2" id="r2"/> <label for="r2"></label>Любой
                         </div>
@@ -149,20 +149,20 @@
                             <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label for="r1"></label>Мужской
                         </div>
                    </div>
-                    <div class="jlab-row text-small">
+                    <div class="jlab-row margin text-small">
                         <div class="jlab-cell-12">
                             <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label>Женский
                         </div>
                    </div>
 
                     <div class="text-small-bold">Гражданство</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <input type="text" name="citizenship" value="${requestScope.get('citizenship')}"
                                pattern="^[A-Za-zА-Яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
                     </div>
 
                     <div class="text-small-bold">Семейное положение</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <select name="relationship" id="relationship">
                             <option value="0">Не выбрано</option>
                             <c:forEach var="i" items="${requestScope.get('relationshipList')}">
@@ -172,13 +172,13 @@
                     </div>
 
                     <div class="text-small-bold">Место работы</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <input type="text" name="companyName" value="${requestScope.get('companyName')}"
                                pattern="[0-9A-Za-zА-Яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
                     </div>
 
                     <div class="text-small-bold">Страна</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <select name="country" id="country" onchange="addView.onChangeCountry(this.value)">
                             <option value="0">Не выбрано</option>
                             <c:forEach var="i" items="${requestScope.get('countryList')}">
@@ -188,7 +188,7 @@
                     </div>
 
                     <div class="text-small-bold">Город</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <select name="city" id="city">
                             <option value="0" data-country="0">Не выбрано</option>
                         </select>
@@ -204,18 +204,18 @@
                     </div>
 
                     <div class="text-small-bold">Адрес</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <input type="text" name="street" value="${requestScope.get('street')}"
                                pattern="^[0-9A-Za-zА-Яа-яЁё\s\\.\\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
                     </div>
 
                     <div class="text-small-bold">Почтовый индекс</div>
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <input type="text" name="postcode" value="${requestScope.get('postcode')}"
                                pattern="^[0-9A-Za-z]{2,20}$" maxlength="20" title="Английские буквы, цифрыб от 2х до 20 символов"/>
                     </div>
 
-                    <div class="jlab-row margin">
+                    <div class="jlab-row margin margin">
                         <input class="jlab-cell-12 align-center" type="submit" value="Поиск"/>
                     </div>
                 </form>
