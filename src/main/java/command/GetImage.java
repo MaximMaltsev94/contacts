@@ -28,7 +28,7 @@ public class GetImage implements Command {
             BufferedImage bi = ImageIO.read(f);
             OutputStream out = response.getOutputStream();
             ImageIO.write(bi, "png", out);
-            out.flush();
+            out.close();
         } catch (IOException e) {
             LOG.error("can't find image - ", request.getAttribute("name"), e);
             throw new DataNotFoundException("requested image is not found", e);

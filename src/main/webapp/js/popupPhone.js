@@ -52,17 +52,14 @@ var popupPhone = (function () {
         childElement = main.createInput('comment_' + targetPhoneId, 'text', 'none');
         mainDiv.appendChild(childElement);
 
-        childElement = main.createDiv('display_type_' + targetPhoneId, 'jlab-cell-3 align-right text-small');
+        childElement = main.createDiv('display_type_' + targetPhoneId, 'jlab-cell-2 align-right text-small');
         mainDiv.appendChild(childElement);
 
-        childElement = main.createDiv('', 'jlab-cell-3');
-        var subChildElement = main.createDiv('display_number_' + targetPhoneId, 'jlab-row text-medium');
+        childElement = main.createDiv('', 'jlab-cell-8');
+        var subChildElement = main.createDiv('display_number_' + targetPhoneId, 'jlab-row text-small-bold');
         childElement.appendChild(subChildElement);
         subChildElement = main.createDiv('display_comment_' + targetPhoneId, 'jlab-row text text-small');
         childElement.appendChild(subChildElement);
-        mainDiv.appendChild(childElement);
-
-        childElement = main.createDiv('', 'jlab-cell-1');
         mainDiv.appendChild(childElement);
 
         childElement = main.createDiv('', 'jlab-cell-1');
@@ -81,6 +78,7 @@ var popupPhone = (function () {
         childElement.appendChild(subChildElement);
         mainDiv.appendChild(childElement);
 
+        document.getElementById('phoneSection').appendChild(document.createElement('hr'));
         document.getElementById('phoneSection').appendChild(mainDiv);
     };
     return {
@@ -89,6 +87,7 @@ var popupPhone = (function () {
         },
 
         deletePhoneElement: function (sender) {
+            document.getElementById('phoneSection').removeChild(sender.parentNode.parentNode.previousElementSibling);
             document.getElementById('phoneSection').removeChild(sender.parentNode.parentNode);
         },
 

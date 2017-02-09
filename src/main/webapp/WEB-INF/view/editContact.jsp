@@ -26,386 +26,426 @@
 
 <span id="tooltip"></span>
 
-<div class="container">
+<div class="container-80">
     <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">
-        <section>
-            <div class="jlab-row">
-                <span class="text-large">Основное</span>
+        <div class="jlab-row margin">
+            <div class="jlab-cell-12">
+                <section>
+                    <div class="jlab-row">
+                        <div class="jlab-cell-6">
+                            <span class="text-large">Редактирование контакта</span>
+                        </div>
+                        <div class="jlab-cell-3">
+                            <input type="submit" class="jlab-cell-12 align-center" value="Сохранить">
+                        </div>
+                        <div class="jlab-cell-3">
+
+                            <a href="<c:url value="?action=show&page=1" />">
+                                <button type="button" class="jlab-cell-12">Отменить</button>
+                            </a>
+                        </div>
+                    </div>
+                </section>
             </div>
+            <%--info line with save/cancel buttons end--%>
+        </div>
+
+        <div class="jlab-row margin">
             <input type="text" name="id" value="${requestScope.get('contact').id}" hidden>
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Фотография</span>
+            <div class="jlab-cell-4">
+                <section>
+                    <div class="jlab-row margin">
+                        <div class="hiddenFileInputContainter">
 
-                </div>
-                <div class="jlab-cell-3 center">
-                    <div class="hiddenFileInputContainter">
-
-                        <img id="blah" class="fileDownload"
-                             src="<c:url value="${requestScope.get('contact').profilePicture}"/>">
-                        <input type="file" name="profileImage" class="hidden" accept="image/*"
-                               onchange="addView.readURL(this)">
+                            <img id="blah" class="fileDownload"
+                                 src="<c:url value="${requestScope.get('contact').profilePicture}"/>">
+                            <input hidden type="file" id="profileImage" name="profileImage" class="hidden" accept="image/*"
+                                   onchange="addView.readURL(this)">
+                            <input type="text" id="imageAction" name="imageAction" value="nothing" hidden>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </section>
 
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Имя*</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="firstName" value="${requestScope.get('contact').firstName}" required
-                           pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
-                </div>
-            </div>
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Фамилия*</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="lastName" value="${requestScope.get('contact').lastName}" required
-                           pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
-                </div>
-            </div>
+                <section>
+                    <div class="jlab-row margin">
+                        <button type="button" class="jlab-cell-12 align-center" onclick="addView.onLoadImageClick()">Обновить фотографию</button>
+                    </div>
+                    <div class="jlab-row margin">
+                        <button type="button" class="jlab-cell-12 align-center" onclick="addView.onDeleteImageClick()">Удалить</button>
+                    </div>
+                </section>
 
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Отчество</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="patronymic" value="${requestScope.get('contact').patronymic}"
-                           pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">День рождения</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="birthDate" id="birthDate" value="<fmt:formatDate value="${requestScope.get('contact').birthDate}" pattern="dd.MM.yyyy"/>"
-                           placeholder="дд.мм.гггг" pattern="^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$" maxlength="10" title="дд.мм.гггг"/>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Пол</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label for="r1"></label> Мужской
-                    <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label> Женский
-                </div>
-            </div>
-
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Гражданство</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}"
-                           pattern="^[A-Za-zА-Яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Семейное положение</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <select name="relationship" id="relationship">
-                        <option value="0">Не выбрано</option>
-                        <c:forEach var="i" items="${requestScope.get('relationshipList')}">
-                            <option value="${i.id}" >${i.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Веб сайт</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="webSite" value="${requestScope.get('contact').webSite}"
-                           pattern="^https?:\/\/(?:[-\w]+\.)?([-\w]+)\.\w+(?:\.\w+)?\/?.*$" maxlength="255" title="http://... или https://..."/>
-                </div>
-            </div>
-
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Эл. почта</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="email" value="${requestScope.get('contact').email}"
-                           pattern="^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$" maxlength="255"/>
-                </div>
-            </div>
-
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Место работы</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="companyName" value="${requestScope.get('contact').companyName}"
-                           pattern="[0-9A-Za-zА-Яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Страна</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <select name="country" id="country" onchange="addView.onChangeCountry(this.value)">
-                        <option value="0">Не выбрано</option>
-                        <c:forEach var="i" items="${requestScope.get('countryList')}">
-                            <option value="${i.id}">${i.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Город</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <select name="city" id="city">
-                        <option value="0" data-country="0">Не выбрано</option>
-                    </select>
-
-                    <%--hidden select with city data--%>
-                    <select hidden id="cityData">
-                        <option value="0" data-country="0">Не выбрано</option>
-                        <c:forEach var="i" items="${requestScope.get('cityList')}">
-                            <option value="${i.id}" data-country="${i.countryID}">${i.name}</option>
-                        </c:forEach>
-                    </select>
-                    <%--hidden select with city data--%>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Адрес</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="street" value="${requestScope.get('contact').street}"
-                           pattern="^[0-9A-Za-zА-Яа-яЁё\s\\.\\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-                    <span class="text-small">Почтовый индекс</span>
-                </div>
-                <div class="jlab-cell-3">
-                    <input type="text" name="postcode" value="${requestScope.get('contact').postcode}"
-                           pattern="^[0-9A-Za-z]{2,20}$" maxlength="20" title="Английские буквы, цифрыб от 2х до 20 символов"/>
-                </div>
-            </div>
-
-            <div class="jlab-row margin">
-                <div class="jlab-cell-3 align-right">
-
-                </div>
-                <div class="jlab-cell-3 center">
-                    <input type="submit" value="Сохранить"/>
-                </div>
-            </div>
-            <%--main info section end--%>
-        </section>
-
-        <section id="phoneSection">
-            <div class="jlab-row">
-                <div class="jlab-cell-4 center">
-                    <span class="text-large">Контактные телефоны</span>
-                </div>
-
-                <div class="jlab-cell-2"></div>
-                <div class="jlab-cell-1"></div>
-                <div class="jlab-cell-1"></div>
-                <div class="jlab-cell-1 center">
-                    <div class="imageButton add" onclick="popupPhone.showAddPhonePopup()"></div></div>
-
-            </div>
-            <div id="phonePopup" class="popupBack">
-                <div class="popup">
+                <section id="phoneSection">
                     <div class="jlab-row">
-                        <div class="jlab-cell-12 align-right">
-                            <a class="text-large" href="#phoneSection">&times;</a>
+                        <div class="jlab-cell-11">
+                            <span class="text-medium">Контактные телефоны</span>
                         </div>
+
+                        <div class="jlab-cell-1">
+                            <div class="imageButton add" onclick="popupPhone.showAddPhonePopup()"></div></div>
                     </div>
-                    <div class="jlab-row margin">
-                        <select id="popupPhone_phoneType">
-                            <option value="0">Моб.</option>
-                            <option value="1">Дом.</option>
-                        </select>
+                    <div id="phonePopup" class="popupBack">
+                        <div class="popup">
+                            <div class="jlab-row">
+                                <div class="jlab-cell-12 align-right">
+                                    <a class="text-large" href="#phoneSection">&times;</a>
+                                </div>
+                            </div>
+                            <div class="jlab-row margin">
+                                <select id="popupPhone_phoneType">
+                                    <option value="0">Моб.</option>
+                                    <option value="1">Дом.</option>
+                                </select>
 
-                        <select id="popupPhone_countryCode">
-                            <c:forEach var="i" items="${requestScope.get('countryList')}">
-                                <option value="${i.id}">+${i.phoneCode}</option>
-                            </c:forEach>
-                        </select>
+                                <select id="popupPhone_countryCode">
+                                    <c:forEach var="i" items="${requestScope.get('countryList')}">
+                                        <option value="${i.id}">+${i.phoneCode}</option>
+                                    </c:forEach>
+                                </select>
 
-                        <input id="popupPhone_operatorCode" type="text" pattern="[0-9]{2,5}" placeholder="Код. оп." maxlength="5">
+                                <input id="popupPhone_operatorCode" type="text" pattern="[0-9]{2,5}" placeholder="Код. оп." maxlength="5">
 
-                        <input id="popupPhone_phoneNumber" type="text" pattern="[0-9]{4,9}" placeholder="Номер" maxlength="9">
-                    </div>
+                                <input id="popupPhone_phoneNumber" type="text" pattern="[0-9]{4,9}" placeholder="Номер" maxlength="9">
+                            </div>
 
-                    <div class="jlab-row margin">
-                        <input type="text" id="popupPhone_comment" placeholder="Комментарий">
-                    </div>
+                            <div class="jlab-row margin">
+                                <input type="text" id="popupPhone_comment" placeholder="Комментарий">
+                            </div>
 
-                    <div class="jlab-row margin">
-                        <div class="jlab-cell-12 align-right">
-                            <button type="button" id="popupPhone_ok">Добавить</button>
+                            <div class="jlab-row margin">
+                                <div class="jlab-cell-12 align-right">
+                                    <button type="button" id="popupPhone_ok">Добавить</button>
+                                </div>
+                            </div>
+
                         </div>
+
+                        <%--div id phonePopup end--%>
                     </div>
 
+                    <c:set var="phoneCount" value="0" scope="page"/>
+                    <c:forEach var="i" items="${requestScope.get('phoneList')}">
+                        <hr>
+                        <c:set var="phoneCount" value="${phoneCount + 1}" scope="page"/>
+                        <div id="phone-${phoneCount}" class="jlab-row margin">
+                            <input type="text" name="type_phone-${phoneCount}" id="type_phone-${phoneCount}"
+                                   value="${i.type == false ? 0 : 1}" hidden>
+                            <input type="text" name="country_code_phone-${phoneCount}" id="country_code_phone-${phoneCount}"
+                                   value="${i.countryID - 1}" hidden>
+                            <input type="text" name="op_code_phone-${phoneCount}" id="op_code_phone-${phoneCount}"
+                                   value="${i.operatorCode}" hidden>
+                            <input type="text" name="number_phone-${phoneCount}" id="number_phone-${phoneCount}"
+                                   value="${i.phoneNumber}" hidden>
+                            <input type="text" name="comment_phone-${phoneCount}" id="comment_phone-${phoneCount}"
+                                   value="${i.comment}" hidden>
+                            <div id="display_type_phone-${phoneCount}" class="jlab-cell-2 align-right text-small">
+                                <c:choose>
+                                    <c:when test="${i.type == true}">
+                                        Дом.
+                                    </c:when>
+                                    <c:otherwise>
+                                        Моб.
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+
+                            <div class="jlab-cell-8">
+                                <div id="display_number_phone-${phoneCount}" class="jlab-row text-small-bold">
+                                    <c:forEach var="country" items="${requestScope.get('countryList')}">
+                                        <c:if test="${country.id == i.countryID}">
+                                            +${country.phoneCode}${i.operatorCode}${i.phoneNumber}
+                                        </c:if>
+                                    </c:forEach>
+                                </div>
+                                <div id="display_comment_phone-${phoneCount}" class="jlab-row text text-small">
+                                        ${i.comment}
+                                </div>
+                            </div>
+
+                            <div class="jlab-cell-1">
+                                <div class="imageButton edit" onclick="popupPhone.showEditPhonePopup(this)"></div>
+                            </div>
+                            <div class="jlab-cell-1">
+                                <div class="imageButton delete" onclick="popupPhone.deletePhoneElement(this)"></div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                    <%--contact phones section end--%>
+                </section>
+            </div> <%-- div.jlab-cell-4 end --%>
+
+            <div class="jlab-cell-8">
+                <div class="jlab-row">
+                    <section class="jlab-row">
+                        <div class="jlab-row">
+                            <div class="jlab-cell-12">
+                                <div class="jlab-row margin">
+                                    <div class="text-medium">Основная информация</div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Имя*</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="firstName" value="${requestScope.get('contact').firstName}" required
+                                               pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                                    </div>
+                                </div>
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Фамилия*</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="lastName" value="${requestScope.get('contact').lastName}" required
+                                               pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Отчество</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="patronymic" value="${requestScope.get('contact').patronymic}"
+                                               pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30" title="Русские или английские буквы, от 2х до 30 символов"/>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">День рождения</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="birthDate" id="birthDate" value="<fmt:formatDate value="${requestScope.get('contact').birthDate}" pattern="dd.MM.yyyy"/>"
+                                               placeholder="дд.мм.гггг" pattern="^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$" maxlength="10" title="дд.мм.гггг"/>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Пол</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label for="r1"></label> Мужской
+                                        <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label> Женский
+                                    </div>
+                                </div>
+
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Гражданство</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="citizenship" value="${requestScope.get('contact').citizenship}"
+                                               pattern="^[A-Za-zА-Яа-яЁё\s]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, от 2х до 50 символов"/>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Семейное положение</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <select name="relationship" id="relationship">
+                                            <option value="0">Не выбрано</option>
+                                            <c:forEach var="i" items="${requestScope.get('relationshipList')}">
+                                                <option value="${i.id}" >${i.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
                 </div>
 
-                <%--div id phonePopup end--%>
+                <div class="jlab-row">
+                    <section class="jlab-row">
+                        <div class="jlab-row">
+                            <div class="jlab-cell-12">
+                                <div class="jlab-row margin">
+                                    <div class="text-medium">Контактная информация</div>
+                                </div>
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Веб сайт</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="webSite" value="${requestScope.get('contact').webSite}"
+                                               pattern="^https?:\/\/(?:[-\w]+\.)?([-\w]+)\.\w+(?:\.\w+)?\/?.*$" maxlength="255" title="http://... или https://..."/>
+                                    </div>
+                                </div>
+
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Эл. почта</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="email" value="${requestScope.get('contact').email}"
+                                               pattern="^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$" maxlength="255"/>
+                                    </div>
+                                </div>
+
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Место работы</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="companyName" value="${requestScope.get('contact').companyName}"
+                                               pattern="[0-9A-Za-zА-Яа-яЁё\s]{2,50}" maxlength="50" title="Русские или английские буквы, цифры, пробелы, от 2х до 50 символов"/>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Страна</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <select name="country" id="country" onchange="addView.onChangeCountry(this.value)">
+                                            <option value="0">Не выбрано</option>
+                                            <c:forEach var="i" items="${requestScope.get('countryList')}">
+                                                <option value="${i.id}">${i.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Город</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <select name="city" id="city">
+                                            <option value="0" data-country="0">Не выбрано</option>
+                                        </select>
+
+                                        <%--hidden select with city data--%>
+                                        <select hidden id="cityData">
+                                            <option value="0" data-country="0">Не выбрано</option>
+                                            <c:forEach var="i" items="${requestScope.get('cityList')}">
+                                                <option value="${i.id}" data-country="${i.countryID}">${i.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <%--hidden select with city data--%>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Адрес</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="street" value="${requestScope.get('contact').street}"
+                                               pattern="^[0-9A-Za-zА-Яа-яЁё\s\\.\\,]{2,50}$" maxlength="50" title="Русские или английские буквы, пробелы, точки, запятые, цифры от 2х до 50 символов"/>
+                                    </div>
+                                </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3">
+                                        <span class="text-small">Почтовый индекс</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input type="text" name="postcode" value="${requestScope.get('contact').postcode}"
+                                               pattern="^[0-9A-Za-z]{2,20}$" maxlength="20" title="Английские буквы, цифрыб от 2х до 20 символов"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="jlab-row">
+
+                    <section id="attachmentSection" class="jlab-row">
+                        <div class="jlab-row">
+                            <div class="jlab-cell-12">
+                                <div class="jlab-row">
+                                    <div class="jlab-cell-11 center">
+                                        <span class="text-medium">Прикрепленные файлы</span>
+                                    </div>
+                                    <div class="jlab-cell-1 center">
+                                        <div class="imageButton addAttachment" onclick="popupAttachment.showAddAttachmentPopup()"></div></div>
+                                </div>
+
+                                <div id="attachmentPopup" class="popupBack">
+                                    <div class="popup">
+                                        <div class="jlab-row">
+                                            <div class="jlab-cell-12 align-right">
+                                                <a class="text-large" href="#attachmentSection">&times;</a>
+                                            </div>
+                                        </div>
+                                        <div class="jlab-row margin">
+                                            <input id="popupAttachment_fileName" type="text" placeholder="Имя файла" maxlength="50">
+                                        </div>
+
+                                        <div class="jlab-row margin">
+                                            <input type="text" id="popupAttachment_comment" placeholder="Комментарий" maxlength="255">
+                                        </div>
+
+                                        <div class="jlab-row margin">
+                                            <div class="jlab-cell-12 align-right">
+                                                <button type="button" id="popupAttachment_ok">Добавить</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <%--div id attachmentPopup end--%>
+                                </div>
+
+
+                                <c:set var="attachmentCount" value="0" scope="page"/>
+                                <c:forEach var="i" items="${requestScope.get('attachmentList')}">
+                                    <hr>
+                                    <c:set var="attachmentCount" value="${attachmentCount + 1}" scope="page"/>
+                                    <div id="attachment-${attachmentCount}" class="jlab-row margin">
+                                        <input type="text" name="name_attachment-${attachmentCount}" id="name_attachment-${attachmentCount}"
+                                               value="${i.fileName}" hidden/>
+                                        <input type="text" name="id_attachment-${attachmentCount}" id="id_attachment-${attachmentCount}"
+                                               value="${i.id}" hidden>
+                                        <input type="text" name="path_attachment-${attachmentCount}" id="path_attachment-${attachmentCount}"
+                                               value="${i.filePath}" hidden>
+                                        <input type="datetime" name="date_attachment-${attachmentCount}" id="date_attachment-${attachmentCount}"
+                                               value="${i.uploadDate}" hidden/>
+                                        <input type="text" name="comment_attachment-${attachmentCount}" id="comment_attachment-${attachmentCount}"
+                                               value="${i.comment}" hidden>
+                                        <div id="display_date_attachment-${attachmentCount}" class="jlab-cell-3 align-right text-small">
+                                            <fmt:formatDate value="${i.uploadDate}" type="both" dateStyle="long" timeStyle="medium"/>
+                                        </div>
+
+                                        <div class="jlab-cell-6">
+                                            <div id="display_name_attachment-${attachmentCount}" class="jlab-row text-small-bold">
+                                                    ${i.fileName}
+                                            </div>
+                                            <div id="display_comment_attachment-${attachmentCount}" class="jlab-row text text-small">
+                                                    ${i.comment}
+                                            </div>
+                                        </div>
+
+                                        <div class="jlab-cell-1">
+                                            <a href="<c:url value="${i.filePath}"/>" target="_blank">
+                                                <div class="imageButton download"></div></a>
+                                        </div>
+
+                                        <div class="jlab-cell-1">
+                                            <div class="imageButton edit" onclick="popupAttachment.showEditAttachmentPopup(this)"></div>
+                                        </div>
+                                        <div class="jlab-cell-1">
+                                            <div class="imageButton delete" onclick="popupAttachment.deleteAttachmentElement(this)"></div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </section><%--attachment section --%>
+                </div>
             </div>
 
-            <c:set var="phoneCount" value="0" scope="page"/>
-            <c:forEach var="i" items="${requestScope.get('phoneList')}">
-                <c:set var="phoneCount" value="${phoneCount + 1}" scope="page"/>
-                <div id="phone-${phoneCount}" class="jlab-row margin">
-                    <input type="text" name="type_phone-${phoneCount}" id="type_phone-${phoneCount}"
-                           value="${i.type == false ? 0 : 1}" hidden>
-                    <input type="text" name="country_code_phone-${phoneCount}" id="country_code_phone-${phoneCount}"
-                           value="${i.countryID - 1}" hidden>
-                    <input type="text" name="op_code_phone-${phoneCount}" id="op_code_phone-${phoneCount}"
-                           value="${i.operatorCode}" hidden>
-                    <input type="text" name="number_phone-${phoneCount}" id="number_phone-${phoneCount}"
-                           value="${i.phoneNumber}" hidden>
-                    <input type="text" name="comment_phone-${phoneCount}" id="comment_phone-${phoneCount}"
-                           value="${i.comment}" hidden>
-                    <div id="display_type_phone-${phoneCount}" class="jlab-cell-3 align-right text-small">
-                        <c:choose>
-                            <c:when test="${i.type == true}">
-                                Дом.
-                            </c:when>
-                            <c:otherwise>
-                                Моб.
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-
-                    <div class="jlab-cell-3">
-                        <div id="display_number_phone-${phoneCount}" class="jlab-row text-medium">
-                            <c:forEach var="country" items="${requestScope.get('countryList')}">
-                                <c:if test="${country.id == i.countryID}">
-                                    +${country.phoneCode}${i.operatorCode}${i.phoneNumber}
-                                </c:if>
-                            </c:forEach>
-                        </div>
-                        <div id="display_comment_phone-${phoneCount}" class="jlab-row text text-small">
-                                ${i.comment}
-                        </div>
-                    </div>
-
-                    <div class="jlab-cell-1"></div>
-
-                    <div class="jlab-cell-1">
-                        <div class="imageButton edit" onclick="popupPhone.showEditPhonePopup(this)"></div>
-                    </div>
-                    <div class="jlab-cell-1">
-                        <div class="imageButton delete" onclick="popupPhone.deletePhoneElement(this)"></div>
-                    </div>
-                </div>
-            </c:forEach>
-            <%--contact phones section end--%>
-        </section>
-
-        <section id="attachmentSection">
-            <div class="jlab-row">
-                <div class="jlab-cell-3 center">
-                    <span class="text-large">Присоединения</span>
-                </div>
-                <div class="jlab-cell-3"></div>
-                <div class="jlab-cell-1"></div>
-                <div class="jlab-cell-1"></div>
-                <div class="jlab-cell-1 center">
-                    <div class="imageButton addAttachment" onclick="popupAttachment.showAddAttachmentPopup()"></div></div>
-            </div>
-
-            <div id="attachmentPopup" class="popupBack">
-                <div class="popup">
-                    <div class="jlab-row">
-                        <div class="jlab-cell-12 align-right">
-                            <a class="text-large" href="#attachmentSection">&times;</a>
-                        </div>
-                    </div>
-                    <div class="jlab-row margin">
-                        <input id="popupAttachment_fileName" type="text" placeholder="Имя файла" maxlength="50">
-                    </div>
-
-                    <div class="jlab-row margin">
-                        <input type="text" id="popupAttachment_comment" placeholder="Комментарий" maxlength="255">
-                    </div>
-
-                    <div class="jlab-row margin">
-                        <div class="jlab-cell-12 align-right">
-                            <button type="button" id="popupAttachment_ok">Добавить</button>
-                        </div>
-                    </div>
-
-                </div>
-                <%--div id attachmentPopup end--%>
-            </div>
-
-
-            <c:set var="attachmentCount" value="0" scope="page"/>
-            <c:forEach var="i" items="${requestScope.get('attachmentList')}">
-                <c:set var="attachmentCount" value="${attachmentCount + 1}" scope="page"/>
-                <div id="attachment-${attachmentCount}" class="jlab-row margin">
-                    <input type="text" name="name_attachment-${attachmentCount}" id="name_attachment-${attachmentCount}"
-                           value="${i.fileName}" hidden/>
-                    <input type="text" name="id_attachment-${attachmentCount}" id="id_attachment-${attachmentCount}"
-                            value="${i.id}" hidden>
-                    <input type="text" name="path_attachment-${attachmentCount}" id="path_attachment-${attachmentCount}"
-                            value="${i.filePath}" hidden>
-                    <input type="datetime" name="date_attachment-${attachmentCount}" id="date_attachment-${attachmentCount}"
-                           value="${i.uploadDate}" hidden/>
-                    <input type="text" name="comment_attachment-${attachmentCount}" id="comment_attachment-${attachmentCount}"
-                           value="${i.comment}" hidden>
-                    <div id="display_date_attachment-${attachmentCount}" class="jlab-cell-3 align-right text-small">
-                        <fmt:formatDate value="${i.uploadDate}" type="both" dateStyle="long" timeStyle="medium"/>
-                    </div>
-
-                    <div class="jlab-cell-3">
-                        <div id="display_name_attachment-${attachmentCount}" class="jlab-row text-medium">
-                            ${i.fileName}
-                        </div>
-                        <div id="display_comment_attachment-${attachmentCount}" class="jlab-row text text-small">
-                                ${i.comment}
-                        </div>
-                    </div>
-
-                    <div class="jlab-cell-1">
-                        <a href="<c:url value="${i.filePath}"/>" target="_blank">
-                            <div class="imageButton download"></div></a>
-                    </div>
-
-                    <div class="jlab-cell-1">
-                        <div class="imageButton edit" onclick="popupAttachment.showEditAttachmentPopup(this)"></div>
-                    </div>
-                    <div class="jlab-cell-1">
-                        <div class="imageButton delete" onclick="popupAttachment.deleteAttachmentElement(this)"></div>
-                    </div>
-                </div>
-            </c:forEach>
-
-            <%--attachment section --%>
-        </section>
-
-
+        </div><%-- div.jlab-row.margin end --%>
     </form>
     <%--div container end--%>
 </div>

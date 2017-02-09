@@ -78,8 +78,8 @@ var popupAttachment = (function () {
         child = main.createDiv('display_date_' + targetID, 'jlab-cell-3 align-right text-small');
         mainDiv.appendChild(child);
 
-        child = main.createDiv('', 'jlab-cell-3');
-        var subChild = main.createDiv('display_name_' + targetID, 'jlab-row text-medium');
+        child = main.createDiv('', 'jlab-cell-6');
+        var subChild = main.createDiv('display_name_' + targetID, 'jlab-row text-small-bold');
         child.appendChild(subChild);
         subChild = main.createDiv('display_comment_' + targetID, 'jlab-row text text-small');
         child.appendChild(subChild);
@@ -95,6 +95,7 @@ var popupAttachment = (function () {
             return main.onFileChangeAction(targetID);
         };
         subChild.className = 'inputfile';
+        subChild.setAttribute("hidden", "hidden");
         child.appendChild(subChild);
 
         subChild = document.createElement('label');
@@ -125,7 +126,8 @@ var popupAttachment = (function () {
         child.appendChild(subChild);
         mainDiv.appendChild(child);
 
-        document.getElementById('attachmentSection').appendChild(mainDiv);
+        document.querySelectorAll('#attachmentSection>.jlab-row>.jlab-cell-12')[0].appendChild(document.createElement('hr'));
+        document.querySelectorAll('#attachmentSection>.jlab-row>.jlab-cell-12')[0].appendChild(mainDiv);
     } ;
 
     var validatePopup = function () {
@@ -140,7 +142,9 @@ var popupAttachment = (function () {
         },
 
         deleteAttachmentElement : function (sender) {
-            document.getElementById('attachmentSection').removeChild(sender.parentNode.parentNode);
+
+            document.querySelectorAll('#attachmentSection>.jlab-row>.jlab-cell-12')[0].removeChild(sender.parentNode.parentNode.previousElementSibling);
+            document.querySelectorAll('#attachmentSection>.jlab-row>.jlab-cell-12')[0].removeChild(sender.parentNode.parentNode);
         },
 
         showAddAttachmentPopup: function () {

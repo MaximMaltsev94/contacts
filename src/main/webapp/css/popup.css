@@ -8,6 +8,7 @@
     transition: opacity 500ms;
     visibility: hidden;
     opacity: 0;
+    z-index: 1;
 }
 
 .popupBack:target {
@@ -24,7 +25,7 @@
     margin: 70px auto;
     width: 40%;
     position: relative;
-    transition: all 5s ease-in-out;
+    transition: opacity 5s ease-in-out;
 }
 
 #popupPhone_phoneType, #popupPhone_countryCode, #popupPhone_operatorCode {

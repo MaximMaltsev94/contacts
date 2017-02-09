@@ -62,6 +62,7 @@ var addView = (function() {
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
+                    document.getElementById('imageAction').value = 'update';
                     document.getElementById('blah').setAttribute('src', e.target.result);
                 };
 
@@ -93,6 +94,16 @@ var addView = (function() {
             }
             main.showTooltip("Введена недействительная дата", "danger");
             return false;
+        },
+
+        onLoadImageClick: function () {
+            document.getElementById('profileImage').click();
+        },
+
+        onDeleteImageClick: function () {
+            document.getElementById("profileImage").value = "";
+            document.getElementById('imageAction').value = 'delete';
+            document.getElementById('blah').setAttribute('src', '/sysImages/default.png');
         }
     }
 }());

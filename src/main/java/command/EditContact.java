@@ -1,25 +1,19 @@
 package command;
 
-import dao.implementation.ConnectionFactory;
 import exceptions.*;
 import model.Attachment;
 import model.Contact;
 import model.Phone;
-import org.apache.commons.fileupload.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.*;
-import util.ContactUtils;
 import util.RequestUtils;
 import util.TooltipType;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +39,7 @@ public class EditContact implements Command {
         List<Attachment> forInsert = null;
 
         boolean isErrorOccurred = true;
+        String imageAction = "nothing";
 
         try {
             connection.setAutoCommit(false);
@@ -58,6 +53,16 @@ public class EditContact implements Command {
 
 
             newContact.setId(contactId);
+            imageAction = (String) request.getAttribute("imageAction");
+            switch (imageAction) {
+                case "update": //newContact.profileImage contains new image url
+                    break;
+                case "delete": //newContact.profileImage contains url to default image
+                    break;
+                case "nothing": //
+                    newContact.setProfilePicture(oldContact.getProfilePicture());
+                    break;
+            }
             contactService.update(newContact);
 
             List<Phone> phones = phoneService.parseRequest(request, contactId);
@@ -139,7 +144,8 @@ public class EditContact implements Command {
             }
 
         } else {
-            contactService.deleteProfileImageFile(oldContact);
+            if(!imageAction.equals("nothing"))
+                contactService.deleteProfileImageFile(oldContact);
 
             if (forDelete != null) {
                 for (Attachment attachment : forDelete) {
