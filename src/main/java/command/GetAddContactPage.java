@@ -16,7 +16,7 @@ public class GetAddContactPage implements Command {
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
-        String VIEW_PAGE = "addContact";
+        String VIEW_PAGE = "editContact";
 
         RelationshipService relationshipService = new RelationshipServiceImpl(connection);
         CountryService countryService = new CountryServiceImpl(connection);

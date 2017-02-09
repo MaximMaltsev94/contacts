@@ -10,8 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface ContactDao {
-    // TODO: 12.01.2017 overload method getAll to accepting pagable or nothing parameters
-    void insert(Contact contact) throws DaoException;
+    Contact insert(Contact contact) throws DaoException;
     void update(Contact contact) throws DaoException;
     void delete(Contact contact) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;

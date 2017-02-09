@@ -70,15 +70,21 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public void insert(Contact contact) throws DaoException {
-        try (PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+    public Contact insert(Contact contact) throws DaoException {
+        try (PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             fillPreparedStatement(pStatement, contact);
             pStatement.executeUpdate();
+
+            try(ResultSet rs = pStatement.getGeneratedKeys()) {
+                if(rs.next()) {
+                    contact.setId(rs.getInt(1));
+                }
+            }
         } catch (SQLException e) {
             LOG.error("can't insert contact - {}", contact, e);
             throw new DaoException("error while inserting contact", e);
         }
-
+        return contact;
     }
 
     @Override

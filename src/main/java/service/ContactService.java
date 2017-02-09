@@ -14,7 +14,7 @@ public interface ContactService {
     void deleteProfileImageFile(Contact contact);
 
 
-    void insert(Contact contact) throws DaoException;
+    Contact insert(Contact contact) throws DaoException;
     void update(Contact contact) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;
 

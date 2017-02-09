@@ -32,8 +32,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public void insert(Contact contact) throws DaoException {
-        contactDao.insert(contact);
+    public Contact insert(Contact contact) throws DaoException {
+        return contactDao.insert(contact);
     }
 
     @Override

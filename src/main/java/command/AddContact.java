@@ -1,11 +1,12 @@
 package command;
 
 import exceptions.*;
+import model.Attachment;
 import model.Contact;
+import model.Phone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.ContactService;
-import service.ContactServiceImpl;
+import service.*;
 import util.RequestUtils;
 import util.TooltipType;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class AddContact implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(AddContact.class);
@@ -20,11 +22,21 @@ public class AddContact implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         ContactService contactService = new ContactServiceImpl(connection);
+        AttachmentService attachmentService = new AttachmentServiceImpl(connection);
+        PhoneService phoneService = new PhoneServiceImpl(connection);
+
         Contact contact = null;
         boolean isErrorOccurred = true;
         try{
             contact = contactService.parseRequest(request);
-            contactService.insert(contact);
+            contact = contactService.insert(contact);
+
+
+            List<Attachment> attachmentList = attachmentService.parseRequest(request, contact.getId());
+            List<Phone> phoneList = phoneService.parseRequest(request, contact.getId());
+
+            attachmentService.insert(attachmentList);
+            phoneService.insert(phoneList);
 
             RequestUtils.setMessageText(request, "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно сохранен", TooltipType.success);
             isErrorOccurred = false;

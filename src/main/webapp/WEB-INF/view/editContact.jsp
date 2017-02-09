@@ -1,10 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<c:set var="isAdd" value="${requestScope.get('action') eq 'add'}" scope="page"/>
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Редактировать контакт</title>
+    <title>${isAdd eq true ? 'Добавить контакт' : 'Редактировать контакт'}</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
     <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css" />">
@@ -14,29 +16,29 @@
     <script src="<c:url value="/js/popupPhone.js"/>"></script>
     <script src="<c:url value="/js/popupAttachment.js"/>"></script>
 </head>
-<body onload="addView.selectCountry(${requestScope.get('contact').countryID});
-        addView.selectCity(${requestScope.get('contact').cityID});
-        addView.selectRelationship(${requestScope.get('contact').relationshipID});
-        addView.selectGender(${requestScope.get('contact').gender});
+<body onload="addView.selectCountry(${isAdd eq false ? requestScope.get('contact').countryID : 0});
+        addView.selectCity(${isAdd eq false ? requestScope.get('contact').cityID : 0});
+        addView.selectRelationship(${isAdd eq false ? requestScope.get('contact').relationshipID : 0});
+        addView.selectGender(${isAdd eq false ? requestScope.get('contact').gender : 1});
 
-        popupPhone.setPhoneCount(${requestScope.get('phoneList').size()});
-        popupAttachment.setAttachmentCount(${requestScope.get('attachmentList').size()})">
+        popupPhone.setPhoneCount(${isAdd eq false ? requestScope.get('phoneList').size() : 0});
+        popupAttachment.setAttachmentCount(${isAdd eq false ? requestScope.get('attachmentList').size() : 0})">
 <jsp:include page="header.jsp"/>
 <fmt:setLocale value="ru_RU" scope="session"/>
 
 <span id="tooltip"></span>
 
 <div class="container-80">
-    <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="?action=edit"/>" method="post" enctype="multipart/form-data">
+    <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="?action=${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
         <div class="jlab-row margin">
             <div class="jlab-cell-12">
                 <section>
                     <div class="jlab-row">
                         <div class="jlab-cell-6">
-                            <span class="text-large">Редактирование контакта</span>
+                            <span class="text-large">${isAdd eq true ? 'Добавление контакта' : 'Редактирование контакта'}</span>
                         </div>
                         <div class="jlab-cell-3">
-                            <input type="submit" class="jlab-cell-12 align-center" value="Сохранить">
+                            <input type="submit" class="jlab-cell-12 align-center" value="${isAdd eq true ?"Добавить" : "Сохранить"}">
                         </div>
                         <div class="jlab-cell-3">
 
@@ -58,7 +60,7 @@
                         <div class="hiddenFileInputContainter">
 
                             <img id="blah" class="fileDownload"
-                                 src="<c:url value="${requestScope.get('contact').profilePicture}"/>">
+                                 src="<c:url value="${isAdd eq true ? '/sysImages/default.png' : requestScope.get('contact').profilePicture}"/>">
                             <input hidden type="file" id="profileImage" name="profileImage" class="hidden" accept="image/*"
                                    onchange="addView.readURL(this)">
                             <input type="text" id="imageAction" name="imageAction" value="nothing" hidden>
@@ -68,7 +70,7 @@
 
                 <section>
                     <div class="jlab-row margin">
-                        <button type="button" class="jlab-cell-12 align-center" onclick="addView.onLoadImageClick()">Обновить фотографию</button>
+                        <button type="button" class="jlab-cell-12 align-center" onclick="addView.onLoadImageClick()">Загрузить фотографию</button>
                     </div>
                     <div class="jlab-row margin">
                         <button type="button" class="jlab-cell-12 align-center" onclick="addView.onDeleteImageClick()">Удалить</button>
