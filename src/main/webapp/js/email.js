@@ -14,8 +14,12 @@ var email = (function () {
                     return i > -1;
                 };
         }
-        if (!event.target.matches('#receivers') && !event.target.matches('label') && !event.target.matches('.regular-checkbox')) {
+        if (!event.target.matches('#receivers') &&
+            !event.target.matches('label') &&
+            !event.target.matches('.regular-checkbox') &&
+            !event.target.matches('.imageButton.help')) {
             document.getElementById("myDropdown").className = 'dropdown-content';
+            document.getElementById("helpDropDown").className = 'dropdown-content';
         }
     };
     var postEmailSubmit = function(ids, subject, text) {
@@ -46,8 +50,8 @@ var email = (function () {
     };
 
    return {
-       onDropdownShow: function () {
-           document.getElementById("myDropdown").classList.toggle("show");
+       onDropdownShow: function (dropDownId) {
+           document.getElementById(dropDownId).classList.toggle("show");
        },
 
        onReceiverSelected: function () {

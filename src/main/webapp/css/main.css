@@ -310,6 +310,14 @@ button:disabled {
     background-image: url('../sysImages/upload hover.png');
 }
 
+.imageButton.help {
+    background-image: url('../sysImages/help.png');
+}
+
+.imageButton.help:hover {
+    background-image: url('../sysImages/help hover.png');
+}
+
 
 input[type="text"], input[type="email"], input[type="date"], input[type="url"], select, textarea {
     /*width: 240px;*/
