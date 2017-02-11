@@ -41,8 +41,17 @@ var popupAttachment = (function () {
     };
 
 
-    var fillAttachmentPopup = function (fileName, comment) {
+    var fillAttachmentPopup = function (fileName, comment, isEdit) {
         document.getElementById('popupAttachment_fileName').value = fileName;
+
+        var popupAttachment_file = document.getElementById('popupAttachment_file');
+
+        if(isEdit)
+            popupAttachment_file.setAttribute('hidden', "");
+        else
+            popupAttachment_file.removeAttribute('hidden');
+
+        popupAttachment_file.value = '';
         document.getElementById('popupAttachment_comment').value = comment;
     };
 
@@ -78,36 +87,35 @@ var popupAttachment = (function () {
         child = main.createDiv('display_date_' + targetID, 'jlab-cell-3 align-right text-small');
         mainDiv.appendChild(child);
 
-        child = main.createDiv('', 'jlab-cell-6');
+        child = main.createDiv('', 'jlab-cell-4');
         var subChild = main.createDiv('display_name_' + targetID, 'jlab-row text-small-bold');
         child.appendChild(subChild);
         subChild = main.createDiv('display_comment_' + targetID, 'jlab-row text text-small');
         child.appendChild(subChild);
         mainDiv.appendChild(child);
 
-        child = main.createDiv('', 'jlab-cell-1');
-        subChild = document.createElement('input');
-        subChild.type = 'file';
+        child = main.createDiv('', 'jlab-cell-3');
+
+        subChild = document.getElementById('popupAttachment_file').cloneNode(true);
         subChild.name = 'file_' + targetID;
         subChild.id = 'file_' + targetID;
         subChild.required = true;
-        subChild.onchange = function () {
-            return main.onFileChangeAction(targetID);
-        };
+
         subChild.className = 'inputfile';
         subChild.setAttribute("hidden", "hidden");
         child.appendChild(subChild);
 
+        var fileName = subChild.value;
+        fileName = fileName.split('\\');
+        fileName = fileName[fileName.length - 1];
+
         subChild = document.createElement('label');
         subChild.className = 'text-small';
         subChild.setAttribute('for', 'file_' + targetID);
-        // subChild.for = 'file_' + targetID;
         subChild.id = 'fileLabel_' + targetID;
-        subChild.innerHTML = '<div class="imageButton upload"></div>';
-        child.appendChild(subChild);
+        subChild.innerHTML = '<span>' + fileName + '\</span>';
 
-        // child.innerHTML = '\<input type="file" name="file_' + targetID + '" id="file_' + targetID +' " required onchange="main.onFileChangeAction(\''+ targetID + '\')" class="inputfile" />'+
-        //                     '\<label class="text-small" for="file_' + targetID + '" id="fileLabel_' + targetID + '"><div class="imageButton upload"></div></label>';
+        child.appendChild(subChild);
         mainDiv.appendChild(child);
 
         child = main.createDiv('', 'jlab-cell-1');
@@ -130,11 +138,21 @@ var popupAttachment = (function () {
         document.querySelectorAll('#attachmentSection>.jlab-row>.jlab-cell-12')[0].appendChild(mainDiv);
     } ;
 
-    var validatePopup = function () {
+    var validatePopup = function (idEdit) {
             var fileNameRegex = /^[\wа-яА-Я\s\-]{2,50}$/;
 
-            return fileNameRegex.test(document.getElementById('popupAttachment_fileName').value);
-        };
+            var popupAttachment_file = document.getElementById('popupAttachment_file');
+            if (!idEdit && (popupAttachment_file.value == '' || popupAttachment_file.value == this.defaultValue)) {
+                main.showTooltip('Не выбран файл', 'dander');
+                return false;
+            }
+            if(!fileNameRegex.test(document.getElementById('popupAttachment_fileName').value)) {
+                main.showTooltip('Неверное имя файла. Формат: русские буквы от 2 до 50 символов', 'danger');
+                return false;
+            }
+
+            return true;
+    };
 
     return{
         setAttachmentCount: function (val) {
@@ -152,7 +170,7 @@ var popupAttachment = (function () {
             popupAttachment_ok.textContent = 'Добавить';
             popupAttachment_ok.onclick = this.onAddAttachmentSubmit;
 
-            fillAttachmentPopup('', '');
+            fillAttachmentPopup('', '', false);
 
             location.hash = '#attachmentPopup';
         },
@@ -161,7 +179,8 @@ var popupAttachment = (function () {
             attachmentID = sender.parentNode.parentNode.id;
 
             fillAttachmentPopup(document.getElementById('name_' + attachmentID).value,
-                                document.getElementById('comment_' + attachmentID).value);
+                                document.getElementById('comment_' + attachmentID).value,
+                                true);
 
             popupAttachment_ok = document.getElementById('popupAttachment_ok');
             popupAttachment_ok.textContent = 'Сохранить';
@@ -170,23 +189,19 @@ var popupAttachment = (function () {
         },
 
         onAddAttachmentSubmit: function () {
-            if(validatePopup()) {
+            if(validatePopup(false) === true) {
                 attachmentCount++;
                 attachmentID = 'attachment-' + attachmentCount;
                 createAttachmentTemplate(attachmentID);
                 parseAttachmentPopup(false);
                 location.hash = '#attachmentSection';
-            } else {
-                alert('Enter file name');
             }
         },
 
         onEditAttachmentSubmit: function () {
-            if(validatePopup()) {
+            if(validatePopup(true) === true) {
                 parseAttachmentPopup(true);
                 location.hash = '#attachmentSection';
-            } else {
-                alert('Введено неверное имя файла');
             }
         }
     }

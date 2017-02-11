@@ -383,6 +383,7 @@
                                         </div>
                                         <div class="jlab-row margin">
                                             <input id="popupAttachment_fileName" type="text" placeholder="Имя файла" maxlength="50">
+                                            <input id="popupAttachment_file" type="file"/>
                                         </div>
 
                                         <div class="jlab-row margin">

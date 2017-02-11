@@ -6,9 +6,23 @@ var popupPhone = (function () {
         var operatorCodeRegex = /[0-9]{2,5}/;
         var phoneRegex = /[0-9]{4,9}/;
 
-        return operatorCodeRegex.test(document.getElementById('popupPhone_operatorCode').value)
-            && phoneRegex.test(document.getElementById('popupPhone_phoneNumber').value)
-            && (document.getElementById('popupPhone_comment').value.length < 255);
+        if(!operatorCodeRegex.test(document.getElementById('popupPhone_operatorCode').value)) {
+            main.showTooltip('Неверный код оператора. Формат: от 2 до 5 цифр');
+            return false;
+        }
+
+        if(!phoneRegex.test(document.getElementById('popupPhone_phoneNumber').value)) {
+            main.showTooltip('Неверный номер телефона. Формат: от 4 до 9 цифр');
+            return false;
+        }
+
+        if(!(document.getElementById('popupPhone_comment').value.length < 255)) {
+            main.showTooltip('Неверный комментарий. Формат: не более 255 символов');
+            return false;
+        }
+
+
+        return true
     };
 
     var fillPhonePopup = function (type, countryCode, operatorCode, phoneNumber, comment) {
@@ -122,8 +136,6 @@ var popupPhone = (function () {
                 createPhoneTemplate(phoneID);
                 parsePhonePopup(phoneID);
                 location.hash = '#phoneSection';
-            } else {
-                alert('Код оператора число 2-5 знаков, номер телефона число 4-9 знаков, длина комментария меньше 255 символов');
             }
         },
 
@@ -131,8 +143,6 @@ var popupPhone = (function () {
             if(validatePopup() === true) {
                 parsePhonePopup(phoneID);
                 location.hash = '#phoneSection';
-            } else {
-                alert('Код оператора число 2-5 знаков, номер телефона число 4-9 знаков, длина комментария меньше 255 символов');
             }
         }
     }
