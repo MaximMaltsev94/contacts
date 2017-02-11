@@ -4,6 +4,7 @@ import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
 import model.Contact;
+import model.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ContactService;
@@ -12,7 +13,6 @@ import service.ContactServiceImpl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
-import java.util.List;
 
 public class GetContactListPage implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(GetContactListPage.class);
@@ -26,10 +26,10 @@ public class GetContactListPage implements Command {
         ContactService contactService = new ContactServiceImpl(connection);
 
         try {
-
             int pageNumber = Integer.parseInt((String) request.getAttribute("page"));
-            long rowsCount = contactService.getCount();
-            long maxPageNumber = (long)Math.ceil((double) rowsCount / (double) CONTACTS_PER_PAGE);
+
+            Page<Contact> contactPage = contactService.get(pageNumber, CONTACTS_PER_PAGE);
+            long maxPageNumber = (long)Math.ceil((double) contactPage.getTotalRowCount() / (double) CONTACTS_PER_PAGE);
 
             maxPageNumber = Math.max(maxPageNumber, 1);
 
@@ -37,8 +37,7 @@ public class GetContactListPage implements Command {
                 throw new NumberFormatException();
             }
 
-            List<Contact> contactList = contactService.get(pageNumber, CONTACTS_PER_PAGE);
-            request.setAttribute("contactList", contactList);
+            request.setAttribute("contactList", contactPage.getData());
             request.setAttribute("maxPageNumber", maxPageNumber);
             request.getSession().setAttribute("lastVisitedPage", pageNumber);
 

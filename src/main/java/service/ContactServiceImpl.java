@@ -6,6 +6,7 @@ import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.Contact;
 import model.ContactSearchCriteria;
+import model.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -47,12 +48,12 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> get(int pageNumber, int limit) throws DaoException {
+    public Page<Contact> get(int pageNumber, int limit) throws DaoException {
         return contactDao.get(pageNumber, limit);
     }
 
     @Override
-    public List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
+    public Page<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
         return contactDao.get(searchCriteria, pageNumber, limit);
     }
 

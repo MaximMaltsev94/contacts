@@ -4,6 +4,7 @@ import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.Contact;
 import model.ContactSearchCriteria;
+import model.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -18,8 +19,8 @@ public interface ContactService {
     void update(Contact contact) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;
 
-    List<Contact> get(int pageNumber, int limit) throws DaoException;
-    List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException;
+    Page<Contact> get(int pageNumber, int limit) throws DaoException;
+    Page<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException;
     Contact getByID(int id) throws DaoException;
     List<Contact> getByIdIn(List<Integer> idList) throws DaoException;
     List<Contact> getByEmailNotNull() throws DaoException;

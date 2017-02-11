@@ -103,8 +103,6 @@ public class FrontController extends HttpServlet {
 
         try {
             if(viewName == null) {
-
-//                response.sendRedirect("?action=show&page=" + request.getSession().getAttribute("lastVisitedPage"));
                 response.sendRedirect("?action=show&page=1");
             } else {
                 request.getRequestDispatcher("/WEB-INF/view/" + viewName + ".jsp").forward(request, response);

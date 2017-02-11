@@ -7,6 +7,12 @@ var searchView = (function () {
             else
                 checkedCount--;
             document.getElementById('sectionAction').style.display = (checkedCount == 0) ? 'none' : 'block';
+        },
+
+        submitForm: function(pageNumber) {
+            var pageInput = document.getElementById('page');
+            pageInput.value = pageNumber;
+            document.getElementById('searchForm').submit();
         }
     }
 }());

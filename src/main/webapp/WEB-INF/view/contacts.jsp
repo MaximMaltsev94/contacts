@@ -88,8 +88,8 @@
             </c:forEach>
             <%--pagination--%>
 
-            <c:set var="currentPage" scope="page" value="${param.get('page')}"/>
-            <c:set var="lastPage" scope="page" value="${requestScope.get('maxPageNumber')}"/>
+            <c:set var="currentPage" scope="page" value="${requestScope.getOrDefault('page', 1)}"/>
+            <c:set var="lastPage" scope="page" value="${requestScope.getOrDefault('maxPageNumber', 1)}"/>
 
             <ul class="pagination">
 
@@ -146,9 +146,7 @@
 
                 </c:if>
             </ul>
-
-            <%--div.jlab-cell-8 end--%>
-        </div>
+        </div><%--div.jlab-cell-9 end--%>
         <div class="jlab-cell-3 fixed">
             <section>
                     <div class="jlab-row margin">

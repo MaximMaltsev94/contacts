@@ -42,8 +42,8 @@
                         </div>
                         <div class="jlab-cell-3">
 
-                            <a href="<c:url value="?action=show&page=1" />">
-                                <button type="button" class="jlab-cell-12">Отменить</button>
+                            <a href="<c:url value="?action=show&page=${sessionScope.getOrDefault('lastVisitedPage', 1)}" />">
+                                <button type="button" class="jlab-cell-12">Назад</button>
                             </a>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ import dao.interfaces.ContactDao;
 import exceptions.DaoException;
 import model.Contact;
 import model.ContactSearchCriteria;
+import model.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -229,26 +230,32 @@ public class ContactDaoImpl implements ContactDao {
 
 
     private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber, int limit) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` ORDER BY `id` desc LIMIT ?, ?");
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` ORDER BY `id` desc LIMIT ?, ?");
         preparedStatement.setObject(1, (pageNumber - 1) * limit);
         preparedStatement.setObject(2, limit);
         return preparedStatement;
     }
 
     @Override
-    public List<Contact> get(int pageNumber, int limit) throws DaoException {
+    public Page<Contact> get(int pageNumber, int limit) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
+        int totalRowCount = 1;
         try (PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber, limit);
-             ResultSet rs = preparedStatement.executeQuery()) {
+             ResultSet rs = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement("SELECT found_rows()");
+             ResultSet found_rows = statement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
                 contactList.add(contact);
+            }
+            if(found_rows.next()) {
+                totalRowCount = found_rows.getInt(1);
             }
         } catch (SQLException e) {
             LOG.error("can't get contacts list by page number - {}", pageNumber, e);
             throw new DaoException("error while getting contact page", e);
         }
-        return contactList;
+        return new Page<>(contactList, pageNumber, totalRowCount);
     }
 
     @Override
@@ -275,7 +282,7 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     private PreparedStatement concatSearchQuery(Connection connection, ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws SQLException {
-        String sql = "SELECT * FROM `contact` WHERE " +
+        String sql = "SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE " +
                 "first_name like ? and " +
                 "last_name like ? and " +
                 "ifnull(patronymic, '') like ? and " +
@@ -298,6 +305,7 @@ public class ContactDaoImpl implements ContactDao {
         int age2 = searchCriteria.getAge2();
 
         if(age1 == 0 && age2 == 0) {
+            age1 = -1;
             age2 = 200;
         }
 
@@ -319,19 +327,26 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
+    public Page<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
+        int totalRowCount = 1;
         try(PreparedStatement statement = concatSearchQuery(connection, searchCriteria, pageNumber, limit);
-            ResultSet rs = statement.executeQuery()) {
+            ResultSet rs = statement.executeQuery();
+            PreparedStatement statement1 = connection.prepareStatement("SELECT found_rows()");
+            ResultSet foundRows = statement1.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
                 contactList.add(contact);
+            }
+            if(foundRows.next()) {
+                totalRowCount = foundRows.getInt(1);
             }
         } catch (SQLException e) {
             LOG.error("can't perform search query", e);
             throw new DaoException("error while searching contacts by criteria", e);
         }
-        return contactList;
+
+        return new Page<>(contactList, pageNumber, totalRowCount);
     }
 
     @Override

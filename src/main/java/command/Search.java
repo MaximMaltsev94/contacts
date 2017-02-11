@@ -44,6 +44,7 @@ public class Search implements Command {
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         String VIEW_NAME = "search";
+        int CONTACTS_PER_PAGE = 10;
 
         RelationshipService relationshipService = new RelationshipServiceImpl(connection);
         CountryService countryService = new CountryServiceImpl(connection);
@@ -53,14 +54,25 @@ public class Search implements Command {
         try {
             ContactSearchCriteria searchCriteria = new ContactSearchCriteria(request);
 
+            int pageNumber = Integer.parseInt((String) request.getAttribute("page"));
+
+            Page<Contact> contactPage = contactService.get(searchCriteria, pageNumber, CONTACTS_PER_PAGE);
+            long maxPageNumber = (long)Math.ceil((double) contactPage.getTotalRowCount() / (double) CONTACTS_PER_PAGE);
+
+            maxPageNumber = Math.max(maxPageNumber, 1);
+
+            if (pageNumber > maxPageNumber || pageNumber < 1) {
+                throw new NumberFormatException();
+            }
+
             setRequestAttributes(request, searchCriteria);
 
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
             request.setAttribute("cityList", cityService.getAll());
 
-            List<Contact> contactList = contactService.get(searchCriteria, 1, 10);
-            request.setAttribute("contactList", contactList);
+            request.setAttribute("contactList", contactPage.getData());
+            request.setAttribute("maxPageNumber", maxPageNumber);
 
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);

@@ -7,6 +7,7 @@
     <title>Поиск</title>
 
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/pagination.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
 
     <script src="<c:url value="/js/addView.js"/>"></script>
@@ -88,6 +89,66 @@
                 </section>
             </c:forEach>
 
+
+            <c:set var="currentPage" scope="page" value="${requestScope.getOrDefault('page', 1)}"/>
+            <c:set var="lastPage" scope="page" value="${requestScope.getOrDefault('maxPageNumber', 1)}"/>
+
+            <ul class="pagination">
+
+                <%-- add first page link--%>
+                <c:choose>
+                    <c:when test="${currentPage == 1}">
+                        <li><a class="active" href="#" onclick="searchView.submitForm(1)">1</a></li>
+                    </c:when>
+
+                    <c:when test="${currentPage != 1}">
+                        <li><a href="#" onclick="searchView.submitForm(${currentPage - 1})">&lt;</a></li>
+                        <li><a href="#" onclick="searchView.submitForm(1)">1</a></li>
+                    </c:when>
+                </c:choose>
+
+                <%--add skip if too away from begining--%>
+                <c:if test="${currentPage > 4}">
+                    <li><a href="#">...</a></li>
+                </c:if>
+
+                <%--add middle links--%>
+                <c:forEach var="i" begin="${ currentPage < 4 ? 2 : currentPage - 2}"
+                           end="${currentPage > lastPage - 3 ? lastPage - 1 : currentPage + 2}">
+                    <c:choose>
+                        <c:when test="${currentPage == i}">
+                            <li><a href="#" class="active" onclick="searchView.submitForm(${i})">${i}</a>
+                            </li>
+                        </c:when>
+                        <c:when test="${currentPage != i}">
+                            <li><a href="#" onclick="searchView.submitForm(${i})">${i}</a></li>
+                        </c:when>
+                    </c:choose>
+                </c:forEach>
+
+
+                <%--add skip if too away from ending--%>
+                <c:if test="${currentPage < (lastPage - 3)}">
+                    <li><a href="#">...</a></li>
+                </c:if>
+
+                <%--add next page link--%>
+                <c:if test="${lastPage != 1}">
+                    <c:choose>
+                        <c:when test="${currentPage != lastPage}">
+                            <li><a href="#" onclick="searchView.submitForm(${lastPage})">${lastPage}</a></li>
+                            <li><a href="#" onclick="searchView.submitForm(${currentPage + 1})">&gt;</a></li>
+                        </c:when>
+
+                        <c:when test="${currentPage == lastPage}">
+                            <li><a href="#" class="active" onclick="searchView.submitForm(${lastPage})">${lastPage}</a></li>
+                        </c:when>
+
+                    </c:choose>
+
+                </c:if>
+            </ul>
+
             <%--div.jlab-cell-8 end--%>
         </div>
         <div class="jlab-cell-3">
@@ -100,7 +161,8 @@
                 </div>
             </section>
             <section>
-                <form action="<c:url value="?action=search"/>" method="post">
+                <form id="searchForm" action="<c:url value="?action=search"/>" method="post">
+                    <input type="text" name="page" id="page" value="1" hidden/>
 
                     <div class="text-medium">Введите параметры поиска</div>
                     <div class="text-small-bold">Имя</div>
@@ -216,7 +278,7 @@
                     </div>
 
                     <div class="jlab-row margin margin">
-                        <input class="jlab-cell-12 align-center" type="submit" value="Поиск"/>
+                        <button class="jlab-cell-12 align-center" type="button" onclick="searchView.submitForm(1)" >Поиск</button>
                     </div>
                 </form>
             </section>

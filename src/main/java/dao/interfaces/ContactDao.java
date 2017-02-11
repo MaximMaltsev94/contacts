@@ -3,6 +3,7 @@ package dao.interfaces;
 import exceptions.DaoException;
 import model.Contact;
 import model.ContactSearchCriteria;
+import model.Page;
 
 import javax.naming.NamingException;
 import java.sql.Connection;
@@ -17,8 +18,8 @@ public interface ContactDao {
     void deleteByID(int id) throws DaoException;
 
 
-    List<Contact> get(int pageNumber, int limit) throws DaoException;
-    List<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException;
+    Page<Contact> get(int pageNumber, int limit) throws DaoException;
+    Page<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException;
     Contact getByID(int id) throws DaoException;
     List<Contact> getByIdIn(List<Integer> idList) throws DaoException;
     long getMaxID() throws DaoException;
