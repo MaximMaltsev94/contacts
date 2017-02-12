@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
     <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css" />">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
+
+    <script src="<c:url value="/js/cropbox/cropbox.js"/>"></script>
     <script src="<c:url value="/js/addView.js"/>"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/popupPhone.js"/>"></script>
@@ -22,7 +24,8 @@
         addView.selectGender(${isAdd eq false ? requestScope.get('contact').gender : 1});
 
         popupPhone.setPhoneCount(${isAdd eq false ? requestScope.get('phoneList').size() : 0});
-        popupAttachment.setAttachmentCount(${isAdd eq false ? requestScope.get('attachmentList').size() : 0})">
+        popupAttachment.setAttachmentCount(${isAdd eq false ? requestScope.get('attachmentList').size() : 0});
+        addView.initCropper()">
 <jsp:include page="header.jsp"/>
 <fmt:setLocale value="ru_RU" scope="session"/>
 
@@ -57,13 +60,31 @@
             <div class="jlab-cell-4">
                 <section>
                     <div class="jlab-row margin">
-                        <div class="hiddenFileInputContainter">
+                        <div class="jlab-cell-12 hiddenFileInputContainter">
 
                             <img id="blah" class="fileDownload"
                                  src="<c:url value="${isAdd eq true ? '/sysImages/default.png' : requestScope.get('contact').profilePicture}"/>">
-                            <input hidden type="file" id="profileImage" name="profileImage" class="hidden" accept="image/*"
+                            <input hidden type="file" id="profileImage" class="hidden" accept="image/*"
                                    onchange="addView.readURL(this)">
                             <input type="text" id="imageAction" name="imageAction" value="nothing" hidden>
+                            <input type="text" id="profileImageData" name="profileImage" hidden>
+                        </div>
+                    </div>
+
+                    <div id="cropPopup" class="popupBack">
+                        <div class="popup">
+                            <div class="jlab-row">
+                                <div class="jlab-cell-12 align-right">
+                                    <a class="text-large" href="#">&times;</a>
+                                </div>
+                            </div>
+                                <div class="imageBox">
+                                    <div class="thumbBox"></div>
+                                    <div class="spinner" style="display: none">Loading...</div>
+                                </div>
+                                <div class="jlab-row margin">
+                                    <button class="jlab-cell-12" type="button" id="btnCrop" onclick="addView.cropImage()">Обрезать</button>
+                                </div>
                         </div>
                     </div>
                 </section>

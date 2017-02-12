@@ -3,6 +3,15 @@ var addView = (function() {
     var i, n;
 
     var monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    var cropBoxOptions =
+        {
+            imageBox: '.imageBox',
+            thumbBox: '.thumbBox',
+            spinner: '.spinner',
+            imgSrc: 'avatar.png'
+        };
+
+    var cropper;
 
     return { // методы доступные извне
         selectCountry: function(countryID) {
@@ -62,12 +71,23 @@ var addView = (function() {
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    document.getElementById('imageAction').value = 'update';
-                    document.getElementById('blah').setAttribute('src', e.target.result);
+                    cropBoxOptions.imgSrc = e.target.result;
+                    cropper = new cropbox(cropBoxOptions);
+                    // document.getElementById('blah').setAttribute('src', e.target.result);
                 };
-
                 reader.readAsDataURL(input.files[0]);
+                // input.files = [];
+                location.hash = '#cropPopup';
             }
+        },
+
+        cropImage: function () {
+            var img = cropper.getDataURL();
+            document.getElementById('profileImageData').value = img;
+            document.getElementById('blah').setAttribute('src', img);
+            console.log(img);
+            document.getElementById('imageAction').value = 'update';
+            location.hash = '#'
         },
 
         validateDate: function () {
@@ -102,8 +122,13 @@ var addView = (function() {
 
         onDeleteImageClick: function () {
             document.getElementById("profileImage").value = "";
+            document.getElementById("profileImageData").value = "";
             document.getElementById('imageAction').value = 'delete';
             document.getElementById('blah').setAttribute('src', '/sysImages/default.png');
+        },
+
+        initCropper: function () {
+            cropper = new cropbox(cropBoxOptions);
         }
     }
 }());

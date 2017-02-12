@@ -15,7 +15,9 @@ import util.ContactFileUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -119,27 +121,45 @@ public class ContactServiceImpl implements ContactService {
     public String parseProfileImage(HttpServletRequest request) {
 
         String result = "/sysImages/default.png";
-        InputStream inputStream = (InputStream) request.getAttribute("profileImage");
+        String str = (String) request.getAttribute("profileImage");
+        if(StringUtils.isBlank(str)) {
+            LOG.info("profile image not specified");
+            return result;
+        }
 
         try {
-            // TODO: 18.01.2017 add processing image to quad size
-            BufferedImage image = ImageIO.read(inputStream);
-            if (image == null) {
-                LOG.info("profile image not specified");
-                return result;
-            }
-            //check if loaded file is actually image
-            image.toString();
+            byte[] imagedata = DatatypeConverter.parseBase64Binary(str.substring(str.indexOf(",") + 1));
 
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
 
             File fileToSave = ContactFileUtils.createTempFile("pri", ".png");
-            ImageIO.write(image, "png", fileToSave);
-
+            ImageIO.write(bufferedImage, "png", fileToSave);
             result = "?action=image&name=" + fileToSave.getName();
-        }catch (IOException e) {
+        } catch (IOException e) {
             LOG.error("can't save profile image to file system", e);
         }
         return result;
+//        InputStream inputStream = (InputStream) request.getAttribute("profileImage");
+//
+//        try {
+//            // TODO: 18.01.2017 add processing image to quad size
+//            BufferedImage image = ImageIO.read(inputStream);
+//            if (image == null) {
+//                LOG.info("profile image not specified");
+//                return result;
+//            }
+//            //check if loaded file is actually image
+//            image.toString();
+//
+//
+//            File fileToSave = ContactFileUtils.createTempFile("pri", ".png");
+//            ImageIO.write(image, "png", fileToSave);
+//
+//            result = "?action=image&name=" + fileToSave.getName();
+//        }catch (IOException e) {
+//            LOG.error("can't save profile image to file system", e);
+//        }
+//        return result;
     }
 
     @Override

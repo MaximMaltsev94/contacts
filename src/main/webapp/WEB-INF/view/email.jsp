@@ -19,7 +19,7 @@
 
 <div class="container">
         <div class="jlab-row">
-            <div class="jlab-cell-9">
+            <div class="jlab-cell-8">
                 <section>
                     <div class="text-large">Отправить письмо</div>
                     <div class="jlab-row margin">
@@ -98,7 +98,7 @@
 
                 </section>
             </div>
-            <div class="jlab-cell-3">
+            <div class="jlab-cell-4">
                 <section>
                     <div class="jlab-row">
                         <span class="text-medium">Метасимволы </span>
