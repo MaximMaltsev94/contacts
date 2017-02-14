@@ -15,6 +15,7 @@
     <Realm className="org.apache.catalina.realm.DataSourceRealm"
            dataSourceName="jdbc/contactsDB"
            localDataSource="true"
+           digest="SHA-256"
            userTable="user"
            userNameCol="login"
            userCredCol="password"
