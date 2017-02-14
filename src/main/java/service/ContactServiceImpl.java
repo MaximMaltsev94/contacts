@@ -50,28 +50,28 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public Page<Contact> get(int pageNumber, int limit) throws DaoException {
-        return contactDao.get(pageNumber, limit);
+    public Page<Contact> getByLoginUser(int pageNumber, int limit, String loginUser) throws DaoException {
+        return contactDao.getByLoginUser(pageNumber, limit, loginUser);
     }
 
     @Override
-    public Page<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
-        return contactDao.get(searchCriteria, pageNumber, limit);
+    public Page<Contact> getByLoginUser(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws DaoException {
+        return contactDao.getByLoginUser(searchCriteria, pageNumber, limit, loginUser);
     }
 
     @Override
-    public Contact getByID(int id) throws DaoException {
-        return contactDao.getByID(id);
+    public Contact getByIDAndLoginUser(int id, String loginUser) throws DaoException {
+        return contactDao.getByIDAndLoginUser(id, loginUser);
     }
 
     @Override
-    public List<Contact> getByIdIn(List<Integer> idList) throws DaoException {
-        return contactDao.getByIdIn(idList);
+    public List<Contact> getByIdInAndLoginUser(List<Integer> idList, String loginUser) throws DaoException {
+        return contactDao.getByIdInAndLoginUser(idList, loginUser);
     }
 
     @Override
-    public List<Contact> getByEmailNotNull() throws DaoException {
-        return contactDao.getByEmailNotNull();
+    public List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException {
+        return contactDao.getByEmailNotNullAndLoginUser(loginUser);
     }
 
     @Override
@@ -80,8 +80,8 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public long getCount() throws DaoException {
-        return contactDao.getCount();
+    public long getCountByLoginUser(String loginUser) throws DaoException {
+        return contactDao.getCountByLoginUser(loginUser);
     }
 
     @Override
@@ -107,6 +107,7 @@ public class ContactServiceImpl implements ContactService {
             contact.setCityID(Integer.parseInt((String) request.getAttribute("city")));
             contact.setStreet((String) request.getAttribute("street"));
             contact.setPostcode((String) request.getAttribute("postcode"));
+            contact.setLoginUser(request.getUserPrincipal().getName());
 
             String profileImage = parseProfileImage(request);
             contact.setProfilePicture(profileImage);

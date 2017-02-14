@@ -37,6 +37,7 @@ public class ContactDaoImpl implements ContactDao {
         contact.setCityID(rs.getByte("id_city"));
         contact.setStreet(rs.getString("street"));
         contact.setPostcode(rs.getString("postcode"));
+        contact.setLoginUser(rs.getString("login_user"));
 
         return contact;
     }
@@ -63,6 +64,7 @@ public class ContactDaoImpl implements ContactDao {
         preparedStatement.setObject(13, contact.getCityID() == 0 ? null : contact.getCityID());
         preparedStatement.setObject(14, contact.getStreet());
         preparedStatement.setObject(15, contact.getPostcode());
+        preparedStatement.setObject(16, contact.getLoginUser());
 
     }
 
@@ -72,7 +74,7 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public Contact insert(Contact contact) throws DaoException {
-        try (PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
             fillPreparedStatement(pStatement, contact);
             pStatement.executeUpdate();
 
@@ -90,9 +92,9 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public void update(Contact contact) throws DaoException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ? WHERE `id` = ?");) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `login_user` = ? WHERE `id` = ?");) {
             fillPreparedStatement(preparedStatement, contact);
-            preparedStatement.setObject(16, contact.getId());
+            preparedStatement.setObject(17, contact.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOG.error("can't update contact - {}", contact, e);
@@ -146,16 +148,17 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
-    private PreparedStatement createGetByIDStatement(Connection connection, int id) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE id = ?");
+    private PreparedStatement createGetByIDStatement(Connection connection, int id, String loginUser) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE id = ? and login_user = ?");
         preparedStatement.setObject(1, id);
+        preparedStatement.setObject(2, loginUser);
         return preparedStatement;
     }
 
     @Override
-    public Contact getByID(int id) throws DaoException {
+    public Contact getByIDAndLoginUser(int id, String loginUser) throws DaoException {
         Contact contact = null;
-        try (PreparedStatement preparedStatement = createGetByIDStatement(connection, id);
+        try (PreparedStatement preparedStatement = createGetByIDStatement(connection, id, loginUser);
              ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 contact = parseResultSet(rs);
@@ -168,7 +171,7 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     private String createGetByIdInSQL(int size) {
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `contact` WHERE `id` in (");
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `contact` WHERE `login_user` = ? and `id` in (");
         for(int i = 0; i < size; ++i) {
             sqlBuilder.append(" ?");
             if(i != size - 1) {
@@ -179,25 +182,26 @@ public class ContactDaoImpl implements ContactDao {
         return sqlBuilder.toString();
     }
 
-    private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList) throws SQLException {
+    private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList, String loginUser) throws SQLException {
         String sql = createGetByIdInSQL(idList.size());
 
         PreparedStatement statement = connection.prepareStatement(sql);
-        for (int i = 1; i <= idList.size(); i++) {
-            statement.setObject(i, idList.get(i - 1));
+        statement.setObject(1, loginUser);
+        for (int i = 0; i < idList.size(); i++) {
+            statement.setObject(i + 2, idList.get(i));
         }
         return statement;
     }
 
 
     @Override
-    public List<Contact> getByIdIn(List<Integer> idList) throws DaoException {
+    public List<Contact> getByIdInAndLoginUser(List<Integer> idList, String loginUser) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         if(idList.isEmpty()) {
             return contactList;
         }
 
-        try(PreparedStatement statement = createGetByIdInStatement(connection, idList);
+        try(PreparedStatement statement = createGetByIdInStatement(connection, idList, loginUser);
             ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
@@ -229,18 +233,19 @@ public class ContactDaoImpl implements ContactDao {
     }
 
 
-    private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber, int limit) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` ORDER BY `id` desc LIMIT ?, ?");
-        preparedStatement.setObject(1, (pageNumber - 1) * limit);
-        preparedStatement.setObject(2, limit);
+    private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber, int limit, String loginUser) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?");
+        preparedStatement.setObject(1, loginUser);
+        preparedStatement.setObject(2, (pageNumber - 1) * limit);
+        preparedStatement.setObject(3, limit);
         return preparedStatement;
     }
 
     @Override
-    public Page<Contact> get(int pageNumber, int limit) throws DaoException {
+    public Page<Contact> getByLoginUser(int pageNumber, int limit, String loginUser) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         int totalRowCount = 1;
-        try (PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber, limit);
+        try (PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber, limit, loginUser);
              ResultSet rs = preparedStatement.executeQuery();
              PreparedStatement statement = connection.prepareStatement("SELECT found_rows()");
              ResultSet found_rows = statement.executeQuery()) {
@@ -258,10 +263,16 @@ public class ContactDaoImpl implements ContactDao {
         return new Page<>(contactList, pageNumber, totalRowCount);
     }
 
+    private PreparedStatement createGetCountStatement(Connection connection, String loginUser) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact` WHERE `login_user` = ?");
+        statement.setObject(1, loginUser);
+        return statement;
+    }
+
     @Override
-    public long getCount() throws DaoException {
+    public long getCountByLoginUser(String loginUser) throws DaoException {
         long count = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact`");
+        try (PreparedStatement preparedStatement = createGetCountStatement(connection, loginUser);
              ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 count = rs.getLong("cnt");
@@ -281,8 +292,8 @@ public class ContactDaoImpl implements ContactDao {
         return val == template ? "%" : "%" + val + "%";
     }
 
-    private PreparedStatement concatSearchQuery(Connection connection, ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws SQLException {
-        String sql = "SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE " +
+    private PreparedStatement concatSearchQuery(Connection connection, ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws SQLException {
+        String sql = "SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? and " +
                 "first_name like ? and " +
                 "last_name like ? and " +
                 "ifnull(patronymic, '') like ? and " +
@@ -297,9 +308,10 @@ public class ContactDaoImpl implements ContactDao {
                 "ifnull(postcode, '') like ? LIMIT ?, ?";
 
         PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setObject(1, surroundPercentString(searchCriteria.getFirstName()));
-        statement.setObject(2, surroundPercentString(searchCriteria.getLastName()));
-        statement.setObject(3, surroundPercentString(searchCriteria.getPatronymic()));
+        statement.setObject(1, loginUser);
+        statement.setObject(2, surroundPercentString(searchCriteria.getFirstName()));
+        statement.setObject(3, surroundPercentString(searchCriteria.getLastName()));
+        statement.setObject(4, surroundPercentString(searchCriteria.getPatronymic()));
 
         int age1 = searchCriteria.getAge1();
         int age2 = searchCriteria.getAge2();
@@ -309,28 +321,28 @@ public class ContactDaoImpl implements ContactDao {
             age2 = 200;
         }
 
-        statement.setObject(4, age1);
-        statement.setObject(5, age2);
-        statement.setObject(6, surroundPercentInt(searchCriteria.getGender(), 2));
-        statement.setObject(7, surroundPercentString(searchCriteria.getCitizenship()));
-        statement.setObject(8, surroundPercentInt(searchCriteria.getRelationship(), 0));
-        statement.setObject(9, surroundPercentString(searchCriteria.getCompanyName()));
-        statement.setObject(10, surroundPercentInt(searchCriteria.getCountry(), 0));
-        statement.setObject(11, surroundPercentInt(searchCriteria.getCity(), 0));
-        statement.setObject(12, surroundPercentString(searchCriteria.getStreet()));
-        statement.setObject(13, surroundPercentString(searchCriteria.getPostcode()));
-        statement.setObject(14, (pageNumber - 1) * limit);
-        statement.setObject(15, limit);
+        statement.setObject(5, age1);
+        statement.setObject(6, age2);
+        statement.setObject(7, surroundPercentInt(searchCriteria.getGender(), 2));
+        statement.setObject(8, surroundPercentString(searchCriteria.getCitizenship()));
+        statement.setObject(9, surroundPercentInt(searchCriteria.getRelationship(), 0));
+        statement.setObject(10, surroundPercentString(searchCriteria.getCompanyName()));
+        statement.setObject(11, surroundPercentInt(searchCriteria.getCountry(), 0));
+        statement.setObject(12, surroundPercentInt(searchCriteria.getCity(), 0));
+        statement.setObject(13, surroundPercentString(searchCriteria.getStreet()));
+        statement.setObject(14, surroundPercentString(searchCriteria.getPostcode()));
+        statement.setObject(15, (pageNumber - 1) * limit);
+        statement.setObject(16, limit);
 
         LOG.info("search query: " + statement);
         return statement;
     }
 
     @Override
-    public Page<Contact> get(ContactSearchCriteria searchCriteria, int pageNumber, int limit) throws DaoException {
+    public Page<Contact> getByLoginUser(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         int totalRowCount = 1;
-        try(PreparedStatement statement = concatSearchQuery(connection, searchCriteria, pageNumber, limit);
+        try(PreparedStatement statement = concatSearchQuery(connection, searchCriteria, pageNumber, limit, loginUser);
             ResultSet rs = statement.executeQuery();
             PreparedStatement statement1 = connection.prepareStatement("SELECT found_rows()");
             ResultSet foundRows = statement1.executeQuery()) {
@@ -349,10 +361,16 @@ public class ContactDaoImpl implements ContactDao {
         return new Page<>(contactList, pageNumber, totalRowCount);
     }
 
+    private PreparedStatement createGetByEmailNotNullStatement(Connection connection, String loginUser) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `contact` WHERE `login_user` = ? and `email` IS NOT NULL");
+        statement.setObject(1, loginUser);
+        return statement;
+    }
+
     @Override
-    public List<Contact> getByEmailNotNull() throws DaoException {
+    public List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE `email` IS NOT NULL");
+        try(PreparedStatement preparedStatement = createGetByEmailNotNullStatement(connection, loginUser);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);

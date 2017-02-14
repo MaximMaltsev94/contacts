@@ -56,7 +56,7 @@ public class Search implements Command {
 
             int pageNumber = Integer.parseInt((String) request.getAttribute("page"));
 
-            Page<Contact> contactPage = contactService.get(searchCriteria, pageNumber, CONTACTS_PER_PAGE);
+            Page<Contact> contactPage = contactService.getByLoginUser(searchCriteria, pageNumber, CONTACTS_PER_PAGE, request.getUserPrincipal().getName());
             long maxPageNumber = (long)Math.ceil((double) contactPage.getTotalRowCount() / (double) CONTACTS_PER_PAGE);
 
             maxPageNumber = Math.max(maxPageNumber, 1);

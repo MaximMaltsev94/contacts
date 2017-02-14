@@ -28,7 +28,7 @@ public class GetContactListPage implements Command {
         try {
             int pageNumber = Integer.parseInt((String) request.getAttribute("page"));
 
-            Page<Contact> contactPage = contactService.get(pageNumber, CONTACTS_PER_PAGE);
+            Page<Contact> contactPage = contactService.getByLoginUser(pageNumber, CONTACTS_PER_PAGE, request.getUserPrincipal().getName());
             long maxPageNumber = (long)Math.ceil((double) contactPage.getTotalRowCount() / (double) CONTACTS_PER_PAGE);
 
             maxPageNumber = Math.max(maxPageNumber, 1);

@@ -71,7 +71,7 @@ public class GetEmailPage implements Command {
 
         try {
             ContactService contactService = new ContactServiceImpl(connection);
-            List<Contact> contactsWithEmail = contactService.getByEmailNotNull();
+            List<Contact> contactsWithEmail = contactService.getByEmailNotNullAndLoginUser(request.getUserPrincipal().getName());
 
             request.setAttribute("contactList", contactsWithEmail);
             request.setAttribute("selectedContacts", contactIdList);

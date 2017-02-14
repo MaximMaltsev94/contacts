@@ -49,7 +49,7 @@ public class DeleteContact implements Command {
                     .map(Integer::parseInt)
                     .collect(Collectors.toList());
 
-            contactList = contactService.getByIdIn(idList);
+            contactList = contactService.getByIdInAndLoginUser(idList, request.getUserPrincipal().getName());
             attachmentList = attachmentService.getByContactIdIn(idList);
 
 //            deleting contact, phones and attachments with cascade deletion

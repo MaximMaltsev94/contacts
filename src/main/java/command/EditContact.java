@@ -46,7 +46,7 @@ public class EditContact implements Command {
 
             newContact = contactService.parseRequest(request);
             int contactId = Integer.parseInt((String)request.getAttribute("id"));
-            oldContact = contactService.getByID(contactId);
+            oldContact = contactService.getByIDAndLoginUser(contactId, request.getUserPrincipal().getName());
             if(oldContact == null) {
                 throw new DataNotFoundException("contact with given id - " + contactId + " is not found");
             }

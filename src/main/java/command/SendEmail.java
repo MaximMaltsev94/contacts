@@ -75,7 +75,7 @@ public class SendEmail implements Command {
                                             .collect(Collectors.toList());
 
 
-            List<Contact> contactList = contactService.getByIdIn(idList);
+            List<Contact> contactList = contactService.getByIdInAndLoginUser(idList, request.getUserPrincipal().getName());
 
             List<Integer> countryIdList = contactList.stream().map(Contact::getCountryID).collect(Collectors.toList());
             List<Country> countryList = countryService.getByIDIn(countryIdList);

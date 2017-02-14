@@ -3,6 +3,7 @@ package command;
 import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
+import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.*;
@@ -32,7 +33,12 @@ public class GetEditPage implements Command {
                 throw new NumberFormatException("id out of range");
             }
 
-            request.setAttribute("contact", contactService.getByID(contactID));
+            Contact contact = contactService.getByIDAndLoginUser(contactID, request.getUserPrincipal().getName());
+            if(contact == null) {
+                throw new DataNotFoundException("contact with id - " + contactID + " and loginUser - " + request.getUserPrincipal().getName() + " not found");
+            }
+
+            request.setAttribute("contact", contact);
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
             request.setAttribute("cityList", cityService.getAll());
