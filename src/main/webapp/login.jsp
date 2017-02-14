@@ -8,13 +8,17 @@
 
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
 
     <script src="<c:url value="/js/main.js"/>"></script>
+    <script src="<c:url value="/js/login.js"/>"></script>
 </head>
 <body onload="main.showTooltip('${sessionScope.get('tooltip-text')}', '${sessionScope.get('tooltip-type')}')">
 <c:remove var="tooltip-text" scope="session"/>
 <c:remove var="tooltip-type" scope="session"/>
 <jsp:include page="WEB-INF/view/header.jsp"/>
+<span id="tooltip"></span>
+
 <div class="container">
     <div class="jlab-row">
         <div class="jlab-cell-9">
@@ -55,16 +59,24 @@
             </section>
             <br>
             <section>
-                <form action="/register" method="post">
-                    <div class="jlab-row margin text-medium">Впервые здесь? Зарегистрируйтесь</div>
-                    <br>
+                <form onsubmit="return loginView.validateRegistrationForm()" action="<c:url value="/register/"/>" method="post">
+                    <div class="jlab-row">
+                        <div class="jlab-cell-12 align-center text-small-bold">
+                            Впервые здесь?
+                        </div>
+                    </div>
+                    <div class="jlab-row">
+                        <div class="jlab-cell-12 align-center text-medium">
+                            Зарегистрируйтесь
+                        </div>
+                    </div>
                     <div class="jlab-row margin text-small-bold">Имя пользователя</div>
                     <div class="jlab-row margin">
-                        <input name="username" type="text">
+                        <input name="username" type="text" pattern="[\w]{3,15}" required title="Буквы, цифры, знак подчеркивания. От 3х до 15 символов">
                     </div>
                     <div class="jlab-row margin text-small-bold">Пароль</div>
                     <div class="jlab-row margin">
-                        <input id="pass1" name="password" type="password">
+                        <input id="pass1" name="password" type="password" pattern="[\w]{3,20}" required title="Буквы, цифры, знак подчеркивания. От 3х до 20 символов">
                     </div>
                     <div class="jlab-row margin text-small-bold">Подтвердите пароль</div>
                     <div class="jlab-row margin">

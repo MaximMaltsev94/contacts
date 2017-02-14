@@ -1,10 +1,10 @@
 package util;
 
+import org.apache.catalina.realm.RealmBase;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -78,5 +78,9 @@ public class ContactUtils {
             sb.append(cyr2lat(ch));
         }
         return sb.toString();
+    }
+
+    public static String getSHA256HEX(String str) {
+        return RealmBase.Digest(str, "SHA-256", "UTF-8");
     }
 }

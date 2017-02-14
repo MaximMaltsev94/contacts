@@ -1,5 +1,6 @@
 package command;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,12 @@ public class CommandFactory {
     }
 
     public Command getCommand(HttpServletRequest request) {
-        String commandKey = request.getMethod() + "/" + request.getAttribute("action");
+        String action = (String)request.getAttribute("action");
+        if(StringUtils.isBlank(action)) {
+            action = "show";
+            request.setAttribute("page", "1");
+        }
+        String commandKey = request.getMethod() + "/" + action;
         Class<? extends Command> commandClass = commands.get(commandKey.toLowerCase());
 
         if(commandClass == null) {

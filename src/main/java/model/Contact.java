@@ -23,6 +23,7 @@ public class Contact implements Serializable{
     private int cityID;
     private String street;
     private String postcode;
+    private String loginUser;
 
     public int getId() {
         return id;
@@ -152,26 +153,15 @@ public class Contact implements Serializable{
         this.postcode = postcode;
     }
 
-    public Contact() {
+    public String getLoginUser() {
+        return loginUser;
     }
 
-    public Contact(int id, String firstName, String lastName, String patronymic, Date birthDate, boolean gender, String citizenship, int relationshipID, String webSite, String email, String companyName, String profilePicture, int countryID, int cityID, String street, String postcode) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.patronymic = patronymic;
-        this.birthDate = birthDate;
-        this.gender = gender;
-        this.citizenship = citizenship;
-        this.relationshipID = relationshipID;
-        this.webSite = webSite;
-        this.email = email;
-        this.companyName = companyName;
-        this.profilePicture = profilePicture;
-        this.countryID = countryID;
-        this.cityID = cityID;
-        this.street = street;
-        this.postcode = postcode;
+    public void setLoginUser(String loginUser) {
+        this.loginUser = loginUser;
+    }
+
+    public Contact() {
     }
 
     @Override

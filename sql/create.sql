@@ -13,7 +13,9 @@ CREATE TABLE `contacts_maltsev`.`user_roles` (
 	`login`  NVARCHAR(15) NOT NULL,
 	`role_name` NVARCHAR(15) NOT NULL,
 
-	PRIMARY KEY (`login`, `role_name`)
+	PRIMARY KEY (`login`, `role_name`),
+	CONSTRAINT `user_roles_user_fk` FOREIGN KEY (`login`) REFERENCES `contacts_maltsev`.`user`(`login`) ON DELETE CASCADE
+
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts_maltsev`.`relationship` (
