@@ -1,6 +1,6 @@
 <Context>
     <Resource
-            name="jdbc/contactsDB_maltsev"
+            name="jdbc/contactsDB"
             auth="Container"
             type="javax.sql.DataSource"
             maxTotal="100"
@@ -10,5 +10,15 @@
             url="jdbc:mysql://localhost:3306/contacts_maltsev?useSSL=false&amp;useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Minsk"
             username="maltsev.maxim@localhost"
             password="123"
+    />
+
+    <Realm className="org.apache.catalina.realm.DataSourceRealm"
+           dataSourceName="jdbc/contactsDB"
+           localDataSource="true"
+           userTable="user"
+           userNameCol="login"
+           userCredCol="password"
+           userRoleTable="user_roles"
+           roleNameCol="role_name"
     />
 </Context>

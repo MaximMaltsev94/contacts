@@ -2,6 +2,20 @@ DROP DATABASE IF EXISTS `contacts_maltsev`;
 
 CREATE DATABASE `contacts_maltsev` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci';
 
+CREATE TABLE `contacts_maltsev`.`user` (
+	`login` NVARCHAR(15) NOT NULL,
+	`password` NVARCHAR(255) NOT NULL,
+
+	PRIMARY KEY (`login`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `contacts_maltsev`.`user_roles` (
+	`login`  NVARCHAR(15) NOT NULL,
+	`role_name` NVARCHAR(15) NOT NULL,
+
+	PRIMARY KEY (`login`, `role_name`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `contacts_maltsev`.`relationship` (
 	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`name` NVARCHAR(20) NOT NULL,
@@ -37,17 +51,19 @@ CREATE TABLE `contacts_maltsev`.`contact` (
 	`email` NVARCHAR(255),
 	`company_name` NVARCHAR(50),
 	`profile_picture` NVARCHAR(255) DEFAULT '/sysImages/default.png',
-	
 	`id_country` TINYINT UNSIGNED,
 	`id_city` SMALLINT UNSIGNED,
 	`street` NVARCHAR(50),
 	`postcode` NVARCHAR(20),
+
+	`login_user` NVARCHAR(15) NOT NULL,
 	
 	PRIMARY KEY (`id`),
 	CONSTRAINT `concact_relationship_fk` FOREIGN KEY (`id_relationship`) REFERENCES `contacts_maltsev`.`relationship` (`id`) ON DELETE SET NULL,
 	
 	CONSTRAINT `concact_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts_maltsev`.`country` (`id`) ON DELETE SET NULL,
-	CONSTRAINT `concact_city_fk` FOREIGN KEY (`id_city`) REFERENCES `contacts_maltsev`.`city` (`id`) ON DELETE SET NULL
+	CONSTRAINT `concact_city_fk` FOREIGN KEY (`id_city`) REFERENCES `contacts_maltsev`.`city` (`id`) ON DELETE SET NULL,
+	CONSTRAINT `concact_user_fk` FOREIGN KEY (`login_user`) REFERENCES `contacts_maltsev`.`user` (`login`) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts_maltsev`.`phone` (

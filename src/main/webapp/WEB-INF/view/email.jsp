@@ -28,7 +28,7 @@
                             <input readonly id="receivers" onclick="email.onDropdownShow('myDropdown')" type="text">
                             <div id="myDropdown" class="dropdown-content">
                                 <c:if test="${requestScope.get('contactList').size() eq 0}">
-                                    <span class="text-medium">Контакты у которых указан email отсутствуют.</span>
+                                    <span class="text-small-bold">Контакты у которых указан email отсутствуют.</span>
                                 </c:if>
                                 <c:forEach var="i" items="${requestScope.get('contactList')}">
                                     <div class="jlab-row margin">

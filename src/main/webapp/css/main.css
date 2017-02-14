@@ -74,6 +74,10 @@ a:hover {
     margin: auto auto 20px;
 }
 
+.container.login, .container-80.login {
+    margin-top: 30%;
+}
+
 .container {
     width: 90%;
 }
@@ -319,7 +323,7 @@ button:disabled {
 }
 
 
-input[type="text"], input[type="email"], input[type="date"], input[type="url"], select, textarea {
+input[type="text"], input[type="email"], input[type="date"], input[type="url"], input[type="password"], select, textarea {
     /*width: 240px;*/
     width: 100%;
     box-sizing: border-box;
@@ -331,7 +335,7 @@ input[type="text"], input[type="email"], input[type="date"], input[type="url"], 
     background-color: #f0f0f0;
 }
 
-input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, input[type="url"]:focus, select:focus, textarea:focus {
+input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, input[type="url"]:focus, input[type="password"]:focus, select:focus, textarea:focus {
     /*outline: none;*/
     outline-color: #ec1c24;
 }

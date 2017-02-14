@@ -33,7 +33,7 @@ public class ConnectionFactory {
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:comp/env");
-            dataSource = (DataSource) envContext.lookup("jdbc/contactsDB_maltsev");
+            dataSource = (DataSource) envContext.lookup("jdbc/contactsDB");
         } catch (NamingException e) {
             LOG.error("can't find datasource in environment context", e);
             throw new ConnectionException("error while finding datasource in environment context", e);

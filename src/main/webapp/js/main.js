@@ -4,7 +4,7 @@ var main = (function () {
             if(tooltipText == '')
                 return;
 
-            var bgColor = tooltipType === 'success' ? "rgb(133, 219, 24)" : "rgb(226, 26, 34)";
+            var bgColor = tooltipType === 'success' ? "rgb(190, 235, 159)" : "rgb(239, 100, 105)";
 
             var tooltipElement = document.getElementById('tooltip');
             tooltipElement.style.display = "block";

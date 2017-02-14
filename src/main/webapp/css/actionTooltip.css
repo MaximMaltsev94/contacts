@@ -29,12 +29,12 @@
 #tooltip {
     position: fixed;
     top: -5px;
-    margin-left: 5%;
+    left: -5px;
     /*background-color: rgba(226, 26, 34, 0.7);*/
     border-radius: 5px;
     padding: 10px;
     color: white;
-    max-width: 200px;
+    max-width: 300px;
     z-index: 2;
     opacity: 0;
 }
