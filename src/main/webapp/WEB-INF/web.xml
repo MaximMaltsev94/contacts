@@ -24,6 +24,10 @@
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>servlet.RegisterServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoginFailServlet</servlet-name>
+        <servlet-class>servlet.LoginFailServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>FrontController</servlet-name>
@@ -38,6 +42,11 @@
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LoginFailServlet</servlet-name>
+        <url-pattern>/loginfail/*</url-pattern>
     </servlet-mapping>
 
     <filter-mapping>
@@ -69,7 +78,7 @@
         <auth-method>FORM</auth-method>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/error.html</form-error-page>
+            <form-error-page>/loginfail/</form-error-page>
         </form-login-config>
     </login-config>
 

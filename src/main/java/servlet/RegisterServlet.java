@@ -53,7 +53,7 @@ public class RegisterServlet extends HttpServlet {
                 connection.commit();
                 connection.setAutoCommit(false);
 
-                RequestUtils.setMessageText(request, "Регистрация успешно завершена", TooltipType.success);
+                RequestUtils.setMessageText(request, "Регистрация пользователя " + user.getLogin() + " успешно завершена", TooltipType.success);
             }
             response.sendRedirect("/contact");
             return;

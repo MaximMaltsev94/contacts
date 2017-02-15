@@ -33,7 +33,8 @@
                 <form action="j_security_check" method="post">
                     <div class="jlab-row margin text-small-bold">Имя пользователя</div>
                     <div class="jlab-row margin">
-                        <input name="j_username" type="text">
+                        <input name="j_username" type="text" value="${sessionScope.getOrDefault('j_username', '')}">
+                        <c:remove var="j_username" scope="session"/>
                     </div>
                     <div class="jlab-row margin text-small-bold">Пароль</div>
                     <div class="jlab-row margin">
