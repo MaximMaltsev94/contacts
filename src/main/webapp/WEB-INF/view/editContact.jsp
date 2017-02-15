@@ -32,7 +32,7 @@
 <span id="tooltip"></span>
 
 <div class="container-80">
-    <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="?action=${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
+    <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="/contact/${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
         <div class="jlab-row margin">
             <div class="jlab-cell-12">
                 <section>
@@ -45,7 +45,7 @@
                         </div>
                         <div class="jlab-cell-3">
 
-                            <a href="<c:url value="?action=show&page=${sessionScope.getOrDefault('lastVisitedPage', 1)}" />">
+                            <a href="<c:url value="/contact/show?page=${sessionScope.getOrDefault('lastVisitedPage', 1)}" />">
                                 <button type="button" class="jlab-cell-12">Назад</button>
                             </a>
                         </div>

@@ -58,8 +58,6 @@ public class FrontController extends HttpServlet {
     }
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) {
-
-
         String viewName = null;
 
         try(Connection connection = ConnectionFactory.getInstance().getConnection()) {
@@ -75,7 +73,7 @@ public class FrontController extends HttpServlet {
 
 
             if(command == null) {
-                throw new DataNotFoundException("command not found for method " + request.getMethod() + " and action " + request.getAttribute("action"));
+                throw new DataNotFoundException("command not found for method " + request.getMethod() + " and path " + request.getPathInfo());
             }
 
             viewName = command.execute(request, response, connection);
@@ -103,7 +101,8 @@ public class FrontController extends HttpServlet {
 
         try {
             if(viewName == null) {
-                response.sendRedirect("?action=show&page=1");
+//                response.sendRedirect("?action=show&page=1");
+                response.sendRedirect("/contact/show?page=1");
             } else {
                 request.getRequestDispatcher("/WEB-INF/view/" + viewName + ".jsp").forward(request, response);
             }

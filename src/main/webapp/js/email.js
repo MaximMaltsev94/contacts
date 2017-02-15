@@ -26,7 +26,7 @@ var email = (function () {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
         form.setAttribute('method', 'post');
-        form.setAttribute('action', '?action=submitEmail');
+        form.setAttribute('action', '/contact/submitEmail');
 
         var input = document.createElement('input');
         input.setAttribute('type', 'text');

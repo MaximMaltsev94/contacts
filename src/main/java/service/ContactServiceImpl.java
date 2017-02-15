@@ -135,7 +135,7 @@ public class ContactServiceImpl implements ContactService {
 
             File fileToSave = ContactFileUtils.createTempFile("pri", ".png");
             ImageIO.write(bufferedImage, "png", fileToSave);
-            result = "?action=image&name=" + fileToSave.getName();
+            result = "/contact/image?name=" + fileToSave.getName();
         } catch (IOException e) {
             LOG.error("can't save profile image to file system", e);
         }

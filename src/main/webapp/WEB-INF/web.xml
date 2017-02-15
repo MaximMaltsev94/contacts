@@ -16,37 +16,9 @@
         <servlet-class>servlet.FrontController</servlet-class>
     </servlet>
 
-    <servlet>
-        <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>servlet.LogoutServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>RegisterServlet</servlet-name>
-        <servlet-class>servlet.RegisterServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LoginFailServlet</servlet-name>
-        <servlet-class>servlet.LoginFailServlet</servlet-class>
-    </servlet>
-
     <servlet-mapping>
         <servlet-name>FrontController</servlet-name>
         <url-pattern>/contact/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>LogoutServlet</servlet-name>
-        <url-pattern>/logout/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>RegisterServlet</servlet-name>
-        <url-pattern>/register/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>LoginFailServlet</servlet-name>
-        <url-pattern>/loginfail/*</url-pattern>
     </servlet-mapping>
 
     <filter-mapping>
@@ -57,7 +29,17 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>secured</web-resource-name>
-            <url-pattern>/contact/*</url-pattern>
+            <url-pattern>/contact</url-pattern>
+            <url-pattern>/contact/</url-pattern>
+            <url-pattern>/contact/show</url-pattern>
+            <url-pattern>/contact/add</url-pattern>
+            <url-pattern>/contact/edit</url-pattern>
+            <url-pattern>/contact/email</url-pattern>
+            <url-pattern>/contact/submitemail</url-pattern>
+            <url-pattern>/contact/search</url-pattern>
+            <url-pattern>/contact/delete</url-pattern>
+            <url-pattern>/contact/document</url-pattern>
+            <url-pattern>/contact/image</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
@@ -77,8 +59,8 @@
     <login-config>
         <auth-method>FORM</auth-method>
         <form-login-config>
-            <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/loginfail/</form-error-page>
+            <form-login-page>/contact/login</form-login-page>
+            <form-error-page>/contact/loginfail</form-error-page>
         </form-login-config>
     </login-config>
 

@@ -26,6 +26,7 @@ public class GetAddContactPage implements Command {
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
             request.setAttribute("cityList", cityService.getAll());
+            request.setAttribute("action", "add");
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database",e);

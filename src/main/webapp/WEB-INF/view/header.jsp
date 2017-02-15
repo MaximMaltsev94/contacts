@@ -5,7 +5,7 @@
         <div class="jlab-row">
             <div class="imageButton logo"></div>
             <div class="element">
-                <a class="text-large" href="<c:url value="?action=show&page=1" />">
+                <a class="text-large" href="<c:url value="/contact/show?page=1" />">
                     Контакты
                 </a>
             </div>
@@ -13,10 +13,10 @@
                 <div class="element text-medium">|</div>
 
                 <div class="element">
-                    <a class="text-small-bold" href="<c:url value="?action=email" />">Написать письмо</a>
+                    <a class="text-small-bold" href="<c:url value="/contact/email" />">Написать письмо</a>
                 </div>
                 <div class="element">
-                    <a class="text-small-bold" href="<c:url value="?action=search" />">Поиск</a>
+                    <a class="text-small-bold" href="<c:url value="/contact/search" />">Поиск</a>
                 </div>
                 <div class="element">
                     <a class="text-small-bold" href="#">Импорт контактов</a>
@@ -30,7 +30,7 @@
                 <div class="element text-medium">|</div>
 
                 <div class="element">
-                    <a class="text-small-bold" href="<c:url value="/logout/"/>">Выйти</a>
+                    <a class="text-small-bold" href="<c:url value="/contact/logout"/>">Выйти</a>
                 </div>
             </c:if>
         </div>

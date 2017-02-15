@@ -16,16 +16,38 @@
 <body onload="main.showTooltip('${sessionScope.get('tooltip-text')}', '${sessionScope.get('tooltip-type')}')">
 <c:remove var="tooltip-text" scope="session"/>
 <c:remove var="tooltip-type" scope="session"/>
-<jsp:include page="WEB-INF/view/header.jsp"/>
+<jsp:include page="header.jsp"/>
 <span id="tooltip"></span>
 
 <div class="container">
     <div class="jlab-row">
         <div class="jlab-cell-9">
             <section>
-                <div class="text-large">
-                    Добро пожаловать!
+                <div class="jlab-row margin">
+                    <div class="jlab-cell-1"></div>
+                    <div class="jlab-cell-10">
+                        <div class="jlab-row">
+                            <div class="jlab-cell-12 text-large align-center">
+                                Добро пожаловать!
+                            </div>
+                        </div>
+                        <div class="jlab-row">
+                            <div class="jlab-cell-12 text-medium align-center">
+                                Вы находитесь на платформе управления контактами.
+                            </div>
+                        </div>
+
+                        <div class="jlab-row margin text-medium">
+                            <ul class="regular">
+                                <li>Управляйте своими контактами.</li>
+                                <li>Импортируйте контакты из популярных социальных сетей.</li>
+                                <li>Получайте уведомления о днях рождения.</li>
+                                <li>Производите рассылки электронных писем.</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+
             </section>
         </div>
         <div class="jlab-cell-3">
@@ -60,7 +82,7 @@
             </section>
             <br>
             <section>
-                <form onsubmit="return loginView.validateRegistrationForm()" action="<c:url value="/register/"/>" method="post">
+                <form onsubmit="return loginView.validateRegistrationForm()" action="<c:url value="/contact/register"/>" method="post">
                     <div class="jlab-row">
                         <div class="jlab-cell-12 align-center text-small-bold">
                             Впервые здесь?
@@ -92,6 +114,6 @@
         </div>
     </div>
 </div>
-<jsp:include page="WEB-INF/view/footer.jsp"/>
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

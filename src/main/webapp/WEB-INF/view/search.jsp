@@ -49,7 +49,7 @@
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
                                     <a class="text-medium"
-                                       href="<c:url value="?action=edit&id=${i.id}" /> "><c:out
+                                       href="<c:url value="/contact/edit?id=${i.id}" /> "><c:out
                                             value="${i.firstName} ${i.lastName}"/></a>
                                 </div>
                             </div>
@@ -74,7 +74,7 @@
                         </div>
 
                         <div class="jlab-cell-1 center">
-                            <a href="<c:url value="?action=edit&id=${i.id}"/>">
+                            <a href="<c:url value="/contact/edit?id=${i.id}"/>">
                                 <div class="imageButton edit">
                                 </div>
                             </a>
@@ -161,7 +161,7 @@
                 </div>
             </section>
             <section>
-                <form id="searchForm" action="<c:url value="?action=search"/>" method="post">
+                <form id="searchForm" action="<c:url value="/contact/search"/>" method="post">
                     <input type="text" name="page" id="page" value="1" hidden/>
 
                     <div class="text-medium">Введите параметры поиска</div>

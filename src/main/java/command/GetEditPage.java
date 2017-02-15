@@ -45,6 +45,8 @@ public class GetEditPage implements Command {
             request.setAttribute("phoneList", phoneService.getByContactID(contactID));
             request.setAttribute("attachmentList", attachmentService.getByContactId(contactID));
 
+            request.setAttribute("action", "edit");
+
         } catch (NumberFormatException e) {
             LOG.warn("incorrect contact id {}", request.getParameter("id"), e);
             throw new DataNotFoundException("can't find contact with specified id", e);

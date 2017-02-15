@@ -401,3 +401,16 @@ img.fileDownload
     line-height: 400px;
     background: rgba(0,0,0,0.7);
 }
+
+ul.regular li {
+    list-style-type: none;
+    margin-bottom: 5px;
+}
+
+ul.regular li:before {
+    /* Unicode bullet symbol */
+    content: '\25A0 ';
+    /* Bullet color */
+    color: #ec1c24;
+    padding-right: 0.5em;
+}

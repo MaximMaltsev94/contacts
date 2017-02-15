@@ -12,7 +12,7 @@ var showView = (function() {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
         form.setAttribute('method', 'post');
-        form.setAttribute('action', '?action=delete');
+        form.setAttribute('action', '/contact/delete');
 
         var input = document.createElement('input');
         input.setAttribute('type', 'text');
@@ -28,7 +28,7 @@ var showView = (function() {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
         form.setAttribute('method', 'post');
-        form.setAttribute('action', '?action=email');
+        form.setAttribute('action', '/contact/email');
 
         var input = document.createElement('input');
         input.setAttribute('type', 'text');

@@ -76,7 +76,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                 if(is != null) {
                     String fileExtension = (String) request.getAttribute("file_attachment-" + i + ":fileExtension");
                     String filePath = writeFileToFileSystem(is, fileExtension);
-                    attachment.setFilePath("?action=document&name=" + filePath);
+                    attachment.setFilePath("/contact/document?name=" + filePath);
                 }
 
                 attachmentList.add(attachment);

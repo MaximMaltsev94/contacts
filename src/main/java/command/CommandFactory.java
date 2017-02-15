@@ -33,15 +33,20 @@ public class CommandFactory {
         commands.put("post/email", GetEmailPage.class);
 
         commands.put("post/submitemail", SendEmail.class);
+
+        commands.put("get/login", Login.class);
+        commands.put("post/register", Register.class);
+        commands.put("get/logout", Logout.class);
+        commands.put("get/loginfail", LoginFail.class);
     }
 
     public Command getCommand(HttpServletRequest request) {
-        String action = (String)request.getAttribute("action");
-        if(StringUtils.isBlank(action)) {
-            action = "show";
+        String action = request.getPathInfo();
+        if(StringUtils.isBlank(action) || action.equals("/")) {
+            action = "/show";
             request.setAttribute("page", "1");
         }
-        String commandKey = request.getMethod() + "/" + action;
+        String commandKey = request.getMethod() + action;
         Class<? extends Command> commandClass = commands.get(commandKey.toLowerCase());
 
         if(commandClass == null) {
