@@ -3,6 +3,7 @@
 <div class="nav">
     <div class="container1">
         <div class="jlab-row">
+            <div class="imageButton logo"></div>
             <div class="element">
                 <a class="text-large" href="<c:url value="?action=show&page=1" />">
                     Контакты

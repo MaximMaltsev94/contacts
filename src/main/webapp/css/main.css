@@ -322,6 +322,13 @@ button:disabled {
     background-image: url('../sysImages/help hover.png');
 }
 
+.imageButton.logo {
+    width: 25px;
+    height: 25px;
+    background-size: 25px 25px;
+    background-image: url('../sysImages/logo.png');
+}
+
 
 input[type="text"], input[type="email"], input[type="date"], input[type="url"], input[type="password"], select, textarea {
     /*width: 240px;*/
