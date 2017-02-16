@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<script>var contextPath = "${pageContext.request.contextPath}"</script>
 <div class="nav">
     <div class="container1">
         <div class="jlab-row">

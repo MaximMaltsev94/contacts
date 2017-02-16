@@ -102,7 +102,7 @@ public class FrontController extends HttpServlet {
         try {
             if(viewName == null) {
 //                response.sendRedirect("?action=show&page=1");
-                response.sendRedirect("/contact/show?page=1");
+                response.sendRedirect(request.getContextPath() + "/contact/show?page=1");
             } else {
                 request.getRequestDispatcher("/WEB-INF/view/" + viewName + ".jsp").forward(request, response);
             }
