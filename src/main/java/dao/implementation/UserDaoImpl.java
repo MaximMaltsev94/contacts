@@ -23,12 +23,15 @@ public class UserDaoImpl implements UserDao {
         User user = new User();
         user.setLogin(rs.getString("login"));
         user.setEmail(rs.getString("email"));
+        user.setProfilePicture(rs.getString("profile_picture"));
+        user.setNeedBDateNotify(rs.getBoolean("need_bdate_notify"));
+        user.setEmail(rs.getString("email"));
         user.setPassword(rs.getString("password"));
         return user;
     }
 
     private PreparedStatement createGetByLoginStatement(Connection connection, String login) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM user WHERE login = ?");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `user` WHERE login = ?");
         statement.setObject(1, login);
         return statement;
     }
@@ -48,16 +51,34 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
+    private void fillPreparedStatement(PreparedStatement statement, User user) throws SQLException {
+        statement.setObject(1, user.getLogin());
+        statement.setObject(2, user.getEmail());
+        statement.setObject(3, user.getNeedBDateNotify());
+        statement.setObject(4, user.getProfilePicture());
+        statement.setObject(5, user.getPassword());
+    }
+
     @Override
     public void insert(User user) throws DaoException {
-        try(PreparedStatement statement = connection.prepareStatement("INSERT INTO user (`login`, `email`, `password`) VALUES(?, ?, ?)")) {
-            statement.setObject(1, user.getLogin());
-            statement.setObject(2, user.getEmail());
-            statement.setObject(3, user.getPassword());
+        try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `user` (`login`, `email`, `need_bdate_notify`, `profile_picture`, `password`) VALUES(?, ?, ?, ?, ?)")) {
+            fillPreparedStatement(statement, user);
             statement.executeUpdate();
         } catch (SQLException e) {
             LOG.error("can't insert user - {}", user, e);
             throw new DaoException("error while insert user " + user, e);
+        }
+    }
+
+    @Override
+    public void update(User user) throws DaoException {
+        try(PreparedStatement statement = connection.prepareStatement("UPDATE `user` SET `login` = ?, `email` = ?, `need_bdate_notify` = ?, `profile_picture` = ?, `password` = ? WHERE `login` = ?")) {
+            fillPreparedStatement(statement, user);
+            statement.setObject(6, user.getLogin());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            LOG.error("can't update user - {}", user, e);
+            throw new DaoException("error while updating user " + user, e);
         }
     }
 }

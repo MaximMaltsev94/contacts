@@ -5,6 +5,8 @@ CREATE DATABASE `contacts_maltsev` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_gene
 CREATE TABLE `contacts_maltsev`.`user` (
 	`login` NVARCHAR(15) NOT NULL,
 	`email` NVARCHAR(255) NOT NULL,
+	`need_bdate_notify` BIT NOT NULL,
+	`profile_picture` NVARCHAR(255) DEFAULT '/sysImages/default.png',
 	`password` NVARCHAR(255) NOT NULL,
 
 	PRIMARY KEY (`login`)

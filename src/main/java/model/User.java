@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class User {
     private String login;
     private String email;
+    private boolean needBDateNotify;
+    private String profilePicture;
     private String password;
 
     public User() {
@@ -21,6 +23,22 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean getNeedBDateNotify() {
+        return needBDateNotify;
+    }
+
+    public void setNeedBDateNotify(boolean needBDateNotify) {
+        this.needBDateNotify = needBDateNotify;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public void setEmail(String email) {

@@ -24,9 +24,12 @@
                 </div>
 
                 <div class="element right">
-                <span class="text-small-bold">
+                    <img src="<c:url value="${requestScope.get('user').profilePicture}" /> " width="25px" height="25px">
+                </div>
+                <div class="element">
+                    <a class="text-small-bold" href="<c:url value="/contact/user"/>">
                         ${pageContext.request.userPrincipal.name}
-                </span>
+                    </a>
                 </div>
                 <div class="element text-medium">|</div>
 

@@ -207,7 +207,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Имя*</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -216,7 +216,7 @@
                                     </div>
                                 </div>
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Фамилия*</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -226,7 +226,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Отчество</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -236,7 +236,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">День рождения</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -246,7 +246,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Пол</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -257,7 +257,7 @@
 
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Гражданство</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -267,7 +267,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Семейное положение</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -293,7 +293,7 @@
                                     <div class="text-medium">Контактная информация</div>
                                 </div>
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Веб сайт</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -304,7 +304,7 @@
 
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Эл. почта</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -315,7 +315,7 @@
 
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Место работы</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -325,7 +325,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Страна</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -339,7 +339,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Город</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -359,7 +359,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Адрес</span>
                                     </div>
                                     <div class="jlab-cell-9">
@@ -369,7 +369,7 @@
                                 </div>
 
                                 <div class="jlab-row margin">
-                                    <div class="jlab-cell-3">
+                                    <div class="jlab-cell-3 center">
                                         <span class="text-small">Почтовый индекс</span>
                                     </div>
                                     <div class="jlab-cell-9">

@@ -11,6 +11,8 @@ import exceptions.DataNotFoundException;
 import exceptions.RequestMapperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.UserService;
+import service.UserServiceImpl;
 import util.RequestMapper;
 import util.RequestUtils;
 import util.TooltipType;
@@ -63,6 +65,11 @@ public class FrontController extends HttpServlet {
         try(Connection connection = ConnectionFactory.getInstance().getConnection()) {
             RequestMapper mapper = new RequestMapper();
             mapper.mapRequestParamsToAttributes(request);
+
+            UserService userService = new UserServiceImpl(connection);
+            if(request.getUserPrincipal() != null) {
+                request.setAttribute("user", userService.getByLogin(request.getUserPrincipal().getName()));
+            }
 
             LOG.info("Received {} request - {} {}", request.getMethod(),
                     request.getRequestURL().toString(),

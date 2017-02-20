@@ -56,7 +56,6 @@ public class EditContact implements Command {
             imageAction = (String) request.getAttribute("imageAction");
             switch (imageAction) {
                 case "update": //newContact.profileImage contains new image url
-                    break;
                 case "delete": //newContact.profileImage contains url to default image
                     break;
                 case "nothing": //
@@ -131,28 +130,29 @@ public class EditContact implements Command {
             } catch (SQLException e) {
                 LOG.error("error while closing connection ", e);
             }
-        }
 
-        if(isErrorOccurred) {
-            if(newContact != null) {
-                contactService.deleteProfileImageFile(newContact);
-            }
-            if(newAttachments != null) {
-                for (Attachment newAttachment : newAttachments) {
-                    attachmentService.deleteAttachmentFile(newAttachment);
+            if(isErrorOccurred) {
+                if(newContact != null) {
+                    contactService.deleteProfileImageFile(newContact);
+                }
+                if(newAttachments != null) {
+                    for (Attachment newAttachment : newAttachments) {
+                        attachmentService.deleteAttachmentFile(newAttachment);
+                    }
+                }
+
+            } else {
+                if(!imageAction.equals("nothing"))
+                    contactService.deleteProfileImageFile(oldContact);
+
+                if (forDelete != null) {
+                    for (Attachment attachment : forDelete) {
+                        attachmentService.deleteAttachmentFile(attachment);
+                    }
                 }
             }
-
-        } else {
-            if(!imageAction.equals("nothing"))
-                contactService.deleteProfileImageFile(oldContact);
-
-            if (forDelete != null) {
-                for (Attachment attachment : forDelete) {
-                    attachmentService.deleteAttachmentFile(attachment);
-                }
-            }
         }
+
 
         return null;
     }

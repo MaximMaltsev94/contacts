@@ -66,6 +66,11 @@
                     <div class="jlab-row margin">
                         <input class="jlab-cell-12" type="submit" value="Войти">
                     </div>
+
+                    <div class="jlab-row margin">
+                        <div class="jlab-cell-12 align-center text-small-bold">
+                            <a href="#">Забыли пароль?</a></div>
+                        </div>
                 </form>
             </section>
             <br>
@@ -89,6 +94,7 @@
                     <div class="jlab-row margin">
                         <input name="email" type="text" pattern="^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$" maxlength="255" required>
                     </div>
+                    <input name="bdate_notify" type="checkbox" checked hidden>
                     <div class="jlab-row margin text-small-bold">Пароль</div>
                     <div class="jlab-row margin">
                         <input id="pass1" name="password" type="password" pattern="[\w]{3,20}" required title="Буквы, цифры, знак подчеркивания. От 3х до 20 символов">

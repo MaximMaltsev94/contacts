@@ -39,6 +39,9 @@ public class CommandFactory {
         commands.put("get/logout", Logout.class);
         commands.put("get/loginfail", LoginFail.class);
         commands.put("post/loginfail", LoginFail.class);
+
+        commands.put("get/user", GetUserPage.class);
+        commands.put("post/user", UpdateUser.class);
     }
 
     public Command getCommand(HttpServletRequest request) {

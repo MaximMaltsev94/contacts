@@ -38,6 +38,7 @@
             <url-pattern>/contact/submitemail</url-pattern>
             <url-pattern>/contact/search</url-pattern>
             <url-pattern>/contact/delete</url-pattern>
+            <url-pattern>/contact/user</url-pattern>
             <url-pattern>/contact/document</url-pattern>
             <url-pattern>/contact/image</url-pattern>
             <http-method>GET</http-method>
