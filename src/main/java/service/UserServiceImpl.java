@@ -19,11 +19,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User parseRequest(HttpServletRequest request) {
         String login = (String) request.getAttribute("username");
+        String email = (String) request.getAttribute("email");
         String password = (String) request.getAttribute("password");
         password = ContactUtils.getSHA256HEX(password);
 
         User user = new User();
         user.setLogin(login);
+        user.setEmail(email);
         user.setPassword(password);
 
         return user;

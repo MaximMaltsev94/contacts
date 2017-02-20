@@ -62,18 +62,6 @@
                     <div class="jlab-row margin">
                         <input name="j_password" type="password">
                     </div>
-                    <%--<div class="jlab-row margin">--%>
-                        <%--<div class="jlab-cell-4 align-right text-small-bold">Имя пользователя</div>--%>
-                        <%--<div class="jlab-cell-8">--%>
-                            <%--<input name="j_username" type="text">--%>
-                        <%--</div>--%>
-                    <%--</div>--%>
-                    <%--<div class="jlab-row margin">--%>
-                        <%--<div class="jlab-cell-4 align-right text-small-bold">Пароль</div>--%>
-                        <%--<div class="jlab-cell-8">--%>
-                            <%--<input name="j_password" type="password">--%>
-                        <%--</div>--%>
-                    <%--</div>--%>
 
                     <div class="jlab-row margin">
                         <input class="jlab-cell-12" type="submit" value="Войти">
@@ -96,6 +84,10 @@
                     <div class="jlab-row margin text-small-bold">Имя пользователя</div>
                     <div class="jlab-row margin">
                         <input name="username" type="text" pattern="[\w]{3,15}" required title="Буквы, цифры, знак подчеркивания. От 3х до 15 символов">
+                    </div>
+                    <div class="jlab-row margin text-small-bold">E-mail</div>
+                    <div class="jlab-row margin">
+                        <input name="email" type="text" pattern="^([a-z0-9_\.-]+)@([a-z0-9_\.-]+)\.([a-z\.]{2,6})$" maxlength="255" required>
                     </div>
                     <div class="jlab-row margin text-small-bold">Пароль</div>
                     <div class="jlab-row margin">

@@ -22,6 +22,7 @@ public class UserDaoImpl implements UserDao {
     private User parseResultSet(ResultSet rs) throws SQLException {
         User user = new User();
         user.setLogin(rs.getString("login"));
+        user.setEmail(rs.getString("email"));
         user.setPassword(rs.getString("password"));
         return user;
     }
@@ -49,9 +50,10 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void insert(User user) throws DaoException {
-        try(PreparedStatement statement = connection.prepareStatement("INSERT INTO user VALUES(?, ?)")) {
+        try(PreparedStatement statement = connection.prepareStatement("INSERT INTO user (`login`, `email`, `password`) VALUES(?, ?, ?)")) {
             statement.setObject(1, user.getLogin());
-            statement.setObject(2, user.getPassword());
+            statement.setObject(2, user.getEmail());
+            statement.setObject(3, user.getPassword());
             statement.executeUpdate();
         } catch (SQLException e) {
             LOG.error("can't insert user - {}", user, e);

@@ -14,6 +14,7 @@ import service.UserServiceImpl;
 import util.RequestUtils;
 import util.TooltipType;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
@@ -44,6 +45,8 @@ public class Register implements Command {
                 connection.commit();
                 connection.setAutoCommit(true);
 
+                request.login(user.getLogin(), (String) request.getAttribute("password"));
+
                 RequestUtils.setMessageText(request, "Регистрация пользователя " + user.getLogin() + " успешно завершена", TooltipType.success);
             }
         } catch (SQLException | DaoException e) {
@@ -56,6 +59,10 @@ public class Register implements Command {
                     LOG.error("can't rollback transaction");
                 }
             }
+            throw new CommandExecutionException("error while accessing database", e);
+        } catch (ServletException e) {
+            LOG.error("error while executing login method", e);
+            throw new CommandExecutionException("can't log out", e);
         }
         return null;
     }
