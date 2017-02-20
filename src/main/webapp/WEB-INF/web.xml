@@ -70,4 +70,24 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
+
+    <!--QUARTZ config-->
+    <context-param>
+        <param-name>quartz:shutdown-on-unload</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>quartz:wait-on-shutdown</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>quartz:start-scheduler-on-load</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>
+            util.QuartzListener
+        </listener-class>
+    </listener>
 </web-app>
