@@ -5,9 +5,7 @@ import model.Contact;
 import model.ContactSearchCriteria;
 import model.Page;
 
-import javax.naming.NamingException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 public interface ContactDao {
@@ -25,7 +23,5 @@ public interface ContactDao {
     long getMaxID() throws DaoException;
     long getCountByLoginUser(String loginUser) throws DaoException;
     List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException;
-
-    // TODO: 14.02.2017 refactor to select by login user
-    List<Contact> getByBirthdayToday() throws DaoException;
+    List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException;
 }

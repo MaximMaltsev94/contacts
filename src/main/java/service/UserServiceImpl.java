@@ -9,6 +9,7 @@ import util.ContactUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
+import java.util.List;
 
 public class UserServiceImpl implements UserService {
     private UserDao userDao;
@@ -54,6 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getByLogin(String login) throws DaoException {
         return userDao.getByLogin(login);
+    }
+
+    @Override
+    public List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException {
+        return userDao.getByNeedNotify(needBDateNotify);
     }
 
     @Override

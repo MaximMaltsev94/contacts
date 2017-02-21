@@ -1,46 +1,56 @@
 package util;
 
-import dao.interfaces.ContactDao;
 import dao.implementation.ConnectionFactory;
-import dao.implementation.ContactDaoImpl;
 import exceptions.ConnectionException;
 import exceptions.DaoException;
 import model.Contact;
+import model.User;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.ContactService;
+import service.ContactServiceImpl;
+import service.UserService;
+import service.UserServiceImpl;
 
 import javax.mail.MessagingException;
-import javax.naming.NamingException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-/**
- * Created by maxim on 04.10.2016.
- */
 public class BirthDateNotifyJob implements Job {
     private final static Logger LOG = LoggerFactory.getLogger(BirthDateNotifyJob.class);
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try(Connection connection = ConnectionFactory.getInstance().getConnection()) {
             LOG.info("start looking for birthday contacts");
-            ContactDao contactDao = new ContactDaoImpl(connection);
-            List<Contact> contactList = contactDao.getByBirthdayToday();
-            if(contactList.size() > 0) {
+            UserService userService = new UserServiceImpl(connection);
+            ContactService contactService = new ContactServiceImpl(connection);
+
+            List<User> userList = userService.getByNeedNotify(true);
+            List<String> userLoginList = userList.stream().map(User::getLogin).collect(Collectors.toList());
+            List<Contact> contactList = contactService.getByBirthdayAndLoginUserIn(new Date(), userLoginList);
+            LOG.info("Contact who has birthday today: {}", contactList);
+            Map<String, List<Contact>> contactMap = contactList.stream().collect(Collectors.groupingBy(Contact::getLoginUser));
+            String startString = "Сегодня " + DateFormatUtils.format(new Date(), "dd.MM.yyyy") + " свой день рождения отмечают: ";
+            EmailHelper emailHelper = new EmailHelper();
+            for (User user : userList) {
                 StringBuilder emailText = new StringBuilder();
-                emailText.append("Сегодня свой день рождения отмечают: ");
-                for (Contact contact : contactList) {
+                emailText.append(startString);
+                for (Contact contact : contactMap.get(user.getLogin())) {
                     emailText.append(System.getProperty("line.separator"));
                     emailText.append(contact.getFirstName());
                     emailText.append(" ");
                     emailText.append(contact.getLastName());
                 }
-                EmailHelper emailHelper = new EmailHelper();
-                emailHelper.sendToAdmin("Уведомление о дне рождения", emailText.toString());
-                LOG.info("birthday notify message sent to admin's email - {}", emailHelper.getAdminEmail());
+                emailHelper.sendEmail(user.getEmail(), "Уведомление о дне рождения", emailText.toString());
+                LOG.info("birthday notify message sent to user with email - {}", user.getEmail());
             }
         } catch (SQLException e ) {
             LOG.error("can't close connection to database", e);

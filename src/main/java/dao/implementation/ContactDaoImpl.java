@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Date;
 
 public class ContactDaoImpl implements ContactDao {
     private final static Logger LOG = LoggerFactory.getLogger(ContactDaoImpl.class);
@@ -383,17 +383,44 @@ public class ContactDaoImpl implements ContactDao {
         return contactList;
     }
 
+    private String createGetByLoginUserInSQL(int size) {
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `contact` WHERE day(`birth_date`) = ? and month(`birth_date`) = ? and `login_user` in (");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(")");
+        return sqlBuilder.toString();
+    }
+
+    private PreparedStatement createGetByLoginUserInStatement(Connection connection, Date date, List<String> loginUserList) throws SQLException {
+        String sql = createGetByLoginUserInSQL(loginUserList.size());
+
+        PreparedStatement statement = connection.prepareStatement(sql);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        statement.setObject(1, cal.get(Calendar.DAY_OF_MONTH));
+        statement.setObject(2, cal.get(Calendar.MONTH) + 1);
+        for (int i = 0; i < loginUserList.size(); i++) {
+            statement.setObject(i + 3, loginUserList.get(i));
+        }
+        LOG.info(statement.toString());
+        return statement;
+    }
+
     @Override
-    public List<Contact> getByBirthdayToday() throws DaoException {
+    public List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from `contact` WHERE day(`birth_date`) = day(current_date()) and month(`birth_date`) = month(current_date())");
+        try(PreparedStatement preparedStatement = createGetByLoginUserInStatement(connection, date, loginUserList);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
                 contactList.add(contact);
             }
         } catch (SQLException e) {
-            LOG.error("can't get contacs by birthday", e);
+            LOG.error("can't get contacts by birthday", e);
             throw new DaoException("error while getting birthday boys");
         }
         return contactList;

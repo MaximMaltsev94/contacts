@@ -20,9 +20,9 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 public class ContactServiceImpl implements ContactService {
@@ -72,6 +72,11 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException {
         return contactDao.getByEmailNotNullAndLoginUser(loginUser);
+    }
+
+    @Override
+    public List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException {
+        return contactDao.getByBirthdayAndLoginUserIn(date, loginUserList);
     }
 
     @Override

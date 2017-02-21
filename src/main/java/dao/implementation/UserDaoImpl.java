@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDaoImpl implements UserDao {
     private final static Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
@@ -49,6 +51,27 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("error while getting user by login " + login, e);
         }
         return user;
+    }
+
+    private PreparedStatement createGetByNeedNotifyStatement(Connection connection, boolean needBDateNotify) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `user` WHERE `need_bdate_notify` = ?");
+        statement.setObject(1, needBDateNotify);
+        LOG.info(statement.toString());
+        return statement;
+    }
+
+    @Override
+    public List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException {
+        List<User> userList = new ArrayList<>();
+        try(PreparedStatement statement = createGetByNeedNotifyStatement(connection, needBDateNotify);
+            ResultSet rs = statement.executeQuery()) {
+            while (rs.next())
+                userList.add(parseResultSet(rs));
+        } catch (SQLException e) {
+            LOG.error("can't get user by need birth date notify flag - {}", needBDateNotify, e);
+            throw new DaoException("error while getting users by need birth date notify flag", e);
+        }
+        return userList;
     }
 
     private void fillPreparedStatement(PreparedStatement statement, User user) throws SQLException {
