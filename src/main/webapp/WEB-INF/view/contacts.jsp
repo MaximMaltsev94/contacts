@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="<c:url value="/css/pagination.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
 
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/showView.js"/>"></script>
@@ -80,7 +81,7 @@
                         </div>
 
                         <div class="jlab-cell-1 center ">
-                            <div class="imageButton delete" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', '${i.id}')">
+                            <div class="imageButton delete" onclick="main.showConfirmDialog('Вы действительно хотите удалить контакт ${i.firstName} ${i.lastName}?', function() { showView.onDeleteContact('${i.id}')})">
                             </div>
                         </div>
                     </div>
@@ -162,7 +163,7 @@
                         </a>
                     </div>
                     <div class="jlab-row margin">
-                        <button id="deleteSelected" disabled class="jlab-cell-10 align-center" onclick="showView.onDeleteSelectedClick()">Удалить</button>
+                        <button id="deleteSelected" disabled class="jlab-cell-10 align-center" onclick="main.showConfirmDialog('Вы действительно хотите удалить выбранные контакты?', showView.onDeleteSelectedClick)">Удалить</button>
                     </div>
                     <div class="jlab-row margin">
                         <button id="sendEmail" disabled class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
@@ -176,6 +177,7 @@
 
     <%--div.container end--%>
 </div>
+<jsp:include page="confirmPopup.jsp"/>
 <jsp:include page="footer.jsp"/>
 </body>
 </html>

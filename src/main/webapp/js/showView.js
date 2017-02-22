@@ -53,20 +53,19 @@ var showView = (function() {
         },
 
         onDeleteSelectedClick : function () {
-            if(confirm('Вы действительно хотите удалить выбранные контакты?')) {
-                var checkedBoxes = document.querySelectorAll("input[type=checkbox]:checked");
-                var ids = '';
-                for (var i = 0; i < checkedBoxes.length; ++i) {
-                    ids += checkedBoxes[i].id + ',';
-                }
-                postDeleteRequest(ids);
+            var checkedBoxes = document.querySelectorAll("input[type=checkbox]:checked");
+            if(checkedBoxes.length == 0)
+                return;
+
+            var ids = '';
+            for (var i = 0; i < checkedBoxes.length; ++i) {
+                ids += checkedBoxes[i].id + ',';
             }
+            postDeleteRequest(ids);
         },
 
-        onDeleteContact: function(firstName, lastName, id) {
-            if (confirm('Вы действительно хотите удалить контакт ' + firstName + ' ' + lastName + '?')) {
-                postDeleteRequest(id);
-            }
+        onDeleteContact: function(id) {
+            postDeleteRequest(id);
         },
 
         onEmailContact: function (id) {

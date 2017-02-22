@@ -1,3 +1,11 @@
+console.log("before");
+
+window.onhashchange = function () {
+    console.log("hashchanged");
+};
+
+console.log("after");
+
 var main = (function () {
     return {
         showTooltip: function (tooltipText, tooltipType) {
@@ -34,14 +42,10 @@ var main = (function () {
             return divElement;
         },
 
-        onFileChangeAction: function(attachmentID) {
-            var fileName = document.getElementById('file_' + attachmentID).value;
-            fileName = fileName.split('\\');
-            fileName = fileName[fileName.length - 1];
-
-            document.getElementById('fileLabel_' + attachmentID).innerHTML =  '\<div class="imageButton upload"></div>' + '\<span class="test-medium">' + fileName + '\</span>';
-
-            console.log(document.getElementById('file_' + attachmentID).value);
+        showConfirmDialog: function(text, onConfirmAction) {
+            document.getElementById('confirmPopupText').innerHTML = text;
+            document.getElementById('confirmPopup_ok').onclick = onConfirmAction;
+            window.location.hash = "#confirmPopup";
         }
     }
 }());

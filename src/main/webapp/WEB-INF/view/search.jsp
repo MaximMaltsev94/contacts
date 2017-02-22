@@ -98,18 +98,18 @@
                 <%-- add first page link--%>
                 <c:choose>
                     <c:when test="${currentPage == 1}">
-                        <li><a class="active" href="#" onclick="searchView.submitForm(1)">1</a></li>
+                        <li><a class="active" href="javascript:;" onclick="searchView.submitForm(1)">1</a></li>
                     </c:when>
 
                     <c:when test="${currentPage != 1}">
-                        <li><a href="#" onclick="searchView.submitForm(${currentPage - 1})">&lt;</a></li>
-                        <li><a href="#" onclick="searchView.submitForm(1)">1</a></li>
+                        <li><a href="javascript:;" onclick="searchView.submitForm(${currentPage - 1})">&lt;</a></li>
+                        <li><a href="javascript:;" onclick="searchView.submitForm(1)">1</a></li>
                     </c:when>
                 </c:choose>
 
                 <%--add skip if too away from begining--%>
                 <c:if test="${currentPage > 4}">
-                    <li><a href="#">...</a></li>
+                    <li><a href="javascript:;">...</a></li>
                 </c:if>
 
                 <%--add middle links--%>
@@ -117,11 +117,11 @@
                            end="${currentPage > lastPage - 3 ? lastPage - 1 : currentPage + 2}">
                     <c:choose>
                         <c:when test="${currentPage == i}">
-                            <li><a href="#" class="active" onclick="searchView.submitForm(${i})">${i}</a>
+                            <li><a href="javascript:;" class="active" onclick="searchView.submitForm(${i})">${i}</a>
                             </li>
                         </c:when>
                         <c:when test="${currentPage != i}">
-                            <li><a href="#" onclick="searchView.submitForm(${i})">${i}</a></li>
+                            <li><a href="javascript:;" onclick="searchView.submitForm(${i})">${i}</a></li>
                         </c:when>
                     </c:choose>
                 </c:forEach>
@@ -129,19 +129,19 @@
 
                 <%--add skip if too away from ending--%>
                 <c:if test="${currentPage < (lastPage - 3)}">
-                    <li><a href="#">...</a></li>
+                    <li><a href="javascript:;">...</a></li>
                 </c:if>
 
                 <%--add next page link--%>
                 <c:if test="${lastPage != 1}">
                     <c:choose>
                         <c:when test="${currentPage != lastPage}">
-                            <li><a href="#" onclick="searchView.submitForm(${lastPage})">${lastPage}</a></li>
-                            <li><a href="#" onclick="searchView.submitForm(${currentPage + 1})">&gt;</a></li>
+                            <li><a href="javascript:;" onclick="searchView.submitForm(${lastPage})">${lastPage}</a></li>
+                            <li><a href="javascript:;" onclick="searchView.submitForm(${currentPage + 1})">&gt;</a></li>
                         </c:when>
 
                         <c:when test="${currentPage == lastPage}">
-                            <li><a href="#" class="active" onclick="searchView.submitForm(${lastPage})">${lastPage}</a></li>
+                            <li><a href="javascript:;" class="active" onclick="searchView.submitForm(${lastPage})">${lastPage}</a></li>
                         </c:when>
 
                     </c:choose>

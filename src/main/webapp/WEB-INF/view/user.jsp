@@ -169,7 +169,7 @@
                     <section class="jlab-row">
                         <div class="jlab-cell-12 align-center">
 
-                            <div class="text-small">Вы также можете <b><a href="#" onclick="userView.deleteUser()">Удалить свою страницу</a></b></div>
+                            <div class="text-small">Вы также можете <b><a href="javascript:;" onclick="main.showConfirmDialog('Это действие невозможно отменить. Вы действительно хотите удалить учетную запись?', userView.deleteUser)">Удалить свою страницу</a></b></div>
                         </div>
                     </section>
                 </div>
@@ -180,6 +180,7 @@
     <form hidden id="deleteUserForm" action="<c:url value="/contact/deleteuser"/>" method="post"></form>
     <%--div container end--%>
 </div>
+<jsp:include page="confirmPopup.jsp"/>
 <jsp:include page="footer.jsp"/>
 </body>
 </html>
