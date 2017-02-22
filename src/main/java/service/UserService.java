@@ -14,4 +14,5 @@ public interface UserService {
     List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException;
     void insert(User user) throws DaoException;
     void update(User user) throws DaoException;
+    void delete(String login) throws DaoException;
 }

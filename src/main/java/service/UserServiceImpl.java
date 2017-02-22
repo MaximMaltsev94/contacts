@@ -71,4 +71,9 @@ public class UserServiceImpl implements UserService {
     public void update(User user) throws DaoException {
         userDao.update(user);
     }
+
+    @Override
+    public void delete(String login) throws DaoException {
+        userDao.delete(login);
+    }
 }

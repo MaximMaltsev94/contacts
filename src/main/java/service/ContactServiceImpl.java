@@ -50,6 +50,11 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public List<Contact> getByLoginUser(String loginUser) throws DaoException {
+        return contactDao.getByLoginUser(loginUser);
+    }
+
+    @Override
     public Page<Contact> getByLoginUser(int pageNumber, int limit, String loginUser) throws DaoException {
         return contactDao.getByLoginUser(pageNumber, limit, loginUser);
     }

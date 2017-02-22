@@ -105,7 +105,7 @@ public class ContactDaoImpl implements ContactDao {
 
     @Override
     public void delete(Contact contact) throws DaoException {
-
+        deleteByID(contact.getId());
     }
 
     @Override
@@ -232,6 +232,27 @@ public class ContactDaoImpl implements ContactDao {
         return maxID;
     }
 
+    private PreparedStatement createGetByLoginUserStatement(Connection connection, String loginUser) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `contact` where `login_user` = ?");
+        statement.setObject(1, loginUser);
+        return statement;
+    }
+
+    @Override
+    public List<Contact> getByLoginUser(String loginUser) throws DaoException {
+        List<Contact> contactList = new ArrayList<>();
+        try(PreparedStatement preparedStatement = createGetByLoginUserStatement(connection, loginUser);
+            ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                contactList.add(parseResultSet(rs));
+            }
+
+        } catch (SQLException e) {
+            LOG.error("can't get contacts by login user - {}", loginUser, e);
+            throw new DaoException("error while getting contacts by login user" + loginUser, e);
+        }
+        return contactList;
+    }
 
     private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber, int limit, String loginUser) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?");

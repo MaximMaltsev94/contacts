@@ -10,5 +10,5 @@ public interface UserDao {
     List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException;
     void insert(User user) throws DaoException;
     void update(User user) throws DaoException;
-//    void delete(User user);
+    void delete(String login) throws DaoException;
 }

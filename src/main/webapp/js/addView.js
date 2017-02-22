@@ -81,6 +81,14 @@ var addView = (function() {
             }
         },
 
+        zoomIn: function () {
+            cropper.zoomIn()
+        },
+
+        zoomOut: function () {
+            cropper.zoomOut()
+        },
+
         cropImage: function () {
             var img = cropper.getDataURL();
             document.getElementById('profileImageData').value = img;

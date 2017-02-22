@@ -26,14 +26,23 @@
                 <div class="jlab-row margin">
                     <div class="jlab-cell-1"></div>
                     <div class="jlab-cell-10">
-                        <div class="jlab-row">
+                        <div class="jlab-row margin">
                             <div class="jlab-cell-12 text-large align-center">
                                 Добро пожаловать!
                             </div>
                         </div>
-                        <div class="jlab-row">
+                        <div class="jlab-row margin">
                             <div class="jlab-cell-12 text-medium align-center">
                                 Вы находитесь на платформе управления контактами.
+                            </div>
+                        </div>
+
+                        <div class="jlab-row margin">
+                            <div class="jlab-cell-3">
+
+                            </div>
+                            <div class="jlab-cell-6 align-center">
+                                <img src="<c:url value="/sysImages/Networking.png"/>" width="100%">
                             </div>
                         </div>
 

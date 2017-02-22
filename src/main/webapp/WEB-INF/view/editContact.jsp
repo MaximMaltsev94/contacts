@@ -78,13 +78,25 @@
                                     <a class="text-large" href="#">&times;</a>
                                 </div>
                             </div>
-                                <div class="imageBox">
-                                    <div class="thumbBox"></div>
-                                    <div class="spinner" style="display: none">Loading...</div>
+                            <div class="jlab-row margin">
+                                <div class="jlab-cell-12">
+                                    <div class="imageBox">
+                                        <div class="thumbBox"></div>
+                                        <div class="spinner" style="display: none">Loading...</div>
+                                    </div>
                                 </div>
-                                <div class="jlab-row margin">
+                            </div>
+                            <div class="jlab-row margin">
+                                <div class="jlab-cell-3 align-center">
+                                    <button class="jlab-cell-12"  type="button" id="btnZoomIn" onclick="addView.zoomIn()">Приблизить</button>
+                                </div>
+                                <div class="jlab-cell-3 align-center">
+                                    <button class="jlab-cell-12" type="button" id="btnZoomOut" onclick="addView.zoomOut()">Отдалить</button>
+                                </div>
+                                <div class="jlab-cell-6">
                                     <button class="jlab-cell-12" type="button" id="btnCrop" onclick="addView.cropImage()">Обрезать</button>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </section>

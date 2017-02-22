@@ -20,6 +20,7 @@ public interface ContactService {
     void update(Contact contact) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;
 
+    List<Contact> getByLoginUser(String loginUser) throws DaoException;
     Page<Contact> getByLoginUser(int pageNumber, int limit, String loginUser) throws DaoException;
     Page<Contact> getByLoginUser(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws DaoException;
     Contact getByIDAndLoginUser(int id, String loginUser) throws DaoException;

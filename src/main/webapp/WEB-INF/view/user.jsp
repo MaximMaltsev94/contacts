@@ -8,16 +8,22 @@
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
 
     <script src="<c:url value="/js/cropbox/cropbox.js"/>"></script>
     <script src="<c:url value="/js/addView.js"/>"></script>
+    <script src="<c:url value="/js/login.js"/>"></script>
+    <script src="<c:url value="/js/user.js"/>"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
 </head>
-<body>
+<body onload="main.showTooltip('${sessionScope.get('tooltip-text')}', '${sessionScope.get('tooltip-type')}')">
+<c:remove var="tooltip-text" scope="session"/>
+<c:remove var="tooltip-type" scope="session"/>
 <jsp:include page="header.jsp"/>
+<span id="tooltip"></span>
 
 <div class="container-80">
-    <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="/contact/user"/>" method="post" enctype="multipart/form-data">
+    <form id="contactForm" onsubmit="return loginView.validatePassword()" action="<c:url value="/contact/user"/>" method="post" enctype="multipart/form-data">
         <div class="jlab-row margin">
             <div class="jlab-cell-12">
                 <section>
@@ -61,12 +67,24 @@
                                     <a class="text-large" href="#">&times;</a>
                                 </div>
                             </div>
-                            <div class="imageBox">
-                                <div class="thumbBox"></div>
-                                <div class="spinner" style="display: none">Loading...</div>
+                            <div class="jlab-row margin">
+                                <div class="jlab-cell-12">
+                                    <div class="imageBox">
+                                        <div class="thumbBox"></div>
+                                        <div class="spinner" style="display: none">Loading...</div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="jlab-row margin">
-                                <button class="jlab-cell-12" type="button" id="btnCrop" onclick="addView.cropImage()">Обрезать</button>
+                                <div class="jlab-cell-3 align-center">
+                                    <button class="jlab-cell-12"  type="button" id="btnZoomIn" onclick="addView.zoomIn()">Приблизить</button>
+                                </div>
+                                <div class="jlab-cell-3 align-center">
+                                    <button class="jlab-cell-12" type="button" id="btnZoomOut" onclick="addView.zoomOut()">Отдалить</button>
+                                </div>
+                                <div class="jlab-cell-6">
+                                    <button class="jlab-cell-12" type="button" id="btnCrop" onclick="addView.cropImage()">Обрезать</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -114,7 +132,7 @@
                                     <div class="jlab-cell-3">
                                         <span class="text-small"></span>
                                     </div>
-                                    <div class="jlab-cell-9">
+                                    <div class="jlab-cell-9 text-small">
                                         <c:choose>
                                             <c:when test="${requestScope.get('user').needBDateNotify}">
                                                 <input class="regular-checkbox" type="checkbox" name="bdate_notify" id="chb1" checked/> <label for="chb1"></label> Получать уведомления о днях рождения по почте
@@ -126,7 +144,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="jlab-row margin">
                                     <div class="jlab-cell-3 center">
                                         <span class="text-small">Новый пароль</span>
@@ -135,7 +152,24 @@
                                         <input id="pass1" name="password" type="password" pattern="[\w]{3,20}" title="Буквы, цифры, знак подчеркивания. От 3х до 20 символов">
                                     </div>
                                 </div>
+
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3 center">
+                                        <span class="text-small">Повторите пароль</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <input id="pass2" type="password" pattern="[\w]{3,20}" title="Буквы, цифры, знак подчеркивания. От 3х до 20 символов">
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="jlab-row">
+                    <section class="jlab-row">
+                        <div class="jlab-cell-12 align-center">
+
+                            <div class="text-small">Вы также можете <b><a href="#" onclick="userView.deleteUser()">Удалить свою страницу</a></b></div>
                         </div>
                     </section>
                 </div>
@@ -143,6 +177,7 @@
 
         </div><%-- div.jlab-row.margin end --%>
     </form>
+    <form hidden id="deleteUserForm" action="<c:url value="/contact/deleteuser"/>" method="post"></form>
     <%--div container end--%>
 </div>
 <jsp:include page="footer.jsp"/>

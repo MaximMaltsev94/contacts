@@ -42,6 +42,7 @@ public class CommandFactory {
 
         commands.put("get/user", GetUserPage.class);
         commands.put("post/user", UpdateUser.class);
+        commands.put("post/deleteuser", DeleteUser.class);
     }
 
     public Command getCommand(HttpServletRequest request) {

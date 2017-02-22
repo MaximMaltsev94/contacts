@@ -104,4 +104,15 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException("error while updating user " + user, e);
         }
     }
+
+    @Override
+    public void delete(String login) throws DaoException {
+        try(PreparedStatement statement = connection.prepareStatement("DELETE FROM `user` WHERE `login` = ?")) {
+            statement.setObject(1, login);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            LOG.error("can't delete user by login - {}", login, e);
+            throw new DaoException("error while deleting user by login " + login, e);
+        }
+    }
 }
