@@ -60,11 +60,11 @@
                         </div>
                     </div>
 
-                    <div id="cropPopup" class="popupBack">
+                    <div id="cropPopup" class="popupBack hidden">
                         <div class="popup">
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 align-right">
-                                    <a class="text-large" href="#">&times;</a>
+                                    <a class="text-large" href="javascript:;" onclick="main.closePopup('cropPopup')">&times;</a>
                                 </div>
                             </div>
                             <div class="jlab-row margin">

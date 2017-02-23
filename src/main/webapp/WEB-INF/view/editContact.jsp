@@ -71,11 +71,11 @@
                         </div>
                     </div>
 
-                    <div id="cropPopup" class="popupBack">
+                    <div id="cropPopup" class="popupBack hidden">
                         <div class="popup">
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 align-right">
-                                    <a class="text-large" href="#">&times;</a>
+                                    <a class="text-large" href="javascript:;" onclick="main.closePopup('cropPopup')">&times;</a>
                                 </div>
                             </div>
                             <div class="jlab-row margin">
@@ -119,11 +119,11 @@
                         <div class="jlab-cell-1">
                             <div class="imageButton add" onclick="popupPhone.showAddPhonePopup()"></div></div>
                     </div>
-                    <div id="phonePopup" class="popupBack">
+                    <div id="phonePopup" class="popupBack hidden">
                         <div class="popup">
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 align-right">
-                                    <a class="text-large" href="#phoneSection">&times;</a>
+                                    <a class="text-large" href="javascript:;" onclick="popupPhone.closePhonePopup()">&times;</a>
                                 </div>
                             </div>
                             <div class="jlab-row margin">
@@ -407,11 +407,11 @@
                                         <div class="imageButton addAttachment" onclick="popupAttachment.showAddAttachmentPopup()"></div></div>
                                 </div>
 
-                                <div id="attachmentPopup" class="popupBack">
+                                <div id="attachmentPopup" class="popupBack hidden">
                                     <div class="popup">
                                         <div class="jlab-row">
                                             <div class="jlab-cell-12 align-right">
-                                                <a class="text-large" href="#attachmentSection">&times;</a>
+                                                <a class="text-large" href="javascript:;" onclick="popupAttachment.closeAttachmentPopup()">&times;</a>
                                             </div>
                                         </div>
                                         <div class="jlab-row margin">

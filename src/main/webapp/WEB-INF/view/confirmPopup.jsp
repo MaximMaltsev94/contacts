@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<div id="confirmPopup" class="popupBack">
+<div id="confirmPopup" class="popupBack hidden">
     <div class="popup">
         <div class="jlab-row">
             <div class="jlab-cell-12 align-right">
-                <a class="text-large" href="#">&times;</a>
+                <a class="text-large" href="javascript:;" onclick="main.closeConfirmDialog()">&times;</a>
             </div>
         </div>
         <div class="jlab-row margin">
@@ -22,7 +22,7 @@
                 <button class="jlab-cell-12" type="button" id="confirmPopup_ok">Ок</button>
             </div>
             <div class="jlab-cell-3">
-                <button class="jlab-cell-12" type="button" id="confirmPopup_cancel" onclick="window.location.hash = '#'">Отмена</button>
+                <button class="jlab-cell-12" type="button" id="confirmPopup_cancel" onclick="main.closeConfirmDialog()">Отмена</button>
             </div>
         </div>
     </div>

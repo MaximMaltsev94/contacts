@@ -95,6 +95,11 @@ var popupPhone = (function () {
         document.getElementById('phoneSection').appendChild(document.createElement('hr'));
         document.getElementById('phoneSection').appendChild(mainDiv);
     };
+
+    var showPhonePopup = function () {
+        main.showPopup('phonePopup');
+    };
+
     return {
         setPhoneCount: function (val) {
             phoneCount = val;
@@ -111,7 +116,7 @@ var popupPhone = (function () {
             popupSubmit.onclick = this.onAddPhoneSubmit;
 
             fillPhonePopup(0, 0, '', '', '');
-            location.hash = '#phonePopup'
+            showPhonePopup();
         },
 
         showEditPhonePopup: function (sender) {
@@ -126,7 +131,7 @@ var popupPhone = (function () {
                 document.getElementById('op_code_' + phoneID).value,
                 document.getElementById('number_' + phoneID).value,
                 document.getElementById('comment_' + phoneID).value);
-            location.hash = "#phonePopup";
+            showPhonePopup();
         },
 
         onAddPhoneSubmit: function () {
@@ -135,15 +140,19 @@ var popupPhone = (function () {
                 phoneID = "phone-" + phoneCount;
                 createPhoneTemplate(phoneID);
                 parsePhonePopup(phoneID);
-                location.hash = '#phoneSection';
+                this.closePhonePopup();
             }
         },
 
         onEditPhoneSubmit: function () {
             if(validatePopup() === true) {
                 parsePhonePopup(phoneID);
-                location.hash = '#phoneSection';
+                this.closePhonePopup();
             }
+        },
+
+        closePhonePopup: function () {
+            main.closePopup('phonePopup');
         }
     }
 }());

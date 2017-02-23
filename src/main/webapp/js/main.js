@@ -1,11 +1,3 @@
-console.log("before");
-
-window.onhashchange = function () {
-    console.log("hashchanged");
-};
-
-console.log("after");
-
 var main = (function () {
     return {
         showTooltip: function (tooltipText, tooltipType) {
@@ -42,10 +34,22 @@ var main = (function () {
             return divElement;
         },
 
+        showPopup: function(id) {
+            document.getElementById(id).className = "popupBack";
+        },
+
+        closePopup: function (id) {
+            document.getElementById(id).className = "popupBack hidden";
+        },
+
+        closeConfirmDialog: function () {
+            this.closePopup("confirmPopup");
+        },
+
         showConfirmDialog: function(text, onConfirmAction) {
             document.getElementById('confirmPopupText').innerHTML = text;
             document.getElementById('confirmPopup_ok').onclick = onConfirmAction;
-            window.location.hash = "#confirmPopup";
+            this.showPopup("confirmPopup");
         }
     }
 }());

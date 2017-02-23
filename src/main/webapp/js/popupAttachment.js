@@ -154,6 +154,10 @@ var popupAttachment = (function () {
             return true;
     };
 
+    var showAttachmentPopup = function () {
+        main.showPopup('attachmentPopup');
+    };
+
     return{
         setAttachmentCount: function (val) {
             attachmentCount = val;
@@ -171,8 +175,7 @@ var popupAttachment = (function () {
             popupAttachment_ok.onclick = this.onAddAttachmentSubmit;
 
             fillAttachmentPopup('', '', false);
-
-            location.hash = '#attachmentPopup';
+            showAttachmentPopup();
         },
 
         showEditAttachmentPopup: function (sender) {
@@ -185,7 +188,8 @@ var popupAttachment = (function () {
             popupAttachment_ok = document.getElementById('popupAttachment_ok');
             popupAttachment_ok.textContent = 'Сохранить';
             popupAttachment_ok.onclick = this.onEditAttachmentSubmit;
-            location.hash = '#attachmentPopup';
+
+            showAttachmentPopup();
         },
 
         onAddAttachmentSubmit: function () {
@@ -194,15 +198,19 @@ var popupAttachment = (function () {
                 attachmentID = 'attachment-' + attachmentCount;
                 createAttachmentTemplate(attachmentID);
                 parseAttachmentPopup(false);
-                location.hash = '#attachmentSection';
+                this.closeAttachmentPopup();
             }
         },
 
         onEditAttachmentSubmit: function () {
             if(validatePopup(true) === true) {
                 parseAttachmentPopup(true);
-                location.hash = '#attachmentSection';
+                this.closeAttachmentPopup()
             }
+        },
+
+        closeAttachmentPopup: function () {
+            main.closePopup('attachmentPopup');
         }
     }
 }());

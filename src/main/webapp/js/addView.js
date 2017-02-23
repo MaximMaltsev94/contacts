@@ -77,7 +77,8 @@ var addView = (function() {
                 };
                 reader.readAsDataURL(input.files[0]);
                 // input.files = [];
-                location.hash = '#cropPopup';
+                main.showPopup('cropPopup');
+                // location.hash = '#cropPopup';
             }
         },
 
@@ -95,7 +96,8 @@ var addView = (function() {
             document.getElementById('blah').setAttribute('src', img);
             console.log(img);
             document.getElementById('imageAction').value = 'update';
-            location.hash = '#'
+            main.closePopup('cropPopup');
+            // location.hash = 'javascript:;'
         },
 
         validateDate: function () {

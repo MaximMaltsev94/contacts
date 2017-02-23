@@ -108,7 +108,7 @@
 
                 <%--add skip if too away from begining--%>
                 <c:if test="${currentPage > 4}">
-                    <li><a href="#">...</a></li>
+                    <li><a href="javascript:;">...</a></li>
                 </c:if>
 
                 <%--add middle links--%>
@@ -127,7 +127,7 @@
 
                 <%--add skip if too away from ending--%>
                 <c:if test="${currentPage < (lastPage - 3)}">
-                    <li><a href="#">...</a></li>
+                    <li><a href="javascript:;">...</a></li>
                 </c:if>
 
                 <%--add next page link--%>
