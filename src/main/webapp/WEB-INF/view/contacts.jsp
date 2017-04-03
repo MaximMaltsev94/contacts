@@ -148,7 +148,7 @@
                 </c:if>
             </ul>
         </div><%--div.jlab-cell-9 end--%>
-        <div class="jlab-cell-3 fixed">
+        <div class="jlab-cell-3">
             <section>
                     <div class="jlab-row margin">
                         <div class="jlab-cell-12">

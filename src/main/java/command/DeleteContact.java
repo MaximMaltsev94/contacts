@@ -1,12 +1,6 @@
 package command;
 
-import dao.implementation.AttachmentDaoImpl;
-import dao.implementation.ConnectionFactory;
-import dao.implementation.ContactDaoImpl;
-import dao.interfaces.AttachmentDao;
-import dao.interfaces.ContactDao;
 import exceptions.CommandExecutionException;
-import exceptions.ConnectionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
 import model.Attachment;
@@ -17,8 +11,6 @@ import service.AttachmentService;
 import service.AttachmentServiceImpl;
 import service.ContactService;
 import service.ContactServiceImpl;
-import sun.rmi.runtime.Log;
-import util.ContactUtils;
 import util.RequestUtils;
 import util.TooltipType;
 

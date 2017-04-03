@@ -3,8 +3,6 @@ package dao.interfaces;
 import exceptions.DaoException;
 import model.Attachment;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface AttachmentDao {

@@ -1,6 +1,9 @@
 package command;
 
-import exceptions.*;
+import exceptions.CommandExecutionException;
+import exceptions.DaoException;
+import exceptions.DataNotFoundException;
+import exceptions.RequestParseException;
 import model.Attachment;
 import model.Contact;
 import model.Phone;
@@ -13,7 +16,6 @@ import util.TooltipType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class AddContact implements Command {

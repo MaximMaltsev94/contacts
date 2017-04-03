@@ -1,7 +1,5 @@
 package servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import command.Command;
 import command.CommandFactory;
 import dao.implementation.ConnectionFactory;
@@ -17,6 +15,7 @@ import util.RequestMapper;
 import util.RequestUtils;
 import util.TooltipType;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,31 +23,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FrontController extends HttpServlet {
 
     private final static Logger LOG = LoggerFactory.getLogger(FrontController.class);
 
-    private String getParametersString(HttpServletRequest request) {
-        Enumeration<String> parameterNames = request.getAttributeNames();
-        Map<String, Object> parameterMap = new HashMap<>();
-        while (parameterNames.hasMoreElements()) {
-            String name = parameterNames.nextElement();
-            parameterMap.put(name, request.getAttribute(name));
-        }
+    private ConnectionFactory connectionFactory;
+    private CommandFactory commandFactory;
+    private RequestMapper requestMapper;
 
-        String result = "";
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        try {
-            result = objectMapper.writeValueAsString(parameterMap);
-        } catch (IOException e) {
-            LOG.error("error while converting request parameters to json", e);
-        }
-        return result;
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        connectionFactory = ConnectionFactory.getInstance();
+        commandFactory = new CommandFactory();
+        requestMapper = new RequestMapper();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -62,9 +51,8 @@ public class FrontController extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) {
         String viewName = null;
 
-        try(Connection connection = ConnectionFactory.getInstance().getConnection()) {
-            RequestMapper mapper = new RequestMapper();
-            mapper.mapRequestParamsToAttributes(request);
+        try(Connection connection = connectionFactory.getConnection()) {
+            requestMapper.mapRequestParamsToAttributes(request);
 
             UserService userService = new UserServiceImpl(connection);
             if(request.getUserPrincipal() != null) {
@@ -73,9 +61,8 @@ public class FrontController extends HttpServlet {
 
             LOG.info("Received {} request - {} {}", request.getMethod(),
                     request.getRequestURL().toString(),
-                    getParametersString(request));
+                    RequestUtils.getParametersString(request));
 
-            CommandFactory commandFactory = new CommandFactory();
             Command command = commandFactory.getCommand(request);
 
 

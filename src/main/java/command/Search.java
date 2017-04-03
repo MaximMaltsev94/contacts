@@ -1,26 +1,18 @@
 package command;
 
-import dao.implementation.*;
-import dao.interfaces.CityDao;
-import dao.interfaces.ContactDao;
-import dao.interfaces.CountryDao;
-import dao.interfaces.RelationshipDao;
 import exceptions.CommandExecutionException;
-import exceptions.ConnectionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
-import model.*;
+import model.Contact;
+import model.ContactSearchCriteria;
+import model.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.*;
-import util.ContactUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 
 public class Search implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(Search.class);
