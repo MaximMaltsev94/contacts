@@ -25,38 +25,41 @@
                     <div class="jlab-row margin">
                         <div class="jlab-cell-2 text-small align-right">Кому</div>
                         <div class="jlab-cell-10">
-                            <input readonly id="receivers" onclick="email.onDropdownShow('myDropdown')" type="text">
-                            <div id="myDropdown" class="dropdown-content">
-                                <c:if test="${requestScope.get('contactList').size() eq 0}">
-                                    <span class="text-small-bold">Контакты у которых указан email отсутствуют.</span>
-                                </c:if>
-                                <c:forEach var="i" items="${requestScope.get('contactList')}">
-                                    <div class="jlab-row margin">
-                                        <div class="jlab-cell-1 center">
+                            <div class="dropdown">
+                                <input class="dropbtn" readonly id="receivers" type="text">
+                                <div id="myDropdown" class="dropdown-content">
+                                    <c:if test="${requestScope.get('contactList').size() eq 0}">
+                                        <span class="text-small-bold">Контакты у которых указан email отсутствуют.</span>
+                                    </c:if>
+                                    <c:forEach var="i" items="${requestScope.get('contactList')}">
+                                        <div class="jlab-row margin">
+                                            <div class="jlab-cell-1 center">
 
-                                            <c:set var="checked" value="false" scope="page"/>
-                                            <c:forEach var="selectedID" items="${requestScope.get('selectedContacts')}">
-                                                <c:if test="${i.id == selectedID}">
-                                                    <input checked type="checkbox" data-fio="${i.firstName} ${i.lastName}"
-                                                           id="${i.id}" class="regular-checkbox"
-                                                           onclick="email.onReceiverSelected()"/>
-                                                    <c:set var="checked" value="true" scope="page"/>
+                                                <c:set var="checked" value="false" scope="page"/>
+                                                <c:forEach var="selectedID" items="${requestScope.get('selectedContacts')}">
+                                                    <c:if test="${i.id == selectedID}">
+                                                        <input checked type="checkbox" data-fio="${i.firstName} ${i.lastName}"
+                                                               id="${i.id}" class="regular-checkbox"
+                                                               onclick="email.onReceiverSelected()"/>
+                                                        <c:set var="checked" value="true" scope="page"/>
+                                                    </c:if>
+                                                </c:forEach>
+                                                <c:if test="${checked == false}">
+                                                    <input type="checkbox" data-fio="${i.firstName} ${i.lastName}" id="${i.id}"
+                                                           class="regular-checkbox" onclick="email.onReceiverSelected()"/>
                                                 </c:if>
-                                            </c:forEach>
-                                            <c:if test="${checked == false}">
-                                                <input type="checkbox" data-fio="${i.firstName} ${i.lastName}" id="${i.id}"
-                                                       class="regular-checkbox" onclick="email.onReceiverSelected()"/>
-                                            </c:if>
 
-                                            <label for="${i.id}"></label>
+                                                <label for="${i.id}"></label>
+                                            </div>
+                                            <div class="jlab-cell-11">
+                                                <div class="jlab-row text-small-bold"> ${i.firstName} ${i.lastName}</div>
+                                                <div class="jlab-row text-small"> ${i.email}</div>
+                                            </div>
                                         </div>
-                                        <div class="jlab-cell-11">
-                                            <div class="jlab-row text-small-bold"> ${i.firstName} ${i.lastName}</div>
-                                            <div class="jlab-row text-small"> ${i.email}</div>
-                                        </div>
-                                    </div>
-                                </c:forEach>
+                                    </c:forEach>
+                                </div>
                             </div>
+
                         </div>
 
                     </div>
@@ -100,21 +103,20 @@
             </div>
             <div class="jlab-cell-4">
                 <section>
-                    <div class="jlab-row">
-                        <span class="text-medium">Метасимволы </span>
-                        <div class="imageButton help"
-                             onclick="email.onDropdownShow('helpDropDown')"></div>
-                    </div>
-                    <div class="jlab-row">
+                        <div class="jlab-row">
+                            <span class="text-medium">Метасимволы</span>
 
-                        <div id="helpDropDown" class="dropdown-content">
-                            <span class="text-small">
-                                <b>Метасимволы</b> - это специальные конструкции, которые при отправке письма для каждого конкретного контакта заменяются
-                                на соответствующую информацию контакта. Например текст письма
-                                'Привет &lt;firstName&gt;' для контакта Иван Иванов преобразуется в текст 'Привет Иван'.
-                            </span>
+                            <div class="dropdown">
+                                <div class="imageButton help dropbtn"></div>
+                                <div id="helpDropDown" class="dropdown-content">
+                                    <span class="text-small">
+                                        <b>Метасимволы</b> - это специальные конструкции, которые при отправке письма для каждого конкретного контакта заменяются
+                                        на соответствующую информацию контакта. Например текст письма
+                                        'Привет &lt;firstName&gt;' для контакта Иван Иванов преобразуется в текст 'Привет Иван'.
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     <div class="jlab-row margin">
                         <div class="jlab-cell-6 text-small-bold">&lt;firstName&gt;</div>
                         <div class="jlab-cell-6 text-small">Имя</div>

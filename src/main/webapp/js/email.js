@@ -1,27 +1,4 @@
 var email = (function () {
-    window.onclick = function () {
-        if (!Element.prototype.matches) {
-            Element.prototype.matches =
-                Element.prototype.matchesSelector ||
-                Element.prototype.mozMatchesSelector ||
-                Element.prototype.msMatchesSelector ||
-                Element.prototype.oMatchesSelector ||
-                Element.prototype.webkitMatchesSelector ||
-                function(s) {
-                    var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-                        i = matches.length;
-                    while (--i >= 0 && matches.item(i) !== this) {}
-                    return i > -1;
-                };
-        }
-        if (!event.target.matches('#receivers') &&
-            !event.target.matches('label') &&
-            !event.target.matches('.regular-checkbox') &&
-            !event.target.matches('.imageButton.help')) {
-            document.getElementById("myDropdown").className = 'dropdown-content';
-            document.getElementById("helpDropDown").className = 'dropdown-content';
-        }
-    };
     var postEmailSubmit = function(ids, subject, text) {
         var form = document.createElement('form');
         form.style.visibility = 'hidden';
@@ -50,10 +27,6 @@ var email = (function () {
     };
 
    return {
-       onDropdownShow: function (dropDownId) {
-           document.getElementById(dropDownId).classList.toggle("show");
-       },
-
        onReceiverSelected: function () {
            var checkedBoxes = document.querySelectorAll("input[type=checkbox]:checked");
            var receivers = '';

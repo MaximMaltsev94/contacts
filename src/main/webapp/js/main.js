@@ -43,13 +43,13 @@ var main = (function () {
         },
 
         closeConfirmDialog: function () {
-            this.closePopup("confirmPopup");
+            main.closePopup("confirmPopup");
         },
 
         showConfirmDialog: function(text, onConfirmAction) {
             document.getElementById('confirmPopupText').innerHTML = text;
             document.getElementById('confirmPopup_ok').onclick = onConfirmAction;
-            this.showPopup("confirmPopup");
+            main.showPopup("confirmPopup");
         }
     }
 }());

@@ -16,7 +16,7 @@ var addView = (function() {
     return { // методы доступные извне
         selectCountry: function(countryID) {
             document.getElementById('country').selectedIndex = countryID;
-            this.onChangeCountry(countryID);
+            addView.onChangeCountry(countryID);
         },
 
         selectCity: function (cityID) {

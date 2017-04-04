@@ -172,7 +172,7 @@ var popupAttachment = (function () {
         showAddAttachmentPopup: function () {
             popupAttachment_ok = document.getElementById('popupAttachment_ok');
             popupAttachment_ok.textContent = 'Добавить';
-            popupAttachment_ok.onclick = this.onAddAttachmentSubmit;
+            popupAttachment_ok.onclick = popupAttachment.onAddAttachmentSubmit;
 
             fillAttachmentPopup('', '', false);
             showAttachmentPopup();
@@ -187,7 +187,7 @@ var popupAttachment = (function () {
 
             popupAttachment_ok = document.getElementById('popupAttachment_ok');
             popupAttachment_ok.textContent = 'Сохранить';
-            popupAttachment_ok.onclick = this.onEditAttachmentSubmit;
+            popupAttachment_ok.onclick = popupAttachment.onEditAttachmentSubmit;
 
             showAttachmentPopup();
         },
@@ -198,14 +198,14 @@ var popupAttachment = (function () {
                 attachmentID = 'attachment-' + attachmentCount;
                 createAttachmentTemplate(attachmentID);
                 parseAttachmentPopup(false);
-                this.closeAttachmentPopup();
+                popupAttachment.closeAttachmentPopup();
             }
         },
 
         onEditAttachmentSubmit: function () {
             if(validatePopup(true) === true) {
                 parseAttachmentPopup(true);
-                this.closeAttachmentPopup()
+                popupAttachment.closeAttachmentPopup()
             }
         },
 

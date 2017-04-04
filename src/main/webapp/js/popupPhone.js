@@ -113,7 +113,7 @@ var popupPhone = (function () {
         showAddPhonePopup: function () {
             popupSubmit = document.getElementById('popupPhone_ok');
             popupSubmit.textContent = 'Добавить';
-            popupSubmit.onclick = this.onAddPhoneSubmit;
+            popupSubmit.onclick = popupPhone.onAddPhoneSubmit;
 
             fillPhonePopup(0, 0, '', '', '');
             showPhonePopup();
@@ -124,7 +124,7 @@ var popupPhone = (function () {
 
             popupSubmit = document.getElementById('popupPhone_ok');
             popupSubmit.textContent = 'Сохранить';
-            popupSubmit.onclick = this.onEditPhoneSubmit;
+            popupSubmit.onclick = popupPhone.onEditPhoneSubmit;
 
             fillPhonePopup(document.getElementById('type_' + phoneID).value,
                 document.getElementById('country_code_' + phoneID).value,
@@ -140,14 +140,14 @@ var popupPhone = (function () {
                 phoneID = "phone-" + phoneCount;
                 createPhoneTemplate(phoneID);
                 parsePhonePopup(phoneID);
-                this.closePhonePopup();
+                popupPhone.closePhonePopup();
             }
         },
 
         onEditPhoneSubmit: function () {
             if(validatePopup() === true) {
                 parsePhonePopup(phoneID);
-                this.closePhonePopup();
+                popupPhone.closePhonePopup();
             }
         },
 

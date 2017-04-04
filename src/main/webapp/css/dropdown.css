@@ -1,23 +1,16 @@
 .dropbtn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
     cursor: pointer;
 }
 
-.dropbtn:hover, .dropbtn:focus {
-    background-color: #3e8e41;
-}
-
 .dropdown {
-    position: relative;
-    display: inline-block;
 }
 
 .dropdown-content {
-    display: none;
+    /*display: none;*/
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+
     position: absolute;
     max-height: 200px;
     overflow: auto;
@@ -40,7 +33,7 @@
     /*background-color: #f0f0f0;*/
 }
 
-
-.dropdown a:hover {background-color: #f1f1f1}
-
-.show {display:block;}
+.dropdown:hover .dropdown-content {
+    visibility: visible;
+    opacity: 1;
+}

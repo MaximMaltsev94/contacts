@@ -13,7 +13,7 @@ var loginView = (function () {
         },
 
         validateRegistrationForm: function () {
-            return this.validatePassword();
+            return loginView.validatePassword();
         }
     }
 }());
