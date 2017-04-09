@@ -32,7 +32,7 @@
                             <span class="text-large">Редактирование пользователя</span>
                         </div>
                         <div class="jlab-cell-3">
-                            <input type="submit" class="jlab-cell-12 align-center" value="Сохранить">
+                            <button class="jlab-cell-12 align-center">Сохранить</button>
                         </div>
                         <div class="jlab-cell-3">
                             <a href="<c:url value="/contact/show?page=1" />">

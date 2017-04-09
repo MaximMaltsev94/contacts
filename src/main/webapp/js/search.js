@@ -1,12 +1,31 @@
 var searchView = (function () {
     var checkedCount = 0;
+    var showClass = 'show';
+
+    var showSectionAction = function () {
+        var sectionAction = document.getElementById('sectionAction');
+        if(!sectionAction.classList.contains(showClass)) {
+            sectionAction.classList.add(showClass);
+        }
+    };
+
+    var hideSectionAction = function () {
+        var sectionAction = document.getElementById('sectionAction');
+        sectionAction.classList.remove(showClass);
+    };
+
     return {
         onCheckBoxChecked: function(sender) {
             if(sender.checked)
                 checkedCount++;
             else
                 checkedCount--;
-            document.getElementById('sectionAction').style.display = (checkedCount == 0) ? 'none' : 'block';
+
+            if(checkedCount == 0) {
+                hideSectionAction();
+            } else {
+                showSectionAction();
+            }
         },
 
         submitForm: function(pageNumber) {

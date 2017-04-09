@@ -4,7 +4,7 @@
 <div class="nav">
     <div class="container1">
         <div class="jlab-row">
-            <div class="imageButton logo"></div>
+            <img src="<c:url value="/sysImages/logo.png"/>" width="25px" height="25px">
             <div class="element">
                 <a class="text-large" href="<c:url value="/contact/show?page=1" />">
                     Контакты

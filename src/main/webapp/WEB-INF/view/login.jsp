@@ -73,7 +73,7 @@
                     </div>
 
                     <div class="jlab-row margin">
-                        <input class="jlab-cell-12" type="submit" value="Войти">
+                        <button class="jlab-cell-12">Войти</button>
                     </div>
 
                     <div class="jlab-row margin">
@@ -114,7 +114,7 @@
                     </div>
 
                     <div class="jlab-row margin">
-                        <input class="jlab-cell-12" type="submit" value="Зарегистрироваться">
+                        <button class="jlab-cell-12">Зарегистрироваться</button>
                     </div>
                 </form>
             </section>

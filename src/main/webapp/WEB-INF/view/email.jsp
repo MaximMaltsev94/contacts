@@ -107,7 +107,9 @@
                             <span class="text-medium">Метасимволы</span>
 
                             <div class="dropdown">
-                                <div class="imageButton help dropbtn"></div>
+                                <div class="imageButton dropbtn">
+                                    <img src="<c:url value="/sysImages/help.png"/>">
+                                </div>
                                 <div id="helpDropDown" class="dropdown-content">
                                     <span class="text-small">
                                         <b>Метасимволы</b> - это специальные конструкции, которые при отправке письма для каждого конкретного контакта заменяются

@@ -69,20 +69,20 @@
 
 
                         <div class="jlab-cell-1 center">
-                            <div class="imageButton email" onclick="showView.onEmailContact(${i.id})">
+                            <div class="imageButton" onclick="showView.onEmailContact(${i.id})">
+                                <img src="<c:url value="/sysImages/email.png"/>">
                             </div>
                         </div>
 
                         <div class="jlab-cell-1 center">
-                            <a href="<c:url value="/contact/edit?id=${i.id}"/>">
-                                <div class="imageButton edit">
-                                </div>
-                            </a>
+                            <div class="imageButton edit" onclick="location.href='<c:url value="/contact/edit?id=${i.id}"/>'">
+                                <img src="<c:url value="/sysImages/edit.png"/>">
+                            </div>
                         </div>
                         <div class="jlab-cell-1 center ">
                             <input type="text" name="profilePicture" value="${i.profilePicture}" hidden>
-                            <div class="imageButton delete"
-                                 onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', '${i.id}')">
+                            <div class="imageButton" onclick="showView.onDeleteContact('${i.firstName}', '${i.lastName}', '${i.id}')">
+                                <img src="<c:url value="/sysImages/delete.png"/>">
                             </div>
                         </div>
                     </div>
@@ -152,14 +152,16 @@
             <%--div.jlab-cell-8 end--%>
         </div>
         <div class="jlab-cell-3">
-            <section id="sectionAction" hidden>
-                <div class="jlab-row margin">
-                    <button id="deleteSelected" class="jlab-cell-10 align-center" onclick="showView.onDeleteSelectedClick()">Удалить</button>
-                </div>
-                <div class="jlab-row margin">
-                    <button id="sendEmail" class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
-                </div>
-            </section>
+            <div id="sectionAction">
+                <section>
+                    <div class="jlab-row margin">
+                        <button id="deleteSelected" class="jlab-cell-10 align-center" onclick="showView.onDeleteSelectedClick()">Удалить</button>
+                    </div>
+                    <div class="jlab-row margin">
+                        <button id="sendEmail" class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
+                    </div>
+                </section>
+            </div>
             <section>
                 <form id="searchForm" action="<c:url value="/contact/search"/>" method="post">
                     <input type="text" name="page" id="page" value="1" hidden/>

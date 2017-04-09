@@ -77,18 +77,20 @@ var popupPhone = (function () {
         mainDiv.appendChild(childElement);
 
         childElement = main.createDiv('', 'jlab-cell-1');
-        subChildElement = main.createDiv('', 'imageButton edit');
+        subChildElement = main.createDiv('', 'imageButton');
         subChildElement.onclick = function () {
             return popupPhone.showEditPhonePopup(subChildElement)
         };
+        subChildElement.innerHTML = '<img src="/sysImages/edit.png"/>';
         childElement.appendChild(subChildElement);
         mainDiv.appendChild(childElement);
 
         childElement = main.createDiv('', 'jlab-cell-1');
-        subChildElement = main.createDiv('', 'imageButton delete');
+        subChildElement = main.createDiv('', 'imageButton');
         subChildElement.onclick = function () {
             return popupPhone.deletePhoneElement(subChildElement)
         };
+        subChildElement.innerHTML = '<img src="/sysImages/delete.png"/>';
         childElement.appendChild(subChildElement);
         mainDiv.appendChild(childElement);
 

@@ -1,2 +1,3 @@
-<div class="footer text-small"><span style="color: #ec1c24">:i</span>Tech<span style="color: #ec1c24">Art</span> Group &copy; 2016 Maltsev Maxim </div>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<div class="footer text-small"> Полоцкий Государственный Университет &copy; 2012-2017 Дёмина Татьяна 12-ИТ-2 </div>
 

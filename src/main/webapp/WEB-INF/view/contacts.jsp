@@ -69,19 +69,20 @@
                         </div>
 
                         <div class="jlab-cell-1 center">
-                            <div class="imageButton email" onclick="showView.onEmailContact(${i.id})">
+                            <div class="imageButton" onclick="showView.onEmailContact(${i.id})">
+                                <img src="<c:url value="/sysImages/email.png"/>">
                             </div>
                         </div>
 
                         <div class="jlab-cell-1 center">
-                            <a href="<c:url value="/contact/edit?id=${i.id}"/>">
-                                <div class="imageButton edit">
-                                </div>
-                            </a>
+                            <div class="imageButton" onclick="location.href='<c:url value="/contact/edit?id=${i.id}"/>'">
+                                <img src="<c:url value="/sysImages/edit.png"/>">
+                            </div>
                         </div>
 
                         <div class="jlab-cell-1 center ">
-                            <div class="imageButton delete" onclick="main.showConfirmDialog('Вы действительно хотите удалить контакт ${i.firstName} ${i.lastName}?', function() { showView.onDeleteContact('${i.id}')})">
+                            <div class="imageButton" onclick="main.showConfirmDialog('Вы действительно хотите удалить контакт ${i.firstName} ${i.lastName}?', function() { showView.onDeleteContact('${i.id}')})">
+                                <img src="<c:url value="/sysImages/delete.png"/>" >
                             </div>
                         </div>
                     </div>

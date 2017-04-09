@@ -123,14 +123,16 @@ var popupAttachment = (function () {
         subChild.onclick = function () {
             return popupAttachment.showEditAttachmentPopup(subChild);
         };
+        subChild.innerHTML = '<img src="/sysImages/edit.png"/>';
         child.appendChild(subChild);
         mainDiv.appendChild(child);
 
         child = main.createDiv('', 'jlab-cell-1');
-        subChild = main.createDiv('', 'imageButton delete');
+        subChild = main.createDiv('', 'imageButton');
         subChild.onclick = function () {
             return popupAttachment.deleteAttachmentElement(subChild);
         };
+        subChild.innerHTML = '<img src="/sysImages/delete.png"/>';
         child.appendChild(subChild);
         mainDiv.appendChild(child);
 

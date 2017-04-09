@@ -41,7 +41,7 @@
                             <span class="text-large">${isAdd eq true ? 'Добавление контакта' : 'Редактирование контакта'}</span>
                         </div>
                         <div class="jlab-cell-3">
-                            <input type="submit" class="jlab-cell-12 align-center" value="${isAdd eq true ?"Добавить" : "Сохранить"}">
+                            <button class="jlab-cell-12 align-center">${isAdd eq true ?"Добавить" : "Сохранить"}</button>
                         </div>
                         <div class="jlab-cell-3">
 
@@ -117,7 +117,10 @@
                         </div>
 
                         <div class="jlab-cell-1">
-                            <div class="imageButton add" onclick="popupPhone.showAddPhonePopup()"></div></div>
+                            <div class="imageButton" onclick="popupPhone.showAddPhonePopup()">
+                                <img src="<c:url value="/sysImages/add.png"/>">
+                            </div>
+                        </div>
                     </div>
                     <div id="phonePopup" class="popupBack hidden">
                         <div class="popup">
@@ -198,10 +201,14 @@
                             </div>
 
                             <div class="jlab-cell-1">
-                                <div class="imageButton edit" onclick="popupPhone.showEditPhonePopup(this)"></div>
+                                <div class="imageButton" onclick="popupPhone.showEditPhonePopup(this)">
+                                    <img src="<c:url value="/sysImages/edit.png"/>">
+                                </div>
                             </div>
                             <div class="jlab-cell-1">
-                                <div class="imageButton delete" onclick="popupPhone.deletePhoneElement(this)"></div>
+                                <div class="imageButton" onclick="popupPhone.deletePhoneElement(this)">
+                                    <img src="<c:url value="/sysImages/delete.png"/>">
+                                </div>
                             </div>
                         </div>
                     </c:forEach>
@@ -404,7 +411,10 @@
                                         <span class="text-medium">Прикрепленные файлы</span>
                                     </div>
                                     <div class="jlab-cell-1 center">
-                                        <div class="imageButton addAttachment" onclick="popupAttachment.showAddAttachmentPopup()"></div></div>
+                                        <div class="imageButton" onclick="popupAttachment.showAddAttachmentPopup()">
+                                            <img src="<c:url value="/sysImages/add%20attachment.png"/>">
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div id="attachmentPopup" class="popupBack hidden">
@@ -463,15 +473,20 @@
                                         </div>
 
                                         <div class="jlab-cell-1">
-                                            <a href="<c:url value="${i.filePath}"/>" target="_blank">
-                                                <div class="imageButton download"></div></a>
+                                            <div class="imageButton" onclick="location.href='<c:url value="${i.filePath}"/>'">
+                                                <img src="<c:url value="/sysImages/download.png"/>">
+                                            </div>
                                         </div>
 
                                         <div class="jlab-cell-1">
-                                            <div class="imageButton edit" onclick="popupAttachment.showEditAttachmentPopup(this)"></div>
+                                            <div class="imageButton" onclick="popupAttachment.showEditAttachmentPopup(this)">
+                                                <img src="<c:url value="/sysImages/edit.png"/>">
+                                            </div>
                                         </div>
                                         <div class="jlab-cell-1">
-                                            <div class="imageButton delete" onclick="popupAttachment.deleteAttachmentElement(this)"></div>
+                                            <div class="imageButton" onclick="popupAttachment.deleteAttachmentElement(this)">
+                                                <img src="<c:url value="/sysImages/delete.png"/>">
+                                            </div>
                                         </div>
                                     </div>
                                 </c:forEach>

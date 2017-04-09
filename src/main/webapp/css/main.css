@@ -34,6 +34,7 @@ a:hover {
     display: flex;
     margin: auto 10px;
 }
+
 .element.right {
     margin-left: auto;
 }
@@ -58,14 +59,23 @@ a:hover {
     background-color: #595954;
     visibility: hidden;
     -webkit-transform: scaleX(0);
+    -moz-transform: scaleX(0);
+    -ms-transform: scaleX(0);
+    -o-transform: scaleX(0);
     transform: scaleX(0);
     -webkit-transition: all 0.2s ease-in-out 0s;
+    -moz-transition: all 0.2s ease-in-out 0s;
+    -ms-transition: all 0.2s ease-in-out 0s;
+    -o-transition: all 0.2s ease-in-out 0s;
     transition: all 0.2s ease-in-out 0s;
 }
 
 .element > a:hover:before {
     visibility: visible;
     -webkit-transform: scaleX(1);
+    -moz-transform: scaleX(1);
+    -ms-transform: scaleX(1);
+    -o-transform: scaleX(1);
     transform: scaleX(1);
 }
 
@@ -109,7 +119,6 @@ section {
     margin: 0 auto 5px;
 }
 
-
 .text-large {
     font-size: 1.5em;
     font-weight: bold;
@@ -130,7 +139,6 @@ section {
     font-weight: bold;
 }
 
-
 label {
     display: inline;
 }
@@ -142,7 +150,7 @@ label {
 .regular-checkbox + label {
     background-color: white;
     border: 1px solid #dbdbdb;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 -15px 10px -12px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05);
     padding: 9px;
     border-radius: 3px;
     display: inline-block;
@@ -150,13 +158,13 @@ label {
 }
 
 .regular-checkbox + label:active, .regular-checkbox:checked + label:active {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .regular-checkbox:checked + label {
     background-color: white;
     border: 1px solid #dbdbdb;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
     color: #ec1c24;
 }
 
@@ -169,7 +177,6 @@ label {
     color: #ec1c24;
 }
 
-
 .regular-radio {
     display: none;
 }
@@ -178,7 +185,7 @@ label {
     -webkit-appearance: none;
     background-color: white;
     border: 1px solid #dbdbdb;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
     padding: 9px;
     border-radius: 50px;
     display: inline-block;
@@ -203,132 +210,101 @@ label {
     background-color: #e9ecee;
     color: #99a1a7;
     border: 1px solid #adb8c0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1), inset 0px 0px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1), inset 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 .regular-radio + label:active, .regular-radio:checked + label:active {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-button, input[type="submit"] {
+/*BUTTON ---------------------------------------------------------------*/
+
+button {
     font-family: 'Ubuntu', sans-serif;
     color: white;
     padding: 8px 25px;
     border: none;
     border-radius: 2px;
     background-color: #ec1c24;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
 }
 
-button:hover, input[type="submit"]:hover {
+button:before {
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    padding: 8px 25px;
+    border: none;
+    border-radius: 2px;
+    background: #e21a22;
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transform-origin: 50%;
+    transform-origin: 50%;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+
+}
+
+button:hover {
     cursor: pointer;
-    background-color: #e21a22;
 }
 
-button:active, input[type="submit"]:active {
-    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
-    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
-    box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.3);
+button:hover:before, button:focus:before, button:active:before{
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
 }
 
-button:focus, input[type="submit"] {
+button:active {
+    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+button:active:before {
+    -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+button:focus {
     border: none;
     outline: none;
 }
 
-button:disabled {
+button:disabled, button:disabled:before {
     cursor: default;
     background-color: #EF6469;
 }
 
+/*END BUTTON ---------------------------------------------------------------*/
+
 .imageButton {
-    background-size: 20px, 20px;
     width: 20px;
     height: 20px;
+    background: #595954;
+    transition: background-color 0.5s ease-in-out;
 }
 
 .imageButton:hover {
     cursor: pointer;
+    background-color: #ec1c24;
 }
-
-.imageButton.edit {
-    background-image: url('../sysImages/edit.png');
-}
-
-.imageButton.edit:hover {
-    background-image: url('../sysImages/edit hover.png');
-}
-
-.imageButton.delete {
-    background-image: url('../sysImages/delete.png');
-}
-
-.imageButton.delete:hover {
-    background-image: url('../sysImages/delete hover.png');
-}
-
-.imageButton.add {
-    background-image: url('../sysImages/add.png');
-}
-
-.imageButton.add:hover {
-    background-image: url('../sysImages/add hover.png');
-}
-
-.imageButton.addAttachment {
-    background-image: url('../sysImages/add attachment.png');
-}
-
-.imageButton.addAttachment:hover {
-    background-image: url('../sysImages/add attachment hover.png');
-}
-
-.imageButton.download {
-    background-image: url('../sysImages/download.png');
-}
-
-.imageButton.download:hover {
-    background-image: url('../sysImages/download hover.png');
-}
-
-.imageButton.search {
-    background-image: url('../sysImages/search.png');
-}
-
-.imageButton.search:hover {
-    background-image: url('../sysImages/search hover.png');
-}
-
-.imageButton.email {
-    background-image: url('../sysImages/email.png');
-}
-
-.imageButton.email:hover {
-    background-image: url('../sysImages/email hover.png');
-}
-
-.imageButton.upload {
-    background-image: url('../sysImages/upload.png');
-}
-
-.imageButton.upload:hover {
-    background-image: url('../sysImages/upload hover.png');
-}
-
-.imageButton.help {
-    background-image: url('../sysImages/help.png');
-}
-
-.imageButton.help:hover {
-    background-image: url('../sysImages/help hover.png');
-}
-
-.imageButton.logo {
-    width: 25px;
-    height: 25px;
-    background-size: 25px 25px;
-    background-image: url('../sysImages/logo.png');
-}
-
 
 input[type="text"], input[type="email"], input[type="date"], input[type="url"], input[type="password"], select, textarea {
     /*width: 240px;*/
@@ -347,36 +323,31 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, i
     outline-color: #ec1c24;
 }
 
-
 textarea {
     resize: none;
 }
-
 
 hr {
     width: 90%;
     background-color: rgba(89, 89, 84, 0.5);
 }
 
-img.fileDownload
-{
+img.fileDownload {
     width: 100%;
 }
 
-.imageBox
-{
+.imageBox {
     position: relative;
     height: 400px;
     width: 100%;
-    border:1px solid #aaa;
+    border: 1px solid #aaa;
     background: #fff;
     overflow: hidden;
     background-repeat: no-repeat;
-    cursor:move;
+    cursor: move;
 }
 
-.imageBox .thumbBox
-{
+.imageBox .thumbBox {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -390,8 +361,7 @@ img.fileDownload
     background: none repeat scroll 0% 0% transparent;
 }
 
-.imageBox .spinner
-{
+.imageBox .spinner {
     position: absolute;
     top: 0;
     left: 0;
@@ -399,7 +369,7 @@ img.fileDownload
     right: 0;
     text-align: center;
     line-height: 400px;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
 }
 
 ul.regular li {
@@ -413,4 +383,25 @@ ul.regular li:before {
     /* Bullet color */
     color: #ec1c24;
     padding-right: 0.5em;
+}
+
+#sectionAction {
+    max-height: 0;
+    overflow: hidden;
+
+    -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -ms-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+}
+
+#sectionAction.show {
+    max-height: 500px;
+    overflow: hidden;
+    -webkit-transition: all 0.5s ease-in;
+    -moz-transition: all 0.5s ease-in;
+    -ms-transition: all 0.5s ease-in;
+    -o-transition: all 0.5s ease-in;
+    transition: all 0.5s ease-in;
 }
