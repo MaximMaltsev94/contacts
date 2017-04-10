@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ContactServiceImpl implements ContactService {
-    private final static Logger LOG = LoggerFactory.getLogger(ContactServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ContactServiceImpl.class);
 
     private ContactDao contactDao;
 
@@ -139,7 +139,7 @@ public class ContactServiceImpl implements ContactService {
         }
 
         try {
-            byte[] imagedata = DatatypeConverter.parseBase64Binary(str.substring(str.indexOf(",") + 1));
+            byte[] imagedata = DatatypeConverter.parseBase64Binary(str.substring(str.indexOf(',') + 1));
 
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
 

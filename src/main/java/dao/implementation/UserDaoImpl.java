@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoImpl implements UserDao {
-    private final static Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
     private Connection connection;
 
     public UserDaoImpl(Connection connection) {

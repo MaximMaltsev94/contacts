@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRolesDaoImpl implements UserRolesDao {
-    private final static Logger LOG = LoggerFactory.getLogger(UserRolesDaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserRolesDaoImpl.class);
     private Connection connection ;
 
     public UserRolesDaoImpl(Connection connection) {

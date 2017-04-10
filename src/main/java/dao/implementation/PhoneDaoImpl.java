@@ -17,7 +17,7 @@ import java.util.List;
  * Created by maxim on 25.09.2016.
  */
 public class PhoneDaoImpl implements PhoneDao {
-    private final static Logger LOG = LoggerFactory.getLogger(PhoneDaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PhoneDaoImpl.class);
     private Connection connection;
 
     public PhoneDaoImpl(Connection connection) {

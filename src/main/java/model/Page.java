@@ -1,11 +1,8 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.util.List;
 
-public class Page<T> {
+public class Page<T> extends GenericModel {
     private List<T> data;
     private int currentPage;
     private int totalRowCount;
@@ -41,17 +38,5 @@ public class Page<T> {
 
     public void setTotalRowCount(int totalRowCount) {
         this.totalRowCount = totalRowCount;
-    }
-
-    @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        String result = "";
-        try {
-            result = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 }

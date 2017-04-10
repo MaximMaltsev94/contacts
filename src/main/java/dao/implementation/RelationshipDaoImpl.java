@@ -17,7 +17,7 @@ import java.util.List;
  * Created by maxim on 19.09.2016.
  */
 public class RelationshipDaoImpl implements RelationshipDao {
-    private final static Logger LOG = LoggerFactory.getLogger(RelationshipDaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RelationshipDaoImpl.class);
 
     private Connection connection;
 

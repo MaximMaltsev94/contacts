@@ -1,17 +1,13 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.Serializable;
 
-public class User {
+public class User extends GenericModel implements Serializable {
     private String login;
     private String email;
     private boolean needBDateNotify;
     private String profilePicture;
     private String password;
-
-    public User() {
-    }
 
     public String getLogin() {
         return login;
@@ -51,17 +47,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        String result = "";
-        try {
-            result = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 }

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.DaoUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ContactDaoImpl implements ContactDao {
-    private final static Logger LOG = LoggerFactory.getLogger(ContactDaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ContactDaoImpl.class);
     private Connection connection;
 
     private Contact parseResultSet(ResultSet rs) throws SQLException {
@@ -121,28 +122,12 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
-    private String createDeleteSql(int size) {
-        StringBuilder sqlBuilder = new StringBuilder("DELETE FROM `contact` WHERE `id` in (");
-        for(int i = 0; i < size; ++i) {
-            sqlBuilder.append(" ?");
-            if(i != size - 1) {
-                sqlBuilder.append(",");
-            }
-        }
-        sqlBuilder.append(")");
-        return sqlBuilder.toString();
-    }
-
     @Override
     public void delete(List<Integer> idList) throws DaoException {
         if(idList.isEmpty())
             return;
 
-        String sql = createDeleteSql(idList.size());
-        try (PreparedStatement pStatement = connection.prepareStatement(sql)) {
-            for (int i = 1; i <= idList.size(); i++) {
-                pStatement.setObject(i, idList.get(i - 1));
-            }
+        try (PreparedStatement pStatement = DaoUtils.createDynamicWhereInSQL(connection, "DELETE FROM `contact` WHERE `id` in (", idList, 1)) {
             pStatement.execute();
         } catch (SQLException e) {
             LOG.error("can't delete contact by id list - {}", idList, e);
@@ -172,26 +157,9 @@ public class ContactDaoImpl implements ContactDao {
         return contact;
     }
 
-    private String createGetByIdInSQL(int size) {
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `contact` WHERE `login_user` = ? and `id` in (");
-        for(int i = 0; i < size; ++i) {
-            sqlBuilder.append(" ?");
-            if(i != size - 1) {
-                sqlBuilder.append(",");
-            }
-        }
-        sqlBuilder.append(")");
-        return sqlBuilder.toString();
-    }
-
     private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList, String loginUser) throws SQLException {
-        String sql = createGetByIdInSQL(idList.size());
-
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `contact` WHERE `login_user` = ? and `id` in (", idList, 2);
         statement.setObject(1, loginUser);
-        for (int i = 0; i < idList.size(); i++) {
-            statement.setObject(i + 2, idList.get(i));
-        }
         return statement;
     }
 

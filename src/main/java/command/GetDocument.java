@@ -21,7 +21,7 @@ import java.io.OutputStream;
 import java.sql.Connection;
 
 public class GetDocument implements Command {
-    private final static Logger LOG = LoggerFactory.getLogger(GetDocument.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GetDocument.class);
 
     private String getFileNameForDownloadWindow(Connection connection, String fileName) throws DaoException {
         AttachmentService attachmentService = new AttachmentServiceImpl(connection);
@@ -31,16 +31,14 @@ public class GetDocument implements Command {
     }
 
     private void writeFileToResponse(File file, HttpServletResponse response) throws IOException {
-
-        FileInputStream in = new FileInputStream(file);
-        OutputStream out = response.getOutputStream();
-        byte[] buffer = new byte[4096];
-        int length;
-        while ((length = in.read(buffer)) > 0){
-            out.write(buffer, 0, length);
+        try(FileInputStream in = new FileInputStream(file);
+            OutputStream out = response.getOutputStream();) {
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
         }
-        in.close();
-        out.flush();
     }
 
     @Override

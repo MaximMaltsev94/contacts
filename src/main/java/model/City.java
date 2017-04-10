@@ -1,11 +1,8 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.Serializable;
 
-public class City implements Serializable {
+public class City extends GenericModel implements Serializable {
     private int id;
     private String name;
     private int countryID;
@@ -32,26 +29,5 @@ public class City implements Serializable {
 
     public void setCountryID(int countryID) {
         this.countryID = countryID;
-    }
-
-    public City(int id, String name, int countryID) {
-        this.id = id;
-        this.name = name;
-        this.countryID = countryID;
-    }
-
-    public City() {
-    }
-
-    @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        String result = "";
-        try {
-            result = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 }

@@ -6,6 +6,7 @@ import model.Attachment;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.DaoUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,12 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by maxim on 27.09.2016.
- */
 public class AttachmentDaoImpl implements AttachmentDao {
-    private final static Logger LOG = LoggerFactory.getLogger(AttachmentDaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AttachmentDaoImpl.class);
     private Connection connection;
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public AttachmentDaoImpl(Connection connection) {
         this.connection = connection;
@@ -37,17 +36,21 @@ public class AttachmentDaoImpl implements AttachmentDao {
         return attachment;
     }
 
+    private void fillPreparedStatement(PreparedStatement preparedStatement, Attachment attachment) throws SQLException {
+        preparedStatement.setObject(1, attachment.getFileName());
+        preparedStatement.setObject(2, attachment.getFilePath());
+        preparedStatement.setObject(3, attachment.getContactID());
+
+        String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), DATE_FORMAT);
+        preparedStatement.setObject(4, uploadDate);
+        preparedStatement.setObject(5, attachment.getComment());
+    }
+
 
     @Override
     public void insert(Attachment attachment) throws DaoException {
         try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `attachment` (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES(?, ?, ?, ?, ?)")) {
-            preparedStatement.setObject(1, attachment.getFileName());
-            preparedStatement.setObject(2, attachment.getFilePath());
-            preparedStatement.setObject(3, attachment.getContactID());
-
-            String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), "yyyy-MM-dd HH:mm:ss");
-            preparedStatement.setObject(4, uploadDate);
-            preparedStatement.setObject(5, attachment.getComment());
+            fillPreparedStatement(preparedStatement, attachment);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOG.error("can't insert attachment - {}", attachment, e);
@@ -62,13 +65,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
         }
         try(PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `attachment` (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES(?, ?, ?, ?, ?)")) {
             for (Attachment attachment : attachmentList) {
-                preparedStatement.setObject(1, attachment.getFileName());
-                preparedStatement.setObject(2, attachment.getFilePath());
-                preparedStatement.setObject(3, attachment.getContactID());
-
-                String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), "yyyy-MM-dd HH:mm:ss");
-                preparedStatement.setObject(4, uploadDate);
-                preparedStatement.setObject(5, attachment.getComment());
+                fillPreparedStatement(preparedStatement, attachment);
                 preparedStatement.addBatch();
             }
             preparedStatement.executeBatch();
@@ -89,30 +86,14 @@ public class AttachmentDaoImpl implements AttachmentDao {
         }
     }
 
-    private String createDeleteSql(int size) {
-        StringBuilder sqlBuilder = new StringBuilder("DELETE FROM `attachment` WHERE `id` in (");
-        for(int i = 0; i < size; ++i) {
-            sqlBuilder.append(" ?");
-            if(i != size - 1) {
-                sqlBuilder.append(",");
-            }
-        }
-        sqlBuilder.append(")");
-        return sqlBuilder.toString();
-    }
-
     @Override
     public void delete(List<Attachment> attachmentList) throws DaoException {
         if(attachmentList.isEmpty())
             return;
-        String sql = createDeleteSql(attachmentList.size());
 
         List<Integer> idList = attachmentList.stream().map(Attachment::getId).collect(Collectors.toList());
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            for(int i = 1; i <= idList.size(); ++i) {
-                preparedStatement.setObject(i, idList.get(i - 1));
-            }
+        try (PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "DELETE FROM `attachment` WHERE `id` in (", idList, 1)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOG.error("can't delete attachment list - {}", attachmentList, e);
@@ -123,13 +104,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
     @Override
     public void update(Attachment attachment) throws DaoException {
         try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `attachment` SET `file_name` = ?, `file_path` = ?,`id_contact` = ?,`upload_date` = ?,`comment` = ? WHERE `id` = ?")) {
-            preparedStatement.setObject(1, attachment.getFileName());
-            preparedStatement.setObject(2, attachment.getFilePath());
-            preparedStatement.setObject(3, attachment.getContactID());
-
-            String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), "yyyy-MM-dd HH:mm:ss");
-            preparedStatement.setObject(4, uploadDate);
-            preparedStatement.setObject(5, attachment.getComment());
+            fillPreparedStatement(preparedStatement, attachment);
             preparedStatement.setObject(6, attachment.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -145,13 +120,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
 
         try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `attachment` SET `file_name` = ?, `file_path` = ?,`id_contact` = ?,`upload_date` = ?,`comment` = ? WHERE `id` = ?")) {
             for (Attachment attachment : attachmentList) {
-                preparedStatement.setObject(1, attachment.getFileName());
-                preparedStatement.setObject(2, attachment.getFilePath());
-                preparedStatement.setObject(3, attachment.getContactID());
-
-                String uploadDate = DateFormatUtils.format(attachment.getUploadDate(), "yyyy-MM-dd HH:mm:ss");
-                preparedStatement.setObject(4, uploadDate);
-                preparedStatement.setObject(5, attachment.getComment());
+                fillPreparedStatement(preparedStatement, attachment);
                 preparedStatement.setObject(6, attachment.getId());
                 preparedStatement.addBatch();
             }
@@ -185,29 +154,6 @@ public class AttachmentDaoImpl implements AttachmentDao {
         return attachmentList;
     }
 
-    private String createGetByContactIdInSQL(int size) {
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `attachment` WHERE `id_contact` in (");
-        for(int i = 0; i < size; ++i) {
-            sqlBuilder.append(" ?");
-            if(i != size - 1) {
-                sqlBuilder.append(",");
-            }
-        }
-        sqlBuilder.append(")");
-        return sqlBuilder.toString();
-    }
-
-    private PreparedStatement createGetByContactIdInStatement(Connection connection, List<Integer> contactIdList) throws SQLException {
-        String sql = createGetByContactIdInSQL(contactIdList.size());
-        PreparedStatement statement = connection.prepareStatement(sql);
-
-        for (int i = 1; i <= contactIdList.size(); i++) {
-            statement.setObject(i, contactIdList.get(i - 1));
-        }
-
-        return statement;
-    }
-
     @Override
     public List<Attachment> getByContactIdIn(List<Integer> contactIdList) throws DaoException {
         List<Attachment> attachmentList = new ArrayList<>();
@@ -215,7 +161,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
             return attachmentList;
         }
 
-        try(PreparedStatement statement = createGetByContactIdInStatement(connection, contactIdList);
+        try(PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `attachment` WHERE `id_contact` in (", contactIdList, 1);
             ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {

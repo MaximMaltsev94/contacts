@@ -1,12 +1,9 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.Serializable;
 import java.util.Date;
 
-public class Attachment implements Serializable {
+public class Attachment extends GenericModel implements Serializable {
     private int id;
     private String fileName;
     private String filePath;
@@ -60,29 +57,5 @@ public class Attachment implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public Attachment(int id, String fileName, String filePath, int contactID, Date uploadDate, String comment) {
-        this.id = id;
-        this.fileName = fileName;
-        this.filePath = filePath;
-        this.contactID = contactID;
-        this.uploadDate = uploadDate;
-        this.comment = comment;
-    }
-
-    public Attachment() {
-    }
-
-    @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        String result = "";
-        try {
-            result = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 }

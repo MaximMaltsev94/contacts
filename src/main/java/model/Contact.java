@@ -1,12 +1,9 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.Serializable;
 import java.util.Date;
 
-public class Contact implements Serializable{
+public class Contact extends GenericModel implements Serializable{
     private int id;
     private String firstName;
     private String lastName;
@@ -159,20 +156,5 @@ public class Contact implements Serializable{
 
     public void setLoginUser(String loginUser) {
         this.loginUser = loginUser;
-    }
-
-    public Contact() {
-    }
-
-    @Override
-    public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        String result = "";
-        try {
-            result = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return result;
     }
 }

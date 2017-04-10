@@ -1,9 +1,6 @@
 package model;
 
-import util.ContactUtils;
-
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 
 public class ContactSearchCriteria {
     private String firstName;
@@ -19,9 +16,6 @@ public class ContactSearchCriteria {
     private int city;
     private String street;
     private String postcode;
-
-    public ContactSearchCriteria() {
-    }
 
     public ContactSearchCriteria(HttpServletRequest request) {
         firstName = (String )request.getAttribute("firstName");

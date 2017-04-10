@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 public class DaoUtils {
     private static final Logger LOG = LoggerFactory.getLogger(DaoUtils.class);
@@ -19,16 +20,23 @@ public class DaoUtils {
     }
 
 
-    public static String appendWhereInSQL(String sql, int size) {
+    public static PreparedStatement createDynamicWhereInSQL(Connection connection, String sql, List<?> params, int paramsBeginIndex) throws SQLException {
         StringBuilder sqlBuilder = new StringBuilder(sql);
-        for(int i = 0; i < size; ++i) {
+        for(int i = 0; i < params.size(); ++i) {
             sqlBuilder.append(" ?");
-            if(i != size - 1) {
+            if(i != params.size() - 1) {
                 sqlBuilder.append(",");
             }
         }
         sqlBuilder.append(")");
-        return sqlBuilder.toString();
+
+        PreparedStatement statement = connection.prepareStatement(sqlBuilder.toString());
+        for (int i = 0; i < params.size(); i++) {
+            statement.setObject(i + paramsBeginIndex, params.get(i));
+        }
+
+        LOG.info("generated sql query: {}", statement.toString());
+        return statement;
     }
 
 }

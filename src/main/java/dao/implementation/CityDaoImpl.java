@@ -5,6 +5,7 @@ import exceptions.DaoException;
 import model.City;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.DaoUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +18,7 @@ import java.util.List;
  * Created by maxim on 20.09.2016.
  */
 public class CityDaoImpl implements CityDao {
-    private final static Logger LOG = LoggerFactory.getLogger(CityDaoImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CityDaoImpl.class);
     private Connection connection;
 
     public CityDaoImpl(Connection connection) {
@@ -69,33 +70,10 @@ public class CityDaoImpl implements CityDao {
         return city;
     }
 
-    private String createGetByIdInSQL(int size) {
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `city` WHERE `id` in (");
-        for(int i = 0; i < size; ++i) {
-            sqlBuilder.append(" ?");
-            if(i != size - 1) {
-                sqlBuilder.append(",");
-            }
-        }
-        sqlBuilder.append(")");
-        return sqlBuilder.toString();
-    }
-
-    private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList) throws SQLException {
-        String sql = createGetByIdInSQL(idList.size());
-        PreparedStatement statement = connection.prepareStatement(sql);
-
-        for (int i = 1; i <= idList.size(); i++) {
-            statement.setObject(i, idList.get(i - 1));
-        }
-
-        return statement;
-    }
-
     @Override
     public List<City> getByIDIn(List<Integer> idList) throws DaoException {
         List<City> cityList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetByIdInStatement(connection, idList);
+        try(PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `city` WHERE `id` in (", idList, 1);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 cityList.add(parseResultSet(rs));
