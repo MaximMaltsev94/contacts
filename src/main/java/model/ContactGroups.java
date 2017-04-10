@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ContactGroups extends GenericModel implements Serializable {
     private int contactID;
-    private String groupName;
+    private int groupId;
 
     public int getContactID() {
         return contactID;
@@ -14,11 +14,11 @@ public class ContactGroups extends GenericModel implements Serializable {
         this.contactID = contactID;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 }

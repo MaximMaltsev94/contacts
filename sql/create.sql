@@ -22,10 +22,12 @@ CREATE TABLE `contacts`.`user_roles` (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts`.`user_groups` (
+	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`group_name` NVARCHAR(15) NOT NULL,
 	`login`  NVARCHAR(15) NOT NULL,
 
-	PRIMARY KEY (`group_name`),
+	PRIMARY KEY (`id`),
+	UNIQUE (`group_name`, `login`),
 	CONSTRAINT `user_groups_user_fk` FOREIGN KEY (`login`) REFERENCES `contacts`.`user`(`login`) ON DELETE CASCADE
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -81,11 +83,11 @@ CREATE TABLE `contacts`.`contact` (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts`.`contact_groups` (
-	`group_name` NVARCHAR(15) NOT NULL,
+	`id_group` INT UNSIGNED NOT NULL,
 	`id_contact` INT UNSIGNED NOT NULL,
 
-	PRIMARY KEY (`group_name`, `id_contact`),
-	CONSTRAINT `contact_groups_group_fk` FOREIGN KEY (`group_name`) REFERENCES `contacts`.`user_groups`(`group_name`) ON DELETE CASCADE,
+	PRIMARY KEY (`id_group`, `id_contact`),
+	CONSTRAINT `contact_groups_group_fk` FOREIGN KEY (`id_group`) REFERENCES `contacts`.`user_groups`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `contact_groups_contact_fk` FOREIGN KEY (`id_contact`) REFERENCES `contacts`.`contact`(`id`) ON DELETE CASCADE
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

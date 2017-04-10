@@ -4,13 +4,11 @@ import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
 import model.User;
+import model.UserGroups;
 import model.UserRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.UserRolesService;
-import service.UserRolesServiceImpl;
-import service.UserService;
-import service.UserServiceImpl;
+import service.*;
 import util.RequestUtils;
 import util.TooltipType;
 
@@ -27,6 +25,7 @@ public class Register implements Command {
 
         UserService userService = new UserServiceImpl(connection);
         UserRolesService userRolesService = new UserRolesServiceImpl(connection);
+        UserGroupsService userGroupsService = new UserGroupsServiceImpl(connection);
 
         try {
             User user = userService.parseRequest(request);
@@ -36,11 +35,11 @@ public class Register implements Command {
                 connection.setAutoCommit(false);
                 userService.insert(user);
 
-                UserRoles userRoles = new UserRoles();
-                userRoles.setRoleName("user");
-                userRoles.setLogin(user.getLogin());
+                userRolesService.insert(new UserRoles(user.getLogin(), "user"));
 
-                userRolesService.insert(userRoles);
+                userGroupsService.insert(new UserGroups("Друзья", user.getLogin()));
+                userGroupsService.insert(new UserGroups("Семья", user.getLogin()));
+                userGroupsService.insert(new UserGroups("Коллеги", user.getLogin()));
 
                 connection.commit();
                 connection.setAutoCommit(true);

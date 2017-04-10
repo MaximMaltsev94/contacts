@@ -21,4 +21,12 @@ public class UserRoles extends GenericModel implements Serializable {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
+
+    public UserRoles() {
+    }
+
+    public UserRoles(String login, String roleName) {
+        this.login = login;
+        this.roleName = roleName;
+    }
 }

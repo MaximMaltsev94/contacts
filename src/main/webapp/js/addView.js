@@ -8,7 +8,7 @@ var addView = (function() {
             imageBox: '.imageBox',
             thumbBox: '.thumbBox',
             spinner: '.spinner',
-            imgSrc: 'avatar.png'
+            imgSrc: '/sysImages/default.png'
         };
 
     var cropper;
@@ -23,7 +23,7 @@ var addView = (function() {
             var options = document.getElementById('city');
 
             for(i = 0, n = options.length; i < n; ++i) {
-                if(options[i].value == cityID) {
+                if(options[i].value === cityID) {
                     document.getElementById('city').selectedIndex = i;
                     return
                 }
@@ -35,9 +35,9 @@ var addView = (function() {
         },
 
         selectGender: function (genderValue) {
-            if(genderValue == true)
+            if(genderValue)
                 genderValue = 1;
-            else if(genderValue == false)
+            else if(!genderValue)
                 genderValue = 0;
             document.getElementById('r' + genderValue).checked = true;
         },
@@ -54,13 +54,12 @@ var addView = (function() {
 
             cityOptions = citySelectHelper.options;
             for(i = 0, n = cityOptions.length; i < n; i++) {
-                if(cityOptions[i].dataset.country == selectedValue) {
+                if(cityOptions[i].dataset.country === selectedValue) {
                     var option = document.createElement("option");
                     option.value = cityOptions[i].value;
                     option.dataset.country = selectedValue;
                     option.textContent = cityOptions[i].textContent;
                     citySelect.appendChild(option);
-                    // citySelect.appendChild(cityOptions[i]);
                 }
             }
             document.getElementById('city').selectedIndex = 0;
@@ -73,12 +72,9 @@ var addView = (function() {
                 reader.onload = function (e) {
                     cropBoxOptions.imgSrc = e.target.result;
                     cropper = new cropbox(cropBoxOptions);
-                    // document.getElementById('blah').setAttribute('src', e.target.result);
                 };
                 reader.readAsDataURL(input.files[0]);
-                // input.files = [];
                 main.showPopup('cropPopup');
-                // location.hash = '#cropPopup';
             }
         },
 
@@ -94,15 +90,13 @@ var addView = (function() {
             var img = cropper.getDataURL();
             document.getElementById('profileImageData').value = img;
             document.getElementById('blah').setAttribute('src', img);
-            console.log(img);
             document.getElementById('imageAction').value = 'update';
             main.closePopup('cropPopup');
-            // location.hash = 'javascript:;'
         },
 
         validateDate: function () {
             var birthDate = document.getElementById('birthDate').value;
-            if(birthDate.length == 0)
+            if(birthDate.length === 0)
                 return true;
 
             var elems = birthDate.split('.');
@@ -110,17 +104,11 @@ var addView = (function() {
             var mm = parseInt(elems[1]) - 1;
             var yyyy = parseInt(elems[2]);
 
-            if(mm >= 0 && mm <= 11) {
-                if(dd >= 1 && dd <= monthDays[mm]) {
-                    if(yyyy > 1950) {
-                        var dNow = new Date();
-                        var bDateObj = new Date(yyyy, mm, dd);
-                        console.log("Day + " + bDateObj.getDay());
-                        console.log("Month + " + bDateObj.getMonth());
-                        if(bDateObj <= dNow)
-                            return true;
-                    }
-                }
+            if(mm >= 0 && mm <= 11 && dd >= 1 && dd <= monthDays[mm] && yyyy > 1950) {
+                var dNow = new Date();
+                var bDateObj = new Date(yyyy, mm, dd);
+                if(bDateObj <= dNow)
+                    return true;
             }
             main.showTooltip("Введена недействительная дата", "danger");
             return false;
