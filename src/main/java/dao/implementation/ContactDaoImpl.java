@@ -1,6 +1,9 @@
 package dao.implementation;
 
 import dao.interfaces.ContactDao;
+import dao.util.JdbcTemplate;
+import dao.util.JdbcTemplateImpl;
+import dao.util.ResultSetMapper;
 import exceptions.DaoException;
 import model.Contact;
 import model.ContactSearchCriteria;
@@ -12,298 +15,196 @@ import org.slf4j.LoggerFactory;
 import util.DaoUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 import java.util.Date;
-import java.util.List;
 
 public class ContactDaoImpl implements ContactDao {
     private static final Logger LOG = LoggerFactory.getLogger(ContactDaoImpl.class);
-    private Connection connection;
-
-    private Contact parseResultSet(ResultSet rs) throws SQLException {
-        Contact contact = new Contact();
-
-        contact.setId(rs.getInt("id"));
-        contact.setFirstName(rs.getString("first_name"));
-        contact.setLastName(rs.getString("last_name"));
-        contact.setPatronymic(rs.getString("patronymic"));
-        contact.setBirthDate(rs.getDate("birth_date"));
-        contact.setGender(rs.getBoolean("gender"));
-        contact.setCitizenship(rs.getString("citizenship"));
-        contact.setRelationshipID(rs.getByte("id_relationship"));
-        contact.setWebSite(rs.getString("web_site"));
-        contact.setEmail(rs.getString("email"));
-        contact.setCompanyName(rs.getString("company_name"));
-        contact.setProfilePicture(rs.getString("profile_picture"));
-        contact.setCountryID(rs.getByte("id_country"));
-        contact.setCityID(rs.getByte("id_city"));
-        contact.setStreet(rs.getString("street"));
-        contact.setPostcode(rs.getString("postcode"));
-        contact.setLoginUser(rs.getString("login_user"));
-
-        return contact;
-    }
-
-    private void fillPreparedStatement(PreparedStatement preparedStatement, Contact contact) throws SQLException {
-        preparedStatement.setObject(1, contact.getFirstName());
-        preparedStatement.setObject(2, contact.getLastName());
-        preparedStatement.setObject(3, contact.getPatronymic());
-
-        String birthDate = null;
-        if (contact.getBirthDate() != null) {
-            birthDate = DateFormatUtils.format(contact.getBirthDate(), "yyyy.MM.dd");
-        }
-
-        preparedStatement.setObject(4, birthDate);
-        preparedStatement.setObject(5, contact.getGender());
-        preparedStatement.setObject(6, contact.getCitizenship());
-        preparedStatement.setObject(7, contact.getRelationshipID() == 0 ? null : contact.getRelationshipID());
-        preparedStatement.setObject(8, contact.getWebSite());
-        preparedStatement.setObject(9, contact.getEmail());
-        preparedStatement.setObject(10, contact.getCompanyName());
-        preparedStatement.setObject(11, contact.getProfilePicture());
-        preparedStatement.setObject(12, contact.getCountryID() == 0 ? null : contact.getCountryID());
-        preparedStatement.setObject(13, contact.getCityID() == 0 ? null : contact.getCityID());
-        preparedStatement.setObject(14, contact.getStreet());
-        preparedStatement.setObject(15, contact.getPostcode());
-        preparedStatement.setObject(16, contact.getLoginUser());
-
-    }
+    private final String DATE_FORMAT = "yyyy.MM.dd";
+    private final String TABLE_NAME = "`contact`";
+    private ResultSetMapper<Contact> rsMapper;
+    private JdbcTemplate<Contact> jdbcTemplate;
 
     public ContactDaoImpl(Connection connection) {
-        this.connection = connection;
+        this.jdbcTemplate = new JdbcTemplateImpl<>(connection);
+
+        rsMapper = rs -> {
+            Contact contact = new Contact();
+
+            contact.setId(rs.getInt("id"));
+            contact.setFirstName(rs.getString("first_name"));
+            contact.setLastName(rs.getString("last_name"));
+            contact.setPatronymic(rs.getString("patronymic"));
+            contact.setBirthDate(rs.getDate("birth_date"));
+            contact.setGender(rs.getBoolean("gender"));
+            contact.setCitizenship(rs.getString("citizenship"));
+            contact.setRelationshipID(rs.getByte("id_relationship"));
+            contact.setWebSite(rs.getString("web_site"));
+            contact.setEmail(rs.getString("email"));
+            contact.setCompanyName(rs.getString("company_name"));
+            contact.setProfilePicture(rs.getString("profile_picture"));
+            contact.setCountryID(rs.getByte("id_country"));
+            contact.setCityID(rs.getByte("id_city"));
+            contact.setStreet(rs.getString("street"));
+            contact.setPostcode(rs.getString("postcode"));
+            contact.setLoginUser(rs.getString("login_user"));
+
+            return contact;
+        };
     }
 
     @Override
     public Contact insert(Contact contact) throws DaoException {
-        try (PreparedStatement pStatement = connection.prepareStatement("INSERT INTO `contact` (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
-            fillPreparedStatement(pStatement, contact);
-            pStatement.executeUpdate();
-
-            try(ResultSet rs = pStatement.getGeneratedKeys()) {
-                if(rs.next()) {
-                    contact.setId(rs.getInt(1));
-                }
-            }
-        } catch (SQLException e) {
-            LOG.error("can't insert contact - {}", contact, e);
-            throw new DaoException("error while inserting contact", e);
+        LOG.info("inserting contact - {}", contact);
+        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        List<Integer> generatedKeys = new ArrayList<>();
+        String birthDate = null;
+        if (contact.getBirthDate() != null) {
+            birthDate = DateFormatUtils.format(contact.getBirthDate(), DATE_FORMAT);
         }
+        jdbcTemplate.update(sql, generatedKeys, contact.getFirstName(),
+                                                contact.getLastName(),
+                                                contact.getPatronymic(),
+                                                birthDate,
+                                                contact.getGender(),
+                                                contact.getCitizenship(),
+                                                contact.getRelationshipID(),
+                                                contact.getWebSite(),
+                                                contact.getEmail(),
+                                                contact.getCompanyName(),
+                                                contact.getProfilePicture(),
+                                                contact.getCountryID(),
+                                                contact.getCityID(),
+                                                contact.getStreet(),
+                                                contact.getPostcode(),
+                                                contact.getLoginUser());
+
+        contact.setId(generatedKeys.get(0));
         return contact;
     }
 
     @Override
     public void update(Contact contact) throws DaoException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `contact` SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `login_user` = ? WHERE `id` = ?");) {
-            fillPreparedStatement(preparedStatement, contact);
-            preparedStatement.setObject(17, contact.getId());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            LOG.error("can't update contact - {}", contact, e);
-            throw new DaoException();
-        }
+        LOG.info("updating contact - {}", contact);
+        String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);
 
+        String birthDate = null;
+        if (contact.getBirthDate() != null) {
+            birthDate = DateFormatUtils.format(contact.getBirthDate(), DATE_FORMAT);
+        }
+        jdbcTemplate.update(sql, contact.getFirstName(),
+                                    contact.getLastName(),
+                                    contact.getPatronymic(),
+                                    birthDate,
+                                    contact.getGender(),
+                                    contact.getCitizenship(),
+                                    contact.getRelationshipID(),
+                                    contact.getWebSite(),
+                                    contact.getEmail(),
+                                    contact.getCompanyName(),
+                                    contact.getProfilePicture(),
+                                    contact.getCountryID(),
+                                    contact.getCityID(),
+                                    contact.getStreet(),
+                                    contact.getPostcode(),
+                                    contact.getLoginUser(),
+                                    contact.getId());
     }
 
     @Override
     public void delete(Contact contact) throws DaoException {
+        LOG.info("deleting contact - {}", contact);
         deleteByID(contact.getId());
     }
 
     @Override
     public void deleteByID(int id) throws DaoException {
-        try (PreparedStatement pStatement = connection.prepareStatement("DELETE FROM `contact` WHERE id = ?")) {
-            pStatement.setObject(1, id);
-            pStatement.execute();
-        } catch (SQLException e) {
-            LOG.error("can't delete contact by id - {}", id, e);
-            throw new DaoException("error while deleting contact by ID", e);
-        }
+        LOG.info("deleting contact by id - {}", id);
+        String sql = String.format("DELETE FROM %s WHERE id = ?", TABLE_NAME);
+        jdbcTemplate.update(sql, id);
     }
 
     @Override
     public void delete(List<Integer> idList) throws DaoException {
+        LOG.info("deleting contacts by id list - {}", idList);
         if(idList.isEmpty())
             return;
 
-        try (PreparedStatement pStatement = DaoUtils.createDynamicWhereInSQL(connection, "DELETE FROM `contact` WHERE `id` in (", "", idList, 1)) {
-            pStatement.execute();
-        } catch (SQLException e) {
-            LOG.error("can't delete contact by id list - {}", idList, e);
-            throw new DaoException("error while deleting contacts by ID list", e);
-        }
-    }
-
-    private PreparedStatement createGetByIDStatement(int id, String loginUser) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE id = ? and login_user = ?");
-        preparedStatement.setObject(1, id);
-        preparedStatement.setObject(2, loginUser);
-        return preparedStatement;
+        String sql = String.format("DELETE FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        jdbcTemplate.update(sql, idList.toArray());
     }
 
     @Override
     public Contact getByIDAndLoginUser(int id, String loginUser) throws DaoException {
-        Contact contact = null;
-        try (PreparedStatement preparedStatement = createGetByIDStatement(id, loginUser);
-             ResultSet rs = preparedStatement.executeQuery()) {
-            while (rs.next()) {
-                contact = parseResultSet(rs);
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get contact by id - {}", id, e);
-            throw new DaoException("error while getting contact by ID", e);
-        }
-        return contact;
+        LOG.info("selecting contact by id - {} and login user - {}", id, loginUser);
+        String sql = String.format("SELECT * FROM %s WHERE id = ? and login_user = ?", TABLE_NAME);
+        return jdbcTemplate.queryForObject(rsMapper, sql, id, loginUser);
     }
-
-    private PreparedStatement createGetByIdInStatement(List<Integer> idList, String loginUser) throws SQLException {
-        PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `contact` WHERE `login_user` = ? and `id` in (", "", idList, 2);
-        statement.setObject(1, loginUser);
-        return statement;
-    }
-
 
     @Override
     public List<Contact> getByIdInAndLoginUser(List<Integer> idList, String loginUser) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
+        LOG.info("selecting contacts by id list - {} and login user - {}", idList, loginUser);
         if(idList.isEmpty()) {
-            return contactList;
+            return Collections.emptyList();
         }
-
-        try(PreparedStatement statement = createGetByIdInStatement(idList, loginUser);
-            ResultSet rs = statement.executeQuery()) {
-
-            while (rs.next()) {
-                Contact contact = parseResultSet(rs);
-                contactList.add(contact);
-            }
-
-        } catch (SQLException e) {
-            LOG.error("can't get contacts by id list - {}", idList, e);
-            throw new DaoException("error while getting contacts by id list", e);
-        }
-
-        return contactList;
-    }
-
-    private PreparedStatement createGetByIdInAndLiginUserPage(int pageNumber, int limit, List<Integer> idList, String loginUser) throws SQLException {
-        PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? and `id` in(", "ORDER BY `id` desc LIMIT ?, ?", idList, 2);
-//        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?");
-        statement.setObject(1, loginUser);
-        statement.setObject(2 + idList.size(), (pageNumber - 1) * limit);
-        statement.setObject(3 + idList.size(), limit);
-        return statement;
+        String sql = String.format("SELECT * FROM %s WHERE `login_user` = ? and `id` in %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        List<Object> params = new ArrayList<>();
+        params.add(loginUser);
+        params.addAll(idList);
+        return jdbcTemplate.queryForList(rsMapper, sql, params.toArray());
     }
 
     @Override
     public Page<Contact> getByIdInAndLoginUser(int pageNumber, int limit, List<Integer> idList, String loginUser) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
-        int totalRowCount = 1;
-        try (PreparedStatement preparedStatement = createGetByIdInAndLiginUserPage(pageNumber, limit, idList, loginUser);
-             ResultSet rs = preparedStatement.executeQuery();
-             PreparedStatement statement = connection.prepareStatement("SELECT found_rows()");
-             ResultSet found_rows = statement.executeQuery()) {
-            while (rs.next()) {
-                Contact contact = parseResultSet(rs);
-                contactList.add(contact);
-            }
-            if(found_rows.next()) {
-                totalRowCount = found_rows.getInt(1);
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get contacts list by page number - {}", pageNumber, e);
-            throw new DaoException("error while getting contact page", e);
+        LOG.info("selecting contacts page - {} limit - {} by id list - {} and login user - {}", pageNumber, limit, idList, limit);
+        if(idList.isEmpty()){
+            return new Page<>(Collections.emptyList(), 1, 0);
         }
-        return new Page<>(contactList, pageNumber, totalRowCount);
+        String sql = String.format("SELECT SQL_CALC_FOUND_ROWS * FROM %s WHERE `login_user` = ? and `id` %s ORDER BY `id` desc LIMIT ?, ?", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        List<Object> params = new ArrayList<>();
+        params.add(loginUser);
+        params.addAll(idList);
+        params.add((pageNumber - 1) * limit);
+        params.add(limit);
+        return jdbcTemplate.queryForPage(rsMapper, sql, pageNumber, params.toArray());
     }
 
     @Override
     public long getMaxID() throws DaoException {
-        long maxID = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contact`");
-             ResultSet rs = preparedStatement.executeQuery();) {
-            while (rs.next()) {
-                maxID = rs.getLong("mx");
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get max ID", e);
-            throw new DaoException("error while getting maximum ID", e);
-        }
-        return maxID;
-    }
-
-    private PreparedStatement createGetByLoginUserStatement(String loginUser) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `contact` where `login_user` = ?");
-        statement.setObject(1, loginUser);
-        return statement;
+        LOG.info("selecting max id from contacts table");
+        String sql = String.format("SELECT MAX(`id`) AS mx FROM %s", TABLE_NAME);
+        Contact contact = new Contact();
+        jdbcTemplate.queryForObject(rs -> {
+            contact.setId(rs.getInt("mx"));
+            return contact;
+        }, sql);
+        return contact.getId();
     }
 
     @Override
     public List<Contact> getByLoginUser(String loginUser) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetByLoginUserStatement(loginUser);
-            ResultSet rs = preparedStatement.executeQuery()) {
-            while (rs.next()) {
-                contactList.add(parseResultSet(rs));
-            }
-
-        } catch (SQLException e) {
-            LOG.error("can't get contacts by login user - {}", loginUser, e);
-            throw new DaoException("error while getting contacts by login user" + loginUser, e);
-        }
-        return contactList;
-    }
-
-    private PreparedStatement createGetContactsPageStatement(int pageNumber, int limit, String loginUser) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?");
-        preparedStatement.setObject(1, loginUser);
-        preparedStatement.setObject(2, (pageNumber - 1) * limit);
-        preparedStatement.setObject(3, limit);
-        return preparedStatement;
+        LOG.info("selecting contacts by login user - {}", loginUser);
+        String sql = String.format("SELECT * FROM %s where `login_user` = ?", TABLE_NAME);
+        return jdbcTemplate.queryForList(rsMapper, sql, loginUser);
     }
 
     @Override
     public Page<Contact> getByLoginUser(int pageNumber, int limit, String loginUser) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
-        int totalRowCount = 1;
-        try (PreparedStatement preparedStatement = createGetContactsPageStatement(pageNumber, limit, loginUser);
-             ResultSet rs = preparedStatement.executeQuery();
-             PreparedStatement statement = connection.prepareStatement("SELECT found_rows()");
-             ResultSet found_rows = statement.executeQuery()) {
-            while (rs.next()) {
-                Contact contact = parseResultSet(rs);
-                contactList.add(contact);
-            }
-            if(found_rows.next()) {
-                totalRowCount = found_rows.getInt(1);
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get contacts list by page number - {}", pageNumber, e);
-            throw new DaoException("error while getting contact page", e);
-        }
-        return new Page<>(contactList, pageNumber, totalRowCount);
-    }
-
-    private PreparedStatement createGetCountStatement(String loginUser) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact` WHERE `login_user` = ?");
-        statement.setObject(1, loginUser);
-        return statement;
+        LOG.info("selecting contacts page - {} limit - {} by login user - {}", pageNumber, limit, loginUser);
+        String sql = String.format("SELECT SQL_CALC_FOUND_ROWS * FROM %s WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?", TABLE_NAME);
+        return jdbcTemplate.queryForPage(rsMapper, sql, pageNumber, loginUser, (pageNumber - 1) * limit, limit);
     }
 
     @Override
     public long getCountByLoginUser(String loginUser) throws DaoException {
-        long count = 0;
-        try (PreparedStatement preparedStatement = createGetCountStatement(loginUser);
-             ResultSet rs = preparedStatement.executeQuery();) {
-            while (rs.next()) {
-                count = rs.getLong("cnt");
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get contacts count", e);
-            throw new DaoException("error while getting contacts count", e);
-        }
-        return count;
+        LOG.info("selecting contacts count by login user - {}", loginUser);
+        String sql = String.format("SELECT COUNT(`id`) AS `cnt` FROM %s WHERE `login_user` = ?", TABLE_NAME);
+        Contact contact = new Contact();
+        jdbcTemplate.queryForObject(rs -> {
+            contact.setId(rs.getInt("cnt"));
+            return contact;
+        }, sql);
+        return contact.getId();
     }
 
     private String surroundPercentString(String val) {
@@ -314,8 +215,10 @@ public class ContactDaoImpl implements ContactDao {
         return val == template ? "%" : "%" + val + "%";
     }
 
-    private PreparedStatement concatSearchQuery(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws SQLException {
-        String sql = "SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? and " +
+    @Override
+    public Page<Contact> getByLoginUser(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws DaoException {
+        LOG.info("searching contacts by criteria - {}", searchCriteria);
+        String sql = String.format("SELECT SQL_CALC_FOUND_ROWS * FROM %s WHERE `login_user` = ? and " +
                 "first_name like ? and " +
                 "last_name like ? and " +
                 "ifnull(patronymic, '') like ? and " +
@@ -327,124 +230,55 @@ public class ContactDaoImpl implements ContactDao {
                 "ifnull(cast(id_country as char), '') like ? and " +
                 "ifnull(cast(id_city as char), '') like ? and " +
                 "ifnull(street, '') like ? and " +
-                "ifnull(postcode, '') like ? LIMIT ?, ?";
+                "ifnull(postcode, '') like ? LIMIT ?, ?", TABLE_NAME);
 
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setObject(1, loginUser);
-        statement.setObject(2, surroundPercentString(searchCriteria.getFirstName()));
-        statement.setObject(3, surroundPercentString(searchCriteria.getLastName()));
-        statement.setObject(4, surroundPercentString(searchCriteria.getPatronymic()));
 
         int age1 = searchCriteria.getAge1();
         int age2 = searchCriteria.getAge2();
 
-        if(age1 == 0 && age2 == 0) {
+        if (age1 == 0 && age2 == 0) {
             age1 = -1;
             age2 = 200;
         }
 
-        statement.setObject(5, age1);
-        statement.setObject(6, age2);
-        statement.setObject(7, surroundPercentInt(searchCriteria.getGender(), 2));
-        statement.setObject(8, surroundPercentString(searchCriteria.getCitizenship()));
-        statement.setObject(9, surroundPercentInt(searchCriteria.getRelationship(), 0));
-        statement.setObject(10, surroundPercentString(searchCriteria.getCompanyName()));
-        statement.setObject(11, surroundPercentInt(searchCriteria.getCountry(), 0));
-        statement.setObject(12, surroundPercentInt(searchCriteria.getCity(), 0));
-        statement.setObject(13, surroundPercentString(searchCriteria.getStreet()));
-        statement.setObject(14, surroundPercentString(searchCriteria.getPostcode()));
-        statement.setObject(15, (pageNumber - 1) * limit);
-        statement.setObject(16, limit);
-
-        LOG.info("search query: " + statement);
-        return statement;
-    }
-
-    @Override
-    public Page<Contact> getByLoginUser(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
-        int totalRowCount = 1;
-        try(PreparedStatement statement = concatSearchQuery(searchCriteria, pageNumber, limit, loginUser);
-            ResultSet rs = statement.executeQuery();
-            PreparedStatement statement1 = connection.prepareStatement("SELECT found_rows()");
-            ResultSet foundRows = statement1.executeQuery()) {
-            while (rs.next()) {
-                Contact contact = parseResultSet(rs);
-                contactList.add(contact);
-            }
-            if(foundRows.next()) {
-                totalRowCount = foundRows.getInt(1);
-            }
-        } catch (SQLException e) {
-            LOG.error("can't perform search query", e);
-            throw new DaoException("error while searching contacts by criteria", e);
-        }
-
-        return new Page<>(contactList, pageNumber, totalRowCount);
-    }
-
-    private PreparedStatement createGetByEmailNotNullStatement(String loginUser) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `contact` WHERE `login_user` = ? and `email` IS NOT NULL");
-        statement.setObject(1, loginUser);
-        return statement;
+        return jdbcTemplate.queryForPage(rsMapper, sql, pageNumber,
+                loginUser,
+                surroundPercentString(searchCriteria.getFirstName()),
+                surroundPercentString(searchCriteria.getLastName()),
+                surroundPercentString(searchCriteria.getPatronymic()),
+                age1,
+                age2,
+                surroundPercentInt(searchCriteria.getGender(), 2),
+                surroundPercentString(searchCriteria.getCitizenship()),
+                surroundPercentInt(searchCriteria.getRelationship(), 0),
+                surroundPercentString(searchCriteria.getCompanyName()),
+                surroundPercentInt(searchCriteria.getCountry(), 0),
+                surroundPercentInt(searchCriteria.getCity(), 0),
+                surroundPercentString(searchCriteria.getStreet()),
+                surroundPercentString(searchCriteria.getPostcode()),
+                (pageNumber - 1) * limit,
+                limit);
     }
 
     @Override
     public List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetByEmailNotNullStatement(loginUser);
-            ResultSet rs = preparedStatement.executeQuery()) {
-            while (rs.next()) {
-                Contact contact = parseResultSet(rs);
-                contactList.add(contact);
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get contacts with email", e);
-            throw new DaoException("error while getting contacts with email", e);
-        }
-        return contactList;
-    }
-
-    private String createGetByLoginUserInSQL(int size) {
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM `contact` WHERE day(`birth_date`) = ? and month(`birth_date`) = ? and `login_user` in (");
-        for(int i = 0; i < size; ++i) {
-            sqlBuilder.append(" ?");
-            if(i != size - 1) {
-                sqlBuilder.append(",");
-            }
-        }
-        sqlBuilder.append(")");
-        return sqlBuilder.toString();
-    }
-
-    private PreparedStatement createGetByLoginUserInStatement(Date date, List<String> loginUserList) throws SQLException {
-        String sql = createGetByLoginUserInSQL(loginUserList.size());
-
-        PreparedStatement statement = connection.prepareStatement(sql);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        statement.setObject(1, cal.get(Calendar.DAY_OF_MONTH));
-        statement.setObject(2, cal.get(Calendar.MONTH) + 1);
-        for (int i = 0; i < loginUserList.size(); i++) {
-            statement.setObject(i + 3, loginUserList.get(i));
-        }
-        LOG.info(statement.toString());
-        return statement;
+        LOG.info("selecting contacts with not null email and login user - {}", loginUser);
+        String sql = String.format("SELECT * FROM %s WHERE `login_user` = ? and `email` IS NOT NULL", TABLE_NAME);
+        return jdbcTemplate.queryForList(rsMapper, sql, loginUser);
     }
 
     @Override
     public List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetByLoginUserInStatement(date, loginUserList);
-            ResultSet rs = preparedStatement.executeQuery()) {
-            while (rs.next()) {
-                Contact contact = parseResultSet(rs);
-                contactList.add(contact);
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get contacts by birthday", e);
-            throw new DaoException("error while getting birthday boys");
-        }
-        return contactList;
+        LOG.info("selecting contacts by birth date - {} and login user list - {}", date, loginUserList);
+        String sql = String.format("SELECT * FROM %s WHERE day(`birth_date`) = ? and month(`birth_date`) = ? and `login_user` %s", TABLE_NAME, DaoUtils.generateSqlInPart(loginUserList.size()));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        List<Object> params = new ArrayList<>();
+        params.add(cal.get(Calendar.DAY_OF_MONTH));
+        params.add(cal.get(Calendar.MONTH) + 1);
+        params.addAll(loginUserList);
+
+        return jdbcTemplate.queryForList(rsMapper, sql, params.toArray());
     }
 }

@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         boolean needBDateNotify = false;
 
         if(request.getAttribute("bdate_notify") != null) {
-            needBDateNotify = request.getAttribute("bdate_notify").toString().equalsIgnoreCase("on");
+            needBDateNotify = "on".equalsIgnoreCase(request.getAttribute("bdate_notify").toString());
         }
 
         String password = (String) request.getAttribute("password");

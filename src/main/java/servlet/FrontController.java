@@ -28,9 +28,9 @@ public class FrontController extends HttpServlet {
 
     private final static Logger LOG = LoggerFactory.getLogger(FrontController.class);
 
-    private ConnectionFactory connectionFactory;
-    private CommandFactory commandFactory;
-    private RequestMapper requestMapper;
+    private transient ConnectionFactory connectionFactory;
+    private transient CommandFactory commandFactory;
+    private transient RequestMapper requestMapper;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -60,7 +60,7 @@ public class FrontController extends HttpServlet {
             }
 
             LOG.info("Received {} request - {} {}", request.getMethod(),
-                    request.getRequestURL().toString(),
+                    request.getRequestURL(),
                     RequestUtils.getParametersString(request));
 
             Command command = commandFactory.getCommand(request);
@@ -80,7 +80,7 @@ public class FrontController extends HttpServlet {
             LOG.error("some problems during command execution", e);
             viewName = "error";
         } catch (RequestMapperException e) {
-            LOG.error("error while mapping request parameters to request attributes");
+            LOG.error("error while mapping request parameters to request attributes", e);
             viewName = "error";
         } catch (ConnectionException e) {
             LOG.error("can't get connection to database", e);

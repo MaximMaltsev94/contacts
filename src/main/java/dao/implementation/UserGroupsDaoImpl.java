@@ -1,68 +1,46 @@
 package dao.implementation;
 
 import dao.interfaces.UserGroupsDao;
+import dao.util.JdbcTemplate;
+import dao.util.JdbcTemplateImpl;
+import dao.util.ResultSetMapper;
 import exceptions.DaoException;
 import model.UserGroups;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserGroupsDaoImpl implements UserGroupsDao {
     private static final Logger LOG = LoggerFactory.getLogger(UserGroupsDaoImpl.class);
-    private Connection connection;
+    private final String TABLE_NAME = "`user_groups`";
+    private ResultSetMapper<UserGroups> rsMapper;
+    private JdbcTemplate<UserGroups> jdbcTemplate;
 
     public UserGroupsDaoImpl(Connection connection) {
-        this.connection = connection;
-    }
+        this.jdbcTemplate = new JdbcTemplateImpl<>(connection);
 
-    private UserGroups parseResultSet(ResultSet rs) throws SQLException {
-        UserGroups userGroups = new UserGroups();
-        userGroups.setId(rs.getInt("id"));
-        userGroups.setGroupName(rs.getString("group_name"));
-        userGroups.setLogin(rs.getString("login"));
-        return userGroups;
-    }
-
-    private void fillPreparedStatement(PreparedStatement statement, UserGroups userGroups) throws SQLException {
-        statement.setObject(1, userGroups.getGroupName());
-        statement.setObject(2, userGroups.getLogin());
-    }
-
-    private PreparedStatement createGetByLoginStatement(String login) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `user_groups` WHERE `login` = ?");
-        statement.setObject(1, login);
-        return statement;
+        rsMapper = rs -> {
+            UserGroups userGroups = new UserGroups();
+            userGroups.setId(rs.getInt("id"));
+            userGroups.setGroupName(rs.getString("group_name"));
+            userGroups.setLogin(rs.getString("login"));
+            return userGroups;
+        };
     }
 
     @Override
     public List<UserGroups> getByLogin(String login) throws DaoException {
-        List<UserGroups> userGroupsList = new ArrayList<>();
-        try(PreparedStatement statement = createGetByLoginStatement(login);
-            ResultSet rs = statement.executeQuery()) {
-            while (rs.next()) {
-                userGroupsList.add(parseResultSet(rs));
-            }
-        } catch (SQLException e) {
-            LOG.error("can't select user groups by login - {}", login, e);
-            throw new DaoException("error while getting user groups", e);
-        }
-        return userGroupsList;
+        LOG.info("selecting user groups by login - {}", login);
+        String sql = String.format("SELECT * FROM %s WHERE `login` = ?", TABLE_NAME);
+        return jdbcTemplate.queryForList(rsMapper, sql, login);
     }
 
     @Override
     public void insert(UserGroups userGroups) throws DaoException {
-        try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `user_groups` (`group_name`, `login`) VALUES (?, ?)")){
-            fillPreparedStatement(statement, userGroups);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            LOG.error("can't insert user group - {}", userGroups, e);
-            throw new DaoException("error while inserting user group", e);
-        }
+        LOG.info("inserting user group - {}", userGroups);
+        String sql = String.format("INSERT INTO %s (`group_name`, `login`) VALUES (?, ?)", TABLE_NAME);
+        jdbcTemplate.update(sql, userGroups.getGroupName(), userGroups.getLogin());
     }
 }

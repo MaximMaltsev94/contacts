@@ -62,7 +62,7 @@ public class CommandFactory {
         try {
             command = commandClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            LOG.error("can't instantiate class");
+            LOG.error("can't instantiate class", e);
         }
         return command;
     }

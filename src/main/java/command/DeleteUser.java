@@ -41,8 +41,7 @@ public class DeleteUser implements Command {
             throw new CommandExecutionException("error while accessing database", e);
         }
 
-        if (contactList != null)
-            contactList.forEach(contactService::deleteProfileImageFile);
+        contactList.forEach(contactService::deleteProfileImageFile);
 
         if (attachmentList != null)
             attachmentList.forEach(attachmentService::deleteAttachmentFile);

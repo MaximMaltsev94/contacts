@@ -23,7 +23,7 @@ var addView = (function() {
             var options = document.getElementById('city');
 
             for(i = 0, n = options.length; i < n; ++i) {
-                if(options[i].value === cityID) {
+                if(options[i].value == cityID) {
                     document.getElementById('city').selectedIndex = i;
                     return
                 }
@@ -35,9 +35,9 @@ var addView = (function() {
         },
 
         selectGender: function (genderValue) {
-            if(genderValue)
+            if(genderValue == true)
                 genderValue = 1;
-            else if(!genderValue)
+            else if(genderValue == false)
                 genderValue = 0;
             document.getElementById('r' + genderValue).checked = true;
         },
@@ -54,7 +54,7 @@ var addView = (function() {
 
             cityOptions = citySelectHelper.options;
             for(i = 0, n = cityOptions.length; i < n; i++) {
-                if(cityOptions[i].dataset.country === selectedValue) {
+                if(cityOptions[i].dataset.country == selectedValue) {
                     var option = document.createElement("option");
                     option.value = cityOptions[i].value;
                     option.dataset.country = selectedValue;

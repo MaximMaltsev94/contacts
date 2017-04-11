@@ -34,7 +34,7 @@ public class PhoneServiceImpl implements PhoneService {
 
             Phone phone = new Phone();
             phone.setContactID(contactId);
-            phone.setType(request.getAttribute("type_phone-" + i).equals("1"));
+            phone.setType("1".equals(request.getAttribute("type_phone-" + i)));
             phone.setCountryID(Integer.parseInt((String) request.getAttribute("country_code_phone-" + i)) + 1);
             phone.setOperatorCode(Integer.parseInt((String)request.getAttribute("op_code_phone-" + i)));
             phone.setPhoneNumber(Long.parseLong((String)request.getAttribute("number_phone-" + i)));

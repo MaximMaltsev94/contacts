@@ -56,7 +56,7 @@ public class DeleteContact implements Command {
             try {
                 connection.rollback();
             } catch (SQLException e1) {
-                LOG.error("error while rollback transaction");
+                LOG.error("error while rollback transaction", e1);
             }
             throw new CommandExecutionException("error while accessing database",e);
         } catch (SQLException e) {
@@ -65,7 +65,7 @@ public class DeleteContact implements Command {
             try {
                 connection.rollback();
             } catch (SQLException e1) {
-                LOG.error("error while rollback transaction");
+                LOG.error("error while rollback transaction", e1);
             }
             throw new CommandExecutionException(e);
         }
