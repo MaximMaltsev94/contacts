@@ -14,9 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by maxim on 20.09.2016.
- */
 public class CityDaoImpl implements CityDao {
     private static final Logger LOG = LoggerFactory.getLogger(CityDaoImpl.class);
     private Connection connection;
@@ -73,7 +70,7 @@ public class CityDaoImpl implements CityDao {
     @Override
     public List<City> getByIDIn(List<Integer> idList) throws DaoException {
         List<City> cityList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `city` WHERE `id` in (", idList, 1);
+        try(PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `city` WHERE `id` in (", "", idList, 1);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 cityList.add(parseResultSet(rs));

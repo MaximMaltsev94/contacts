@@ -32,7 +32,7 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
-    private PreparedStatement createGetByLoginStatement(Connection connection, String login) throws SQLException {
+    private PreparedStatement createGetByLoginStatement(String login) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM `user` WHERE login = ?");
         statement.setObject(1, login);
         return statement;
@@ -41,7 +41,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getByLogin(String login) throws DaoException {
         User user = null;
-        try(PreparedStatement statement = createGetByLoginStatement(connection, login);
+        try(PreparedStatement statement = createGetByLoginStatement(login);
             ResultSet rs = statement.executeQuery()) {
             if(rs.next()) {
                 user = parseResultSet(rs);
@@ -53,7 +53,7 @@ public class UserDaoImpl implements UserDao {
         return user;
     }
 
-    private PreparedStatement createGetByNeedNotifyStatement(Connection connection, boolean needBDateNotify) throws SQLException {
+    private PreparedStatement createGetByNeedNotifyStatement(boolean needBDateNotify) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM `user` WHERE `need_bdate_notify` = ?");
         statement.setObject(1, needBDateNotify);
         LOG.info(statement.toString());
@@ -63,7 +63,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException {
         List<User> userList = new ArrayList<>();
-        try(PreparedStatement statement = createGetByNeedNotifyStatement(connection, needBDateNotify);
+        try(PreparedStatement statement = createGetByNeedNotifyStatement(needBDateNotify);
             ResultSet rs = statement.executeQuery()) {
             while (rs.next())
                 userList.add(parseResultSet(rs));

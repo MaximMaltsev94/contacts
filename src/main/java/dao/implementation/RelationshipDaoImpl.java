@@ -13,9 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by maxim on 19.09.2016.
- */
 public class RelationshipDaoImpl implements RelationshipDao {
     private static final Logger LOG = LoggerFactory.getLogger(RelationshipDaoImpl.class);
 

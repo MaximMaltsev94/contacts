@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/hoverableMenu.css" />">
 
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/showView.js"/>"></script>
@@ -92,18 +93,19 @@
 
             <c:set var="currentPage" scope="page" value="${requestScope.getOrDefault('page', 1)}"/>
             <c:set var="lastPage" scope="page" value="${requestScope.getOrDefault('maxPageNumber', 1)}"/>
+            <c:set var="filter" scope="page" value="${requestScope.containsKey('filter') ? '&filter='.concat(requestScope.get('filter')) : ''}"/>
 
             <ul class="pagination">
 
                 <%-- add first page link--%>
                 <c:choose>
                     <c:when test="${currentPage == 1}">
-                        <li><a class="active" href="<c:url value="/contact/show?page=${1}" /> ">1</a></li>
+                        <li><a class="active" href="<c:url value="/contact/show?page=${1}${filter}" /> ">1</a></li>
                     </c:when>
 
                     <c:when test="${currentPage != 1}">
-                        <li><a href="<c:url value="/contact/show?page=${currentPage - 1}" /> ">&lt;</a></li>
-                        <li><a href="<c:url value="/contact/show?page=${1}" /> ">1</a></li>
+                        <li><a href="<c:url value="/contact/show?page=${currentPage - 1}${filter}" /> ">&lt;</a></li>
+                        <li><a href="<c:url value="/contact/show?page=${1}${filter}" /> ">1</a></li>
                     </c:when>
                 </c:choose>
 
@@ -117,11 +119,11 @@
                            end="${currentPage > lastPage - 3 ? lastPage - 1 : currentPage + 2}">
                     <c:choose>
                         <c:when test="${currentPage == i}">
-                            <li><a class="active" href="<c:url value="/contact/show?page=${i}" /> ">${i}</a>
+                            <li><a class="active" href="<c:url value="/contact/show?page=${i}${filter}" /> ">${i}</a>
                             </li>
                         </c:when>
                         <c:when test="${currentPage != i}">
-                            <li><a href="<c:url value="/contact/show?page=${i}" /> ">${i}</a></li>
+                            <li><a href="<c:url value="/contact/show?page=${i}${filter}" /> ">${i}</a></li>
                         </c:when>
                     </c:choose>
                 </c:forEach>
@@ -135,13 +137,13 @@
                 <c:if test="${lastPage != 1}">
                     <c:choose>
                         <c:when test="${currentPage != lastPage}">
-                            <li><a href="<c:url value="/contact/show?page=${lastPage}" /> ">${lastPage}</a></li>
-                            <li><a href="<c:url value="/contact/show?page=${currentPage + 1}" /> ">&gt;</a></li>
+                            <li><a href="<c:url value="/contact/show?page=${lastPage}${filter}" /> ">${lastPage}</a></li>
+                            <li><a href="<c:url value="/contact/show?page=${currentPage + 1}${filter}" /> ">&gt;</a></li>
                         </c:when>
 
                         <c:when test="${currentPage == lastPage}">
                             <li><a class="active"
-                                   href="<c:url value="/contact/show?page=${lastPage}" /> ">${lastPage}</a></li>
+                                   href="<c:url value="/contact/show?page=${lastPage}${filter}" /> ">${lastPage}</a></li>
                         </c:when>
 
                     </c:choose>
@@ -151,24 +153,40 @@
         </div><%--div.jlab-cell-9 end--%>
         <div class="jlab-cell-3">
             <section>
-                    <div class="jlab-row margin">
-                        <div class="jlab-cell-12">
-                            <span class="text-medium">
-                                Выберите действие
-                            </span>
-                        </div>
+                <div class="jlab-row margin">
+                    <div class="jlab-cell-12">
+                        <span class="text-medium">
+                            Выберите действие
+                        </span>
                     </div>
-                    <div class="jlab-row margin">
-                        <a class="jlab-cell-10 align-center" href="<c:url value="/contact/add" />">
-                            <button class="jlab-cell-12">Создать контакт</button>
-                        </a>
+                </div>
+                <div class="jlab-row margin">
+                    <button class="jlab-cell-10 align-center" onclick="location.href='<c:url value="/contact/add" />'">Создать контакт</button>
+                </div>
+                <div class="jlab-row margin">
+                    <button id="deleteSelected" disabled class="jlab-cell-10 align-center" onclick="main.showConfirmDialog('Вы действительно хотите удалить выбранные контакты?', showView.onDeleteSelectedClick)">Удалить</button>
+                </div>
+                <div class="jlab-row margin">
+                    <button id="sendEmail" disabled class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
+                </div>
+            </section>
+            <section>
+                <div class="jlab-row margin">
+                    <div class="jlab-cell-12">
+                            <span class="text-medium">Списки контактов</span>
                     </div>
+                </div>
+                <div class="hover-menu">
+                    <div class="hover-menu-item text-small-bold ${requestScope.containsKey('filter') ? "" : "active"}" onclick="location.href='<c:url value="/contact/show?page=1"/>'">Все</div>
+                    <c:forEach var="group" items="${requestScope.get('userGroups')}">
+                        <div class="hover-menu-item text-small-bold ${requestScope.get('filter') eq group.id ? "active" : ""}" onclick="location.href='<c:url value="/contact/show?page=1&filter=${group.id}" />'">${group.groupName}</div>
+                    </c:forEach>
+                </div>
+                <div class="jlab-row margin">
                     <div class="jlab-row margin">
-                        <button id="deleteSelected" disabled class="jlab-cell-10 align-center" onclick="main.showConfirmDialog('Вы действительно хотите удалить выбранные контакты?', showView.onDeleteSelectedClick)">Удалить</button>
+                        <button class="jlab-cell-10 align-center" onclick="location.href='<c:url value="#" />'">Создать список</button>
                     </div>
-                    <div class="jlab-row margin">
-                        <button id="sendEmail" disabled class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
-                    </div>
+                </div>
             </section>
 
         </div>

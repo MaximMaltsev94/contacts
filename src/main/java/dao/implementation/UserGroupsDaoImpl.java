@@ -8,7 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserGroupsDaoImpl implements UserGroupsDao {
     private static final Logger LOG = LoggerFactory.getLogger(UserGroupsDaoImpl.class);
@@ -18,9 +21,38 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
         this.connection = connection;
     }
 
+    private UserGroups parseResultSet(ResultSet rs) throws SQLException {
+        UserGroups userGroups = new UserGroups();
+        userGroups.setId(rs.getInt("id"));
+        userGroups.setGroupName(rs.getString("group_name"));
+        userGroups.setLogin(rs.getString("login"));
+        return userGroups;
+    }
+
     private void fillPreparedStatement(PreparedStatement statement, UserGroups userGroups) throws SQLException {
         statement.setObject(1, userGroups.getGroupName());
         statement.setObject(2, userGroups.getLogin());
+    }
+
+    private PreparedStatement createGetByLoginStatement(String login) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `user_groups` WHERE `login` = ?");
+        statement.setObject(1, login);
+        return statement;
+    }
+
+    @Override
+    public List<UserGroups> getByLogin(String login) throws DaoException {
+        List<UserGroups> userGroupsList = new ArrayList<>();
+        try(PreparedStatement statement = createGetByLoginStatement(login);
+            ResultSet rs = statement.executeQuery()) {
+            while (rs.next()) {
+                userGroupsList.add(parseResultSet(rs));
+            }
+        } catch (SQLException e) {
+            LOG.error("can't select user groups by login - {}", login, e);
+            throw new DaoException("error while getting user groups", e);
+        }
+        return userGroupsList;
     }
 
     @Override

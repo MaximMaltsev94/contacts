@@ -127,7 +127,7 @@ public class ContactDaoImpl implements ContactDao {
         if(idList.isEmpty())
             return;
 
-        try (PreparedStatement pStatement = DaoUtils.createDynamicWhereInSQL(connection, "DELETE FROM `contact` WHERE `id` in (", idList, 1)) {
+        try (PreparedStatement pStatement = DaoUtils.createDynamicWhereInSQL(connection, "DELETE FROM `contact` WHERE `id` in (", "", idList, 1)) {
             pStatement.execute();
         } catch (SQLException e) {
             LOG.error("can't delete contact by id list - {}", idList, e);
@@ -135,7 +135,7 @@ public class ContactDaoImpl implements ContactDao {
         }
     }
 
-    private PreparedStatement createGetByIDStatement(Connection connection, int id, String loginUser) throws SQLException {
+    private PreparedStatement createGetByIDStatement(int id, String loginUser) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `contact` WHERE id = ? and login_user = ?");
         preparedStatement.setObject(1, id);
         preparedStatement.setObject(2, loginUser);
@@ -145,7 +145,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public Contact getByIDAndLoginUser(int id, String loginUser) throws DaoException {
         Contact contact = null;
-        try (PreparedStatement preparedStatement = createGetByIDStatement(connection, id, loginUser);
+        try (PreparedStatement preparedStatement = createGetByIDStatement(id, loginUser);
              ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 contact = parseResultSet(rs);
@@ -157,8 +157,8 @@ public class ContactDaoImpl implements ContactDao {
         return contact;
     }
 
-    private PreparedStatement createGetByIdInStatement(Connection connection, List<Integer> idList, String loginUser) throws SQLException {
-        PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `contact` WHERE `login_user` = ? and `id` in (", idList, 2);
+    private PreparedStatement createGetByIdInStatement(List<Integer> idList, String loginUser) throws SQLException {
+        PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `contact` WHERE `login_user` = ? and `id` in (", "", idList, 2);
         statement.setObject(1, loginUser);
         return statement;
     }
@@ -171,7 +171,7 @@ public class ContactDaoImpl implements ContactDao {
             return contactList;
         }
 
-        try(PreparedStatement statement = createGetByIdInStatement(connection, idList, loginUser);
+        try(PreparedStatement statement = createGetByIdInStatement(idList, loginUser);
             ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
@@ -187,56 +187,20 @@ public class ContactDaoImpl implements ContactDao {
         return contactList;
     }
 
-    @Override
-    public long getMaxID() throws DaoException {
-        long maxID = 0;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contact`");
-             ResultSet rs = preparedStatement.executeQuery();) {
-            while (rs.next()) {
-                maxID = rs.getLong("mx");
-            }
-        } catch (SQLException e) {
-            LOG.error("can't get max ID", e);
-            throw new DaoException("error while getting maximum ID", e);
-        }
-        return maxID;
-    }
-
-    private PreparedStatement createGetByLoginUserStatement(Connection connection, String loginUser) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `contact` where `login_user` = ?");
+    private PreparedStatement createGetByIdInAndLiginUserPage(int pageNumber, int limit, List<Integer> idList, String loginUser) throws SQLException {
+        PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? and `id` in(", "ORDER BY `id` desc LIMIT ?, ?", idList, 2);
+//        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?");
         statement.setObject(1, loginUser);
+        statement.setObject(2 + idList.size(), (pageNumber - 1) * limit);
+        statement.setObject(3 + idList.size(), limit);
         return statement;
     }
 
     @Override
-    public List<Contact> getByLoginUser(String loginUser) throws DaoException {
-        List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetByLoginUserStatement(connection, loginUser);
-            ResultSet rs = preparedStatement.executeQuery()) {
-            while (rs.next()) {
-                contactList.add(parseResultSet(rs));
-            }
-
-        } catch (SQLException e) {
-            LOG.error("can't get contacts by login user - {}", loginUser, e);
-            throw new DaoException("error while getting contacts by login user" + loginUser, e);
-        }
-        return contactList;
-    }
-
-    private PreparedStatement createGetContactsPageStatement(Connection connection, int pageNumber, int limit, String loginUser) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?");
-        preparedStatement.setObject(1, loginUser);
-        preparedStatement.setObject(2, (pageNumber - 1) * limit);
-        preparedStatement.setObject(3, limit);
-        return preparedStatement;
-    }
-
-    @Override
-    public Page<Contact> getByLoginUser(int pageNumber, int limit, String loginUser) throws DaoException {
+    public Page<Contact> getByIdInAndLoginUser(int pageNumber, int limit, List<Integer> idList, String loginUser) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         int totalRowCount = 1;
-        try (PreparedStatement preparedStatement = createGetContactsPageStatement(connection, pageNumber, limit, loginUser);
+        try (PreparedStatement preparedStatement = createGetByIdInAndLiginUserPage(pageNumber, limit, idList, loginUser);
              ResultSet rs = preparedStatement.executeQuery();
              PreparedStatement statement = connection.prepareStatement("SELECT found_rows()");
              ResultSet found_rows = statement.executeQuery()) {
@@ -254,7 +218,74 @@ public class ContactDaoImpl implements ContactDao {
         return new Page<>(contactList, pageNumber, totalRowCount);
     }
 
-    private PreparedStatement createGetCountStatement(Connection connection, String loginUser) throws SQLException {
+    @Override
+    public long getMaxID() throws DaoException {
+        long maxID = 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT MAX(`id`) AS mx FROM `contact`");
+             ResultSet rs = preparedStatement.executeQuery();) {
+            while (rs.next()) {
+                maxID = rs.getLong("mx");
+            }
+        } catch (SQLException e) {
+            LOG.error("can't get max ID", e);
+            throw new DaoException("error while getting maximum ID", e);
+        }
+        return maxID;
+    }
+
+    private PreparedStatement createGetByLoginUserStatement(String loginUser) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM `contact` where `login_user` = ?");
+        statement.setObject(1, loginUser);
+        return statement;
+    }
+
+    @Override
+    public List<Contact> getByLoginUser(String loginUser) throws DaoException {
+        List<Contact> contactList = new ArrayList<>();
+        try(PreparedStatement preparedStatement = createGetByLoginUserStatement(loginUser);
+            ResultSet rs = preparedStatement.executeQuery()) {
+            while (rs.next()) {
+                contactList.add(parseResultSet(rs));
+            }
+
+        } catch (SQLException e) {
+            LOG.error("can't get contacts by login user - {}", loginUser, e);
+            throw new DaoException("error while getting contacts by login user" + loginUser, e);
+        }
+        return contactList;
+    }
+
+    private PreparedStatement createGetContactsPageStatement(int pageNumber, int limit, String loginUser) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? ORDER BY `id` desc LIMIT ?, ?");
+        preparedStatement.setObject(1, loginUser);
+        preparedStatement.setObject(2, (pageNumber - 1) * limit);
+        preparedStatement.setObject(3, limit);
+        return preparedStatement;
+    }
+
+    @Override
+    public Page<Contact> getByLoginUser(int pageNumber, int limit, String loginUser) throws DaoException {
+        List<Contact> contactList = new ArrayList<>();
+        int totalRowCount = 1;
+        try (PreparedStatement preparedStatement = createGetContactsPageStatement(pageNumber, limit, loginUser);
+             ResultSet rs = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement("SELECT found_rows()");
+             ResultSet found_rows = statement.executeQuery()) {
+            while (rs.next()) {
+                Contact contact = parseResultSet(rs);
+                contactList.add(contact);
+            }
+            if(found_rows.next()) {
+                totalRowCount = found_rows.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOG.error("can't get contacts list by page number - {}", pageNumber, e);
+            throw new DaoException("error while getting contact page", e);
+        }
+        return new Page<>(contactList, pageNumber, totalRowCount);
+    }
+
+    private PreparedStatement createGetCountStatement(String loginUser) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("SELECT COUNT(`id`) AS `cnt` FROM `contact` WHERE `login_user` = ?");
         statement.setObject(1, loginUser);
         return statement;
@@ -263,7 +294,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public long getCountByLoginUser(String loginUser) throws DaoException {
         long count = 0;
-        try (PreparedStatement preparedStatement = createGetCountStatement(connection, loginUser);
+        try (PreparedStatement preparedStatement = createGetCountStatement(loginUser);
              ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 count = rs.getLong("cnt");
@@ -283,7 +314,7 @@ public class ContactDaoImpl implements ContactDao {
         return val == template ? "%" : "%" + val + "%";
     }
 
-    private PreparedStatement concatSearchQuery(Connection connection, ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws SQLException {
+    private PreparedStatement concatSearchQuery(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws SQLException {
         String sql = "SELECT SQL_CALC_FOUND_ROWS * FROM `contact` WHERE `login_user` = ? and " +
                 "first_name like ? and " +
                 "last_name like ? and " +
@@ -333,7 +364,7 @@ public class ContactDaoImpl implements ContactDao {
     public Page<Contact> getByLoginUser(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
         int totalRowCount = 1;
-        try(PreparedStatement statement = concatSearchQuery(connection, searchCriteria, pageNumber, limit, loginUser);
+        try(PreparedStatement statement = concatSearchQuery(searchCriteria, pageNumber, limit, loginUser);
             ResultSet rs = statement.executeQuery();
             PreparedStatement statement1 = connection.prepareStatement("SELECT found_rows()");
             ResultSet foundRows = statement1.executeQuery()) {
@@ -352,7 +383,7 @@ public class ContactDaoImpl implements ContactDao {
         return new Page<>(contactList, pageNumber, totalRowCount);
     }
 
-    private PreparedStatement createGetByEmailNotNullStatement(Connection connection, String loginUser) throws SQLException {
+    private PreparedStatement createGetByEmailNotNullStatement(String loginUser) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM `contact` WHERE `login_user` = ? and `email` IS NOT NULL");
         statement.setObject(1, loginUser);
         return statement;
@@ -361,7 +392,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetByEmailNotNullStatement(connection, loginUser);
+        try(PreparedStatement preparedStatement = createGetByEmailNotNullStatement(loginUser);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);
@@ -386,7 +417,7 @@ public class ContactDaoImpl implements ContactDao {
         return sqlBuilder.toString();
     }
 
-    private PreparedStatement createGetByLoginUserInStatement(Connection connection, Date date, List<String> loginUserList) throws SQLException {
+    private PreparedStatement createGetByLoginUserInStatement(Date date, List<String> loginUserList) throws SQLException {
         String sql = createGetByLoginUserInSQL(loginUserList.size());
 
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -404,7 +435,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException {
         List<Contact> contactList = new ArrayList<>();
-        try(PreparedStatement preparedStatement = createGetByLoginUserInStatement(connection, date, loginUserList);
+        try(PreparedStatement preparedStatement = createGetByLoginUserInStatement(date, loginUserList);
             ResultSet rs = preparedStatement.executeQuery()) {
             while (rs.next()) {
                 Contact contact = parseResultSet(rs);

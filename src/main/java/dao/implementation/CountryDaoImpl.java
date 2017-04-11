@@ -14,9 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by maxim on 20.09.2016.
- */
 public class CountryDaoImpl implements CountryDao {
     private static final Logger LOG = LoggerFactory.getLogger(CountryDaoImpl.class);
     private Connection connection;
@@ -74,7 +71,7 @@ public class CountryDaoImpl implements CountryDao {
     @Override
     public List<Country> getByIDIn(List<Integer> idList) throws DaoException {
         List<Country> countryList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `country` WHERE `id` in (", idList, 1);
+        try (PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `country` WHERE `id` in (", "", idList, 1);
              ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
                 countryList.add(parseResultSet(rs));

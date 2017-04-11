@@ -28,7 +28,7 @@ public class UserRolesDaoImpl implements UserRolesDao {
         return userRoles;
     }
 
-    private PreparedStatement createGetByLoginStatement(Connection connection, String login) throws SQLException {
+    private PreparedStatement createGetByLoginStatement(String login) throws SQLException {
         PreparedStatement statement = connection.prepareStatement("SELECT * FROM user_roles WHERE login = ?");
         statement.setObject(1, login);
         return statement;
@@ -37,7 +37,7 @@ public class UserRolesDaoImpl implements UserRolesDao {
     @Override
     public List<UserRoles> getByLogin(String login) throws DaoException {
         List<UserRoles> userRolesList = new ArrayList<>();
-        try(PreparedStatement statement = createGetByLoginStatement(connection, login);
+        try(PreparedStatement statement = createGetByLoginStatement(login);
             ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 userRolesList.add(parseResultSet(rs));

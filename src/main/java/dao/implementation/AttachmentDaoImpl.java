@@ -93,7 +93,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
 
         List<Integer> idList = attachmentList.stream().map(Attachment::getId).collect(Collectors.toList());
 
-        try (PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "DELETE FROM `attachment` WHERE `id` in (", idList, 1)) {
+        try (PreparedStatement preparedStatement = DaoUtils.createDynamicWhereInSQL(connection, "DELETE FROM `attachment` WHERE `id` in (", "", idList, 1)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LOG.error("can't delete attachment list - {}", attachmentList, e);
@@ -161,7 +161,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
             return attachmentList;
         }
 
-        try(PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `attachment` WHERE `id_contact` in (", contactIdList, 1);
+        try(PreparedStatement statement = DaoUtils.createDynamicWhereInSQL(connection, "SELECT * FROM `attachment` WHERE `id_contact` in (", "", contactIdList, 1);
             ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {

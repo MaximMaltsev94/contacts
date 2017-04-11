@@ -15,27 +15,40 @@ public class DaoUtils {
         for(int i = 0; i < args.length; ++i) {
             statement.setObject(i + 1, args[i]);
         }
-        LOG.info(statement.toString());
+        LOG.info("generated statement: {}", statement);
         return statement;
     }
 
+    public static String generateSqlInPart(int size) {
+        StringBuilder sqlBuilder = new StringBuilder(" in(");
+        for(int i = 0; i < size; ++i) {
+            sqlBuilder.append(" ?");
+            if(i != size - 1) {
+                sqlBuilder.append(",");
+            }
+        }
+        sqlBuilder.append(") ");
+        return sqlBuilder.toString();
+    }
 
-    public static PreparedStatement createDynamicWhereInSQL(Connection connection, String sql, List<?> params, int paramsBeginIndex) throws SQLException {
-        StringBuilder sqlBuilder = new StringBuilder(sql);
+
+    public static PreparedStatement createDynamicWhereInSQL(Connection connection, String prefixSql, String suffixSql, List<?> params, int paramsBeginIndex) throws SQLException {
+        StringBuilder sqlBuilder = new StringBuilder(prefixSql);
         for(int i = 0; i < params.size(); ++i) {
             sqlBuilder.append(" ?");
             if(i != params.size() - 1) {
                 sqlBuilder.append(",");
             }
         }
-        sqlBuilder.append(")");
+        sqlBuilder.append(") ");
+        sqlBuilder.append(suffixSql);
 
         PreparedStatement statement = connection.prepareStatement(sqlBuilder.toString());
         for (int i = 0; i < params.size(); i++) {
             statement.setObject(i + paramsBeginIndex, params.get(i));
         }
 
-        LOG.info("generated sql query: {}", statement.toString());
+        LOG.info("generated sql query: {}", statement);
         return statement;
     }
 

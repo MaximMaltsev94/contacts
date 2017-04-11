@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.util.List;
 
 public class UserGroupsServiceImpl implements UserGroupsService {
     private static final Logger LOG = LoggerFactory.getLogger(UserGroupsServiceImpl.class);
@@ -18,7 +19,13 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     }
 
     @Override
+    public List<UserGroups> getByLogin(String login) throws DaoException {
+        return userGroupsDao.getByLogin(login);
+    }
+
+    @Override
     public void insert(UserGroups userGroups) throws DaoException {
         userGroupsDao.insert(userGroups);
     }
+
 }

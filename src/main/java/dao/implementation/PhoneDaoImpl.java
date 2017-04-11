@@ -13,9 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by maxim on 25.09.2016.
- */
 public class PhoneDaoImpl implements PhoneDao {
     private static final Logger LOG = LoggerFactory.getLogger(PhoneDaoImpl.class);
     private Connection connection;

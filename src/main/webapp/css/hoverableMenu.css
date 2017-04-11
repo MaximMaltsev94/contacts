@@ -1,0 +1,47 @@
+.hover-menu {
+}
+
+.hover-menu-item {
+    padding: 7px 20px;
+    position: relative;
+    transition: color 0.3s;
+    transform: perspective(1px) translateZ(0);
+}
+
+.hover-menu-item:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: -10px;
+    right: -10px;
+    bottom: 0;
+    background: #ec1c24;
+
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.3s ease-out;
+}
+.hover-menu-item:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.hover-menu-item:hover:before {
+    transform: scaleX(1);
+}
+
+.hover-menu-item.active {
+    color: white;
+}
+
+.hover-menu-item.active:after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: -10px;
+    right: -10px;
+    bottom: 0;
+    background: #ec1c24;
+}
