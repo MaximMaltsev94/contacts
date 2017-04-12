@@ -6,10 +6,12 @@ import dao.util.JdbcTemplateImpl;
 import dao.util.ResultSetMapper;
 import exceptions.DaoException;
 import model.ContactGroups;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactGroupsDaoImpl implements ContactGroupsDao {
@@ -34,5 +36,33 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
         LOG.info("selecting contact groups by group id - {}", groupId);
         String sql = String.format("SELECT * FROM %s WHERE `id_group` = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, groupId);
+    }
+
+    @Override
+    public List<ContactGroups> getByContactId(int contactId) throws DaoException {
+        LOG.info("selecting contact groups by contact id - {}", contactId);
+        String sql = String.format("SELECT * FROM %s WHERE `id_contact` = ?", TABLE_NAME);
+        return jdbcTemplate.queryForList(rsMapper, sql, contactId);
+    }
+
+    @Override
+    public void insert(List<ContactGroups> contactGroupsList) throws DaoException {
+        LOG.info("inserting contact group list - {}", contactGroupsList);
+        if(contactGroupsList.isEmpty())
+            return;
+
+        String sql = String.format("INSERT INTO %s (`id_group`, `id_contact`) VALUES(?, ?)", TABLE_NAME);
+        List<Object[]> args = new ArrayList<>();
+        for (ContactGroups contactGroups : contactGroupsList) {
+            args.add(new Object[]{contactGroups.getGroupId(), contactGroups.getContactID()});
+        }
+        jdbcTemplate.batchUpdate(sql, args);
+    }
+
+    @Override
+    public void deleteByContactId(int contactId) throws DaoException {
+        LOG.info("deleting contact groups by contact id - {}", contactId);
+        String sql = String.format("DELETE FROM %s WHERE `id_contact` = ?", TABLE_NAME);
+        jdbcTemplate.update(sql, contactId);
     }
 }

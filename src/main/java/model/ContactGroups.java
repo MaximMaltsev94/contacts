@@ -21,4 +21,12 @@ public class ContactGroups extends GenericModel implements Serializable {
     public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
+
+    public ContactGroups() {
+    }
+
+    public ContactGroups(int groupId, int contactID) {
+        this.contactID = contactID;
+        this.groupId = groupId;
+    }
 }

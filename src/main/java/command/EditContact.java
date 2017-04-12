@@ -6,6 +6,7 @@ import exceptions.DataNotFoundException;
 import exceptions.RequestParseException;
 import model.Attachment;
 import model.Contact;
+import model.ContactGroups;
 import model.Phone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class EditContact implements Command {
         ContactService contactService = new ContactServiceImpl(connection);
         AttachmentService attachmentService = new AttachmentServiceImpl(connection);
         PhoneService phoneService = new PhoneServiceImpl(connection);
+        ContactGroupsService contactGroupsService = new ContactGroupsServiceImpl(connection);
 
         Contact newContact = null;
         Contact oldContact = null;
@@ -81,6 +83,10 @@ public class EditContact implements Command {
             List<Phone> phones = phoneService.parseRequest(request, contactId);
             phoneService.deleteByContactID(contactId);
             phoneService.insert(phones);
+
+            List<ContactGroups> contactGroupsList = contactGroupsService.parseRequest(request, contactId);
+            contactGroupsService.deleteByContactId(contactId);
+            contactGroupsService.insert(contactGroupsList);
 
 
             oldAttachments = attachmentService.getByContactId(contactId);

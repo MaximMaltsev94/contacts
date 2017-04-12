@@ -21,12 +21,14 @@ public class GetAddContactPage implements Command {
         RelationshipService relationshipService = new RelationshipServiceImpl(connection);
         CountryService countryService = new CountryServiceImpl(connection);
         CityService cityService = new CityServiceImpl(connection);
+        UserGroupsService userGroupsService = new UserGroupsServiceImpl(connection);
 
         try {
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
             request.setAttribute("cityList", cityService.getAll());
             request.setAttribute("action", "add");
+            request.setAttribute("userGroups", userGroupsService.getByLogin(request.getUserPrincipal().getName()));
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database",e);

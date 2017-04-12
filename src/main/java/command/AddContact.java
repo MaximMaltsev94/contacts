@@ -6,6 +6,7 @@ import exceptions.DataNotFoundException;
 import exceptions.RequestParseException;
 import model.Attachment;
 import model.Contact;
+import model.ContactGroups;
 import model.Phone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ public class AddContact implements Command {
         ContactService contactService = new ContactServiceImpl(connection);
         AttachmentService attachmentService = new AttachmentServiceImpl(connection);
         PhoneService phoneService = new PhoneServiceImpl(connection);
+        ContactGroupsService contactGroupsService = new ContactGroupsServiceImpl(connection);
 
         Contact contact = null;
         boolean isErrorOccurred = true;
@@ -36,9 +38,11 @@ public class AddContact implements Command {
 
             List<Attachment> attachmentList = attachmentService.parseRequest(request, contact.getId());
             List<Phone> phoneList = phoneService.parseRequest(request, contact.getId());
+            List<ContactGroups> contactGroupsList = contactGroupsService.parseRequest(request, contact.getId());
 
             attachmentService.insert(attachmentList);
             phoneService.insert(phoneList);
+            contactGroupsService.insert(contactGroupsList);
 
             RequestUtils.setMessageText(request, "Контакт " + contact.getFirstName() + " " + contact.getLastName() + " успешно сохранен", TooltipType.success);
             isErrorOccurred = false;

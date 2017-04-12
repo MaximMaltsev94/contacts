@@ -111,7 +111,7 @@
                 </section>
 
                 <section id="phoneSection">
-                    <div class="jlab-row">
+                    <div class="jlab-row margin">
                         <div class="jlab-cell-11">
                             <span class="text-medium">Контактные телефоны</span>
                         </div>
@@ -213,6 +213,32 @@
                         </div>
                     </c:forEach>
                     <%--contact phones section end--%>
+                </section>
+
+                <section>
+                    <div class="jlab-row margin">
+                        <div class="jlab-cell-11">
+                            <span class="text-medium">Списки контактов</span>
+                        </div>
+                    </div>
+                    <c:forEach var="group" items="${requestScope.get('userGroups')}">
+                        <c:set var="contains" value=" " scope="page"/>
+                        <c:forEach var="i" items="${requestScope.get('contactGroups')}">
+                            <c:if test="${group.id eq i}">
+                                <c:set var="contains" value="checked"/>
+                            </c:if>
+                        </c:forEach>
+
+                        <div class="jlab-row margin">
+                            <div class="jlab-cell-1">
+                                <input type="checkbox" ${contains} id="${group.id}" name="contactGroup-${group.id}" class="regular-checkbox"/><label for="${group.id}"></label>
+                            </div>
+                            <div class="jlab-cell-11">
+                                <span class="text-small-bold">${group.groupName}</span>
+                            </div>
+
+                        </div>
+                    </c:forEach>
                 </section>
             </div> <%-- div.jlab-cell-4 end --%>
 

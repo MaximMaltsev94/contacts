@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface ContactGroupsDao {
     List<ContactGroups> getByGroupId(int groupId) throws DaoException;
+    List<ContactGroups> getByContactId(int contactId) throws DaoException;
+    void insert(List<ContactGroups> contactGroupsList) throws DaoException;
+    void deleteByContactId(int contactId) throws DaoException;
 }

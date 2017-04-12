@@ -4,6 +4,7 @@ import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
 import model.Contact;
+import model.ContactGroups;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.*;
@@ -11,6 +12,8 @@ import service.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GetEditPage implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(GetEditPage.class);
@@ -25,6 +28,8 @@ public class GetEditPage implements Command {
         CityService cityService = new CityServiceImpl(connection);
         PhoneService phoneService = new PhoneServiceImpl(connection);
         AttachmentService attachmentService = new AttachmentServiceImpl(connection);
+        UserGroupsService userGroupsService = new UserGroupsServiceImpl(connection);
+        ContactGroupsService contactGroupsService = new ContactGroupsServiceImpl(connection);
 
         try {
             int contactID = Integer.parseInt(request.getParameter("id"));
@@ -33,9 +38,10 @@ public class GetEditPage implements Command {
                 throw new NumberFormatException("id out of range");
             }
 
-            Contact contact = contactService.getByIDAndLoginUser(contactID, request.getUserPrincipal().getName());
+            String loginUser = request.getUserPrincipal().getName();
+            Contact contact = contactService.getByIDAndLoginUser(contactID, loginUser);
             if(contact == null) {
-                throw new DataNotFoundException("contact with id - " + contactID + " and loginUser - " + request.getUserPrincipal().getName() + " not found");
+                throw new DataNotFoundException("contact with id - " + contactID + " and loginUser - " + loginUser + " not found");
             }
 
             request.setAttribute("contact", contact);
@@ -44,6 +50,10 @@ public class GetEditPage implements Command {
             request.setAttribute("cityList", cityService.getAll());
             request.setAttribute("phoneList", phoneService.getByContactID(contactID));
             request.setAttribute("attachmentList", attachmentService.getByContactId(contactID));
+            request.setAttribute("userGroups", userGroupsService.getByLogin(loginUser));
+
+            List<Integer> contactGroupsIdList = contactGroupsService.getByContactId(contactID).stream().map(ContactGroups::getGroupId).collect(Collectors.toList());
+            request.setAttribute("contactGroups", contactGroupsIdList);
 
             request.setAttribute("action", "edit");
 
