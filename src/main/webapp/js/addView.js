@@ -127,6 +127,19 @@ var addView = (function() {
 
         initCropper: function () {
             cropper = new cropbox(cropBoxOptions);
+        },
+
+        setAvatar: function (gender) {
+            var img = document.getElementById('blah');
+            var manIMG = '/sysImages/default.png';
+            var womanIMG = '/sysImages/girl.png';
+            if (img.getAttribute('src') === manIMG || img.getAttribute('src') === womanIMG) {
+                if (gender === 'M') {
+                    img.setAttribute('src', '/sysImages/default.png');
+                } else if (gender === 'W') {
+                    img.setAttribute('src', '/sysImages/girl.png');
+                }
+            }
         }
     }
 }());

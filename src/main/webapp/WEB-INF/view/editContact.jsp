@@ -269,8 +269,8 @@
                                         <span class="text-small">Пол</span>
                                     </div>
                                     <div class="jlab-cell-9">
-                                        <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label for="r1"></label> Мужской
-                                        <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label> Женский
+                                        <input class="regular-radio" type="radio" name="gender" value="1" id="r1" onclick="addView.setAvatar('M')"/> <label for="r1"></label> Мужской
+                                        <input class="regular-radio" type="radio" name="gender" value="0" id="r0" onclick="addView.setAvatar('W')"/> <label for="r0"></label> Женский
                                     </div>
                                 </div>
 

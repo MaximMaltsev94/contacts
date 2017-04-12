@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserService;
 import service.UserServiceImpl;
+import util.ContactUtils;
 import util.RequestUtils;
 import util.TooltipType;
 
@@ -22,7 +23,7 @@ public class UpdateUser implements Command {
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
         UserService userService = new UserServiceImpl(connection);
 
-        String imageAction = "nothing";
+        String imageAction = ContactUtils.IMG_NOTHING;
         boolean isErrorOccurred = true;
         User newUser = null;
         User oldUser = null;
@@ -33,10 +34,10 @@ public class UpdateUser implements Command {
 
             imageAction = (String) request.getAttribute("imageAction");
             switch (imageAction) {
-                case "update": //newContact.profileImage contains new image url
-                case "delete": //newContact.profileImage contains url to default image
+                case ContactUtils.IMG_UPDATE: //newContact.profileImage contains new image url
+                case ContactUtils.IMG_DELETE: //newContact.profileImage contains url to default image
                     break;
-                case "nothing": //
+                case ContactUtils.IMG_NOTHING: //
                     newUser.setProfilePicture(oldUser.getProfilePicture());
                     break;
             }
@@ -53,13 +54,13 @@ public class UpdateUser implements Command {
         } finally {
             if(isErrorOccurred) {
                 RequestUtils.setMessageText(request, "Произошла ошибка при редактировании пользователя " + request.getUserPrincipal().getName() + ". Информация не изменена", TooltipType.danger);
-                if(newUser != null) {
+                if(newUser != null && !ContactUtils.IMG_NOTHING.equals(imageAction)) {
                     userService.deleteProfileImageFile(newUser);
                 }
 
             } else {
                 RequestUtils.setMessageText(request, "Информация пользователя " + request.getUserPrincipal().getName() + " успешно изменена", TooltipType.success);
-                if(!imageAction.equals("nothing"))
+                if(!ContactUtils.IMG_NOTHING.equals(imageAction))
                     userService.deleteProfileImageFile(oldUser);
             }
         }

@@ -10,6 +10,7 @@ import model.Phone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.*;
+import util.ContactUtils;
 import util.RequestUtils;
 import util.TooltipType;
 
@@ -21,7 +22,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class EditContact implements Command {
-    private final static Logger LOG = LoggerFactory.getLogger(EditContact.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EditContact.class);
+    private final String MAN_IMG = "/sysImages/default.png";
+    private final String WOMAN_IMG = "/sysImages/girl.png";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
@@ -42,7 +45,7 @@ public class EditContact implements Command {
         List<Attachment> forInsert = null;
 
         boolean isErrorOccurred = true;
-        String imageAction = "nothing";
+        String imageAction = ContactUtils.IMG_NOTHING;
 
         try {
             connection.setAutoCommit(false);
@@ -58,12 +61,20 @@ public class EditContact implements Command {
             newContact.setId(contactId);
             imageAction = (String) request.getAttribute("imageAction");
             switch (imageAction) {
-                case "update": //newContact.profileImage contains new image url
-                case "delete": //newContact.profileImage contains url to default image
+                case ContactUtils.IMG_UPDATE: //newContact.profileImage contains new image url
+                case ContactUtils.IMG_DELETE: //newContact.profileImage contains url to default image
                     break;
-                case "nothing": //
+                case ContactUtils.IMG_NOTHING: //
                     newContact.setProfilePicture(oldContact.getProfilePicture());
                     break;
+            }
+            if(MAN_IMG.equals(newContact.getProfilePicture())
+                    || WOMAN_IMG.equals(newContact.getProfilePicture())) {
+                if(newContact.getGender()) {
+                    newContact.setProfilePicture(MAN_IMG);
+                } else {
+                    newContact.setProfilePicture(WOMAN_IMG);
+                }
             }
             contactService.update(newContact);
 
@@ -135,7 +146,7 @@ public class EditContact implements Command {
             }
 
             if(isErrorOccurred) {
-                if(newContact != null) {
+                if(newContact != null && !ContactUtils.IMG_NOTHING.equals(imageAction)) {
                     contactService.deleteProfileImageFile(newContact);
                 }
                 if(newAttachments != null) {
@@ -145,7 +156,7 @@ public class EditContact implements Command {
                 }
 
             } else {
-                if(!imageAction.equals("nothing"))
+                if(!ContactUtils.IMG_NOTHING.equals(imageAction))
                     contactService.deleteProfileImageFile(oldContact);
 
                 if (forDelete != null) {

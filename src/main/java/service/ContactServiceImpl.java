@@ -137,6 +137,9 @@ public class ContactServiceImpl implements ContactService {
     public String parseProfileImage(HttpServletRequest request) {
 
         String result = "/sysImages/default.png";
+        if(request.getAttribute("gender") != null) {
+            result = request.getAttribute("gender").toString().charAt(0) == '1' ? result : "/sysImages/girl.png";
+        }
         String str = (String) request.getAttribute("profileImage");
         if(StringUtils.isBlank(str)) {
             LOG.info("profile image not specified");

@@ -5,6 +5,10 @@ import org.apache.catalina.realm.RealmBase;
 import java.io.UnsupportedEncodingException;
 
 public class ContactUtils {
+    public static final String IMG_NOTHING = "nothing";
+    public static final String IMG_UPDATE = "update";
+    public static final String IMG_DELETE = "delete";
+
     public static synchronized String getUTF8String(String target) throws UnsupportedEncodingException {
         String result = null;
         if (target != null)
