@@ -7,7 +7,7 @@
             maxIdle="30"
             maxWaitMillis="10000"
             driverClassName="com.mysql.cj.jdbc.Driver"
-            url="jdbc:mysql://localhost:3306/contacts?useSSL=false&amp;useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Minsk"
+            url="jdbc:mysql://localhost:3306/contacts?useSSL=false&amp;useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Minsk&amp;useUnicode=true&amp;characterEncoding=UTF-8"
             username="root"
             password="root"
     />

@@ -56,6 +56,15 @@
                                 </div>
                             </div>
 
+                            <c:if test="${requestScope.get('contactGroups').get(i.id).size() > 0}">
+                                <div class="jlab-row margin">
+                                    <c:forEach var="groups" items="${requestScope.get('contactGroups').get(i.id)}">
+                                        <span class="label text-tiny">${groups.groupName}</span>
+                                    </c:forEach>
+                                </div>
+                            </c:if>
+
+
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
                                 <span class="text-small">

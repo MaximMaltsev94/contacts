@@ -4,9 +4,7 @@ import dao.implementation.ContactDaoImpl;
 import dao.interfaces.ContactDao;
 import exceptions.DaoException;
 import exceptions.RequestParseException;
-import model.Contact;
-import model.ContactSearchCriteria;
-import model.Page;
+import model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -24,14 +22,20 @@ import java.sql.Connection;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ContactServiceImpl implements ContactService {
     private static final Logger LOG = LoggerFactory.getLogger(ContactServiceImpl.class);
 
     private ContactDao contactDao;
+    private ContactGroupsService contactGroupsService;
+    private UserGroupsService userGroupsService;
 
     public ContactServiceImpl(Connection connection) {
         contactDao = new ContactDaoImpl(connection);
+        contactGroupsService = new ContactGroupsServiceImpl(connection);
+        userGroupsService = new UserGroupsServiceImpl(connection);
     }
 
     @Override
@@ -87,6 +91,20 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException {
         return contactDao.getByBirthdayAndLoginUserIn(date, loginUserList);
+    }
+
+    @Override
+    public Map<Integer, List<UserGroups>> getContactGroups(List<Integer> contactIdList) throws DaoException {
+        List<ContactGroups> contactGroupsList = contactGroupsService.getByContactIdIn(contactIdList);
+        List<Integer> groupIdList = contactGroupsList.stream()
+                .map(ContactGroups::getGroupId)
+                .collect(Collectors.toList());
+
+        Map<Integer, UserGroups> userGroupsMap = userGroupsService.getByIdIn(groupIdList).stream()
+                .collect(Collectors.toMap(UserGroups::getId, o -> o));
+
+        return contactGroupsList.stream()
+                .collect(Collectors.groupingBy(ContactGroups::getContactID, Collectors.mapping(o -> userGroupsMap.get(o.getGroupId()), Collectors.toList())));
     }
 
     @Override

@@ -139,6 +139,11 @@ section {
     font-weight: bold;
 }
 
+.text-tiny {
+    font-size: 0.6em;
+    font-weight: bold;
+}
+
 label {
     display: inline;
 }
@@ -404,4 +409,13 @@ ul.regular li:before {
     -ms-transition: all 0.5s ease-in;
     -o-transition: all 0.5s ease-in;
     transition: all 0.5s ease-in;
+}
+
+.label {
+    background-color: #ec1c24;
+    color: white;
+    border: none;
+    border-radius: 11px;
+    padding: 1px 8px;
+    margin: 0 3px;
 }

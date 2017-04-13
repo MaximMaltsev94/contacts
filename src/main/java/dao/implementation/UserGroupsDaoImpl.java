@@ -8,8 +8,10 @@ import exceptions.DaoException;
 import model.UserGroups;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.DaoUtils;
 
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 
 public class UserGroupsDaoImpl implements UserGroupsDao {
@@ -35,6 +37,16 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
         LOG.info("selecting user groups by login - {}", login);
         String sql = String.format("SELECT * FROM %s WHERE `login` = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, login);
+    }
+
+    @Override
+    public List<UserGroups> getByIdIn(List<Integer> idList) throws DaoException {
+        LOG.info("selecting user groups by id list - {}", idList);
+        if(idList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String sql = String.format("SELECT * FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        return jdbcTemplate.queryForList(rsMapper, sql, idList.toArray());
     }
 
     @Override

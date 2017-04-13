@@ -24,6 +24,11 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     }
 
     @Override
+    public List<UserGroups> getByIdIn(List<Integer> idList) throws DaoException {
+        return userGroupsDao.getByIdIn(idList);
+    }
+
+    @Override
     public void insert(UserGroups userGroups) throws DaoException {
         userGroupsDao.insert(userGroups);
     }

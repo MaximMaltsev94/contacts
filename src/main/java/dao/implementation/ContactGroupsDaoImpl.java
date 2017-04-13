@@ -9,9 +9,11 @@ import model.ContactGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.DaoUtils;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ContactGroupsDaoImpl implements ContactGroupsDao {
@@ -43,6 +45,16 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
         LOG.info("selecting contact groups by contact id - {}", contactId);
         String sql = String.format("SELECT * FROM %s WHERE `id_contact` = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, contactId);
+    }
+
+    @Override
+    public List<ContactGroups> getByContactIdIn(List<Integer> contactIdList) throws DaoException {
+        LOG.info("selecting contact groups by contact id list - {}", contactIdList);
+        if(contactIdList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String sql = String.format("SELECT * from %s WHERE `id_contact` %s", TABLE_NAME, DaoUtils.generateSqlInPart(contactIdList.size()));
+        return jdbcTemplate.queryForList(rsMapper, sql, contactIdList.toArray());
     }
 
     @Override

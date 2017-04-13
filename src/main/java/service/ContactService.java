@@ -5,10 +5,12 @@ import exceptions.RequestParseException;
 import model.Contact;
 import model.ContactSearchCriteria;
 import model.Page;
+import model.UserGroups;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ContactService {
     Contact parseRequest(HttpServletRequest request) throws RequestParseException;
@@ -31,6 +33,8 @@ public interface ContactService {
 
     List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException;
     List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException;
+
+    Map<Integer, List<UserGroups>> getContactGroups(List<Integer> contactIdList) throws DaoException;
     long getCountByLoginUser(String loginUser) throws DaoException;
     long getMaxID() throws DaoException;
 }

@@ -33,6 +33,11 @@ public class ContactGroupsServiceImpl implements ContactGroupsService {
     }
 
     @Override
+    public List<ContactGroups> getByContactIdIn(List<Integer> contactIdList) throws DaoException {
+        return contactGroupsDao.getByContactIdIn(contactIdList);
+    }
+
+    @Override
     public void insert(List<ContactGroups> contactGroupsList) throws DaoException {
         contactGroupsDao.insert(contactGroupsList);
     }

@@ -67,9 +67,13 @@ public class GetContactListPage implements Command {
                 throw new NumberFormatException();
             }
 
+            List<Integer> selectedContactIdList = contactPage.getData().stream().map(Contact::getId).collect(Collectors.toList());
+
             request.setAttribute("contactList", contactPage.getData());
             request.setAttribute("maxPageNumber", maxPageNumber);
             request.setAttribute("userGroups", userGroupsService.getByLogin(userLogin));
+            request.setAttribute("contactGroups", contactService.getContactGroups(selectedContactIdList));
+
             request.getSession().setAttribute("lastVisitedPage", pageNumber);
 
         } catch (NumberFormatException e) {
