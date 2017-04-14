@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GetEditPage implements Command {
@@ -52,7 +53,7 @@ public class GetEditPage implements Command {
             request.setAttribute("attachmentList", attachmentService.getByContactId(contactID));
             request.setAttribute("userGroups", userGroupsService.getByLogin(loginUser));
 
-            List<Integer> contactGroupsIdList = contactGroupsService.getByContactId(contactID).stream().map(ContactGroups::getGroupId).collect(Collectors.toList());
+            Set<Integer> contactGroupsIdList = contactGroupsService.getByContactId(contactID).stream().map(ContactGroups::getGroupId).collect(Collectors.toSet());
             request.setAttribute("contactGroups", contactGroupsIdList);
 
             request.setAttribute("action", "edit");

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import util.DaoUtils;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +41,13 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
     }
 
     @Override
+    public UserGroups getByIdAndLoginUser(int id, String loginUser) throws DaoException {
+        LOG.info("selecting user group by id - {}", id);
+        String sql = String.format("SELECT * FROM %s WHERE `id` = ? and `login` = ?", TABLE_NAME);
+        return jdbcTemplate.queryForObject(rsMapper, sql, id, loginUser);
+    }
+
+    @Override
     public List<UserGroups> getByIdIn(List<Integer> idList) throws DaoException {
         LOG.info("selecting user groups by id list - {}", idList);
         if(idList.isEmpty()) {
@@ -50,9 +58,18 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
     }
 
     @Override
-    public void insert(UserGroups userGroups) throws DaoException {
+    public UserGroups insert(UserGroups userGroups) throws DaoException {
         LOG.info("inserting user group - {}", userGroups);
         String sql = String.format("INSERT INTO %s (`group_name`, `login`) VALUES (?, ?)", TABLE_NAME);
-        jdbcTemplate.update(sql, userGroups.getGroupName(), userGroups.getLogin());
+        List<Integer> generatedKeys = new ArrayList<>();
+        jdbcTemplate.update(sql, generatedKeys, userGroups.getGroupName(), userGroups.getLogin());
+        return new UserGroups(generatedKeys.get(0), userGroups.getGroupName(), userGroups.getLogin());
+    }
+
+    @Override
+    public void update(UserGroups userGroups) throws DaoException {
+        LOG.info("updating user group - {}", userGroups);
+        String sql = String.format("UPDATE %s SET `group_name` = ?, `login` = ? where `id` = ?", TABLE_NAME);
+        jdbcTemplate.update(sql, userGroups.getGroupName(), userGroups.getLogin(), userGroups.getId());
     }
 }

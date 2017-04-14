@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ContactGroupsServiceImpl implements ContactGroupsService {
     private static final Logger LOG = LoggerFactory.getLogger(ContactGroupsServiceImpl.class);
@@ -48,16 +49,34 @@ public class ContactGroupsServiceImpl implements ContactGroupsService {
     }
 
     @Override
-    public List<ContactGroups> parseRequest(HttpServletRequest request, int contactId) {
+    public void deleteByGroupId(int groupId) throws DaoException {
+        contactGroupsDao.deleteByGroupId(groupId);
+    }
+
+    private List<Integer> parseRequest(HttpServletRequest request, String prefix) {
         Enumeration<String> names = request.getAttributeNames();
-        List<ContactGroups> groupIdList = new ArrayList<>();
+        List<Integer> idList = new ArrayList<>();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
-            if(StringUtils.startsWith(name, "contactGroup")) {
-                int groupId = Integer.parseInt(StringUtils.substringAfter(name, "-"));
-                groupIdList.add(new ContactGroups(groupId, contactId));
+            if(StringUtils.startsWith(name, prefix)) {
+                int id = Integer.parseInt(StringUtils.substringAfter(name, "-"));
+                idList.add(id);
             }
         }
-        return groupIdList;
+        return idList;
+    }
+
+    @Override
+    public List<ContactGroups> parseRequest(HttpServletRequest request, int contactId) {
+        Enumeration<String> names = request.getAttributeNames();
+        List<Integer> groupIdList = parseRequest(request, "contactGroup");
+        return groupIdList.stream().map(id -> new ContactGroups(id, contactId)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ContactGroups> parseRequest(HttpServletRequest request, int groupId, boolean dummy) {
+        Enumeration<String> names = request.getAttributeNames();
+        List<Integer> contactIdList = parseRequest(request, "contact");
+        return contactIdList.stream().map(id -> new ContactGroups(groupId, id)).collect(Collectors.toList());
     }
 }

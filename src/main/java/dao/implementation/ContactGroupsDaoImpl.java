@@ -77,4 +77,12 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
         String sql = String.format("DELETE FROM %s WHERE `id_contact` = ?", TABLE_NAME);
         jdbcTemplate.update(sql, contactId);
     }
+
+    @Override
+    public void deleteByGroupId(int groupId) throws DaoException {
+        LOG.info("deleting contact groups by group id - {}", groupId);
+        String sql = String.format("DELETE FROM %s WHERE `id_group` = ?", TABLE_NAME);
+        jdbcTemplate.update(sql, groupId);
+
+    }
 }

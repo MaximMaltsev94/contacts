@@ -57,9 +57,9 @@
                             </div>
 
                             <c:if test="${requestScope.get('contactGroups').get(i.id).size() > 0}">
-                                <div class="jlab-row margin">
+                                <div class="jlab-row" style="display: inline">
                                     <c:forEach var="groups" items="${requestScope.get('contactGroups').get(i.id)}">
-                                        <span class="label text-tiny">${groups.groupName}</span>
+                                        <span class="label text-tiny" style="cursor: pointer" onclick="location.href='<c:url value="/contact/show?page=1&filter=${groups.id}"/>'">${groups.groupName}</span>
                                     </c:forEach>
                                 </div>
                             </c:if>
@@ -188,12 +188,15 @@
                 <div class="hover-menu">
                     <div class="hover-menu-item text-small-bold ${requestScope.containsKey('filter') ? "" : "active"}" onclick="location.href='<c:url value="/contact/show?page=1"/>'">Все</div>
                     <c:forEach var="group" items="${requestScope.get('userGroups')}">
-                        <div class="hover-menu-item text-small-bold ${requestScope.get('filter') eq group.id ? "active" : ""}" onclick="location.href='<c:url value="/contact/show?page=1&filter=${group.id}" />'">${group.groupName}</div>
+                        <div class="hover-menu-item text-small-bold ${requestScope.get('filter') eq group.id ? "active" : ""}"
+                             onclick="location.href='<c:url value="/contact/show?page=1&filter=${group.id}" />'">
+                                ${group.groupName}
+                        </div>
                     </c:forEach>
                 </div>
                 <div class="jlab-row margin">
                     <div class="jlab-row margin">
-                        <button class="jlab-cell-10 align-center" onclick="location.href='<c:url value="#" />'">Создать список</button>
+                        <button class="jlab-cell-10 align-center" onclick="location.href='<c:url value="/contact/createList" />'">Создать список</button>
                     </div>
                 </div>
             </section>

@@ -24,13 +24,22 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     }
 
     @Override
+    public UserGroups getByIdAndLoginUser(int id, String loginUser) throws DaoException {
+        return userGroupsDao.getByIdAndLoginUser(id, loginUser);
+    }
+
+    @Override
     public List<UserGroups> getByIdIn(List<Integer> idList) throws DaoException {
         return userGroupsDao.getByIdIn(idList);
     }
 
     @Override
-    public void insert(UserGroups userGroups) throws DaoException {
-        userGroupsDao.insert(userGroups);
+    public UserGroups insert(UserGroups userGroups) throws DaoException {
+        return userGroupsDao.insert(userGroups);
     }
 
+    @Override
+    public void update(UserGroups userGroups) throws DaoException {
+        userGroupsDao.update(userGroups);
+    }
 }

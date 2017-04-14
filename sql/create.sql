@@ -27,7 +27,6 @@ CREATE TABLE `contacts`.`user_groups` (
 	`login`  NVARCHAR(15) NOT NULL,
 
 	PRIMARY KEY (`id`),
-	UNIQUE (`group_name`, `login`),
 	CONSTRAINT `user_groups_user_fk` FOREIGN KEY (`login`) REFERENCES `contacts`.`user`(`login`) ON DELETE CASCADE
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

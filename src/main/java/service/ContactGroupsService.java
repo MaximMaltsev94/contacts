@@ -13,6 +13,8 @@ public interface ContactGroupsService {
     List<ContactGroups> getByContactIdIn(List<Integer> contactIdList) throws DaoException;
     void insert(List<ContactGroups> contactGroupsList) throws DaoException;
     void deleteByContactId(int contactId) throws DaoException;
+    void deleteByGroupId(int groupId) throws DaoException;
 
     List<ContactGroups> parseRequest(HttpServletRequest request, int contactId);
+    List<ContactGroups> parseRequest(HttpServletRequest request, int groupId, boolean dummy);
 }

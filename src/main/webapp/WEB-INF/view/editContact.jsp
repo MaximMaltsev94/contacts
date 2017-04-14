@@ -222,12 +222,10 @@
                         </div>
                     </div>
                     <c:forEach var="group" items="${requestScope.get('userGroups')}">
-                        <c:set var="contains" value=" " scope="page"/>
-                        <c:forEach var="i" items="${requestScope.get('contactGroups')}">
-                            <c:if test="${group.id eq i}">
-                                <c:set var="contains" value="checked"/>
-                            </c:if>
-                        </c:forEach>
+
+                        <c:set var="contains"
+                               value="${requestScope.get('contactGroups').contains(group.id) ? 'checked' : ''}"
+                               scope="page"/>
 
                         <div class="jlab-row margin">
                             <div class="jlab-cell-1">

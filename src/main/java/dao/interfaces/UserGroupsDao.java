@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserGroupsDao {
     List<UserGroups> getByLogin(String login) throws DaoException;
+    UserGroups getByIdAndLoginUser(int id, String loginUser) throws DaoException;
     List<UserGroups> getByIdIn(List<Integer> idList) throws DaoException;
-    void insert(UserGroups userGroups) throws DaoException;
+    UserGroups insert(UserGroups userGroups) throws DaoException;
+    void update(UserGroups userGroups) throws DaoException;
 }
