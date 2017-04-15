@@ -42,4 +42,9 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     public void update(UserGroups userGroups) throws DaoException {
         userGroupsDao.update(userGroups);
     }
+
+    @Override
+    public void delete(List<Integer> idList) throws DaoException {
+        userGroupsDao.delete(idList);
+    }
 }

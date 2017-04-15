@@ -8,8 +8,10 @@
     <title>${isAdd eq true ? 'Создать список' : 'Редактировать список'}</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
 
     <script src="<c:url value="/js/main.js"/>"></script>
+    <script src="<c:url value="/js/listManagePopup.js"/>"></script>
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -32,7 +34,7 @@
                                     <section>
                                         <div class="jlab-row">
                                             <div class="jlab-cell-1 center">
-                                                <input type="checkbox" ${contains} id="${i.id}"name="contact-${i.id}" class="regular-checkbox" onchange="showView.onCheckBoxChecked(this)"/><label for="${i.id}"></label>
+                                                <input type="checkbox" ${contains} id="${i.id}"name="contact-${i.id}" class="regular-checkbox"/><label for="${i.id}"></label>
                                             </div>
 
                                             <div class="jlab-cell-2 center">
@@ -81,7 +83,11 @@
                     </div>
                     <c:if test="${isAdd eq false}">
                         <div class="jlab-row margin">
-                            <button type="button" class="jlab-cell-12 align-center" onclick="main.showConfirmDialog('Вы действительно хотите удалить список?', showView.onDeleteSelectedClick)">Удалить</button>
+                            <button type="button"
+                                    class="jlab-cell-12 align-center"
+                                    onclick="main.showConfirmDialog('Вы действительно хотите удалить группу?', function() {
+                                        listManagePopup.onDeleteGroup(${requestScope.get('id')});
+                                    })">Удалить</button>
                         </div>
                     </c:if>
                     <div class="jlab-row margin">
@@ -93,6 +99,7 @@
     </form>
 
 </div>
+<jsp:include page="confirmPopup.jsp"/>
 <jsp:include page="footer.jsp"/>
 </body>
 </html>

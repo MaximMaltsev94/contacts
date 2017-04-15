@@ -12,4 +12,5 @@ public interface UserGroupsService {
     List<UserGroups> getByIdIn(List<Integer> idList) throws DaoException;
     UserGroups insert(UserGroups userGroups) throws DaoException;
     void update(UserGroups userGroups) throws DaoException;
+    void delete(List<Integer> idList) throws DaoException;
 }

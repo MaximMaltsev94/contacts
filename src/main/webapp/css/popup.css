@@ -37,6 +37,11 @@
     transition: opacity 5s ease-in-out;
 }
 
+.popup>.box {
+    width: 90%;
+    margin: 20px auto;
+}
+
 #popupPhone_phoneType, #popupPhone_countryCode, #popupPhone_operatorCode {
     margin-right: 5px;
     min-width: 30px;

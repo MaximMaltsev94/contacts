@@ -50,6 +50,22 @@ var main = (function () {
             document.getElementById('confirmPopupText').innerHTML = text;
             document.getElementById('confirmPopup_ok').onclick = onConfirmAction;
             main.showPopup("confirmPopup");
+        },
+
+        postRequest: function(url, idParamName, id) {
+            var form = document.createElement('form');
+            form.style.visibility = 'hidden';
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', contextPath + url);
+
+            var input = document.createElement('input');
+            input.setAttribute('type', 'text');
+            input.setAttribute('name', idParamName);
+            input.value = id;
+            form.appendChild(input);
+
+            document.body.appendChild(form);
+            form.submit();
         }
     }
 }());

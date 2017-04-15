@@ -72,4 +72,13 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
         String sql = String.format("UPDATE %s SET `group_name` = ?, `login` = ? where `id` = ?", TABLE_NAME);
         jdbcTemplate.update(sql, userGroups.getGroupName(), userGroups.getLogin(), userGroups.getId());
     }
+
+    @Override
+    public void delete(List<Integer> idList) throws DaoException {
+        LOG.info("deleting user group by id list - {}", idList);
+        if(idList.isEmpty())
+            return;
+        String sql = String.format("DELETE FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        jdbcTemplate.update(sql, idList.toArray());
+    }
 }

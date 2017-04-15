@@ -147,7 +147,7 @@ public class ContactDaoImpl implements ContactDao {
         if(idList.isEmpty()) {
             return Collections.emptyList();
         }
-        String sql = String.format("SELECT * FROM %s WHERE `login_user` = ? and `id` in %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        String sql = String.format("SELECT * FROM %s WHERE `login_user` = ? and `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         List<Object> params = new ArrayList<>();
         params.add(loginUser);
         params.addAll(idList);

@@ -14,6 +14,7 @@
 
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/showView.js"/>"></script>
+    <script src="<c:url value="/js/listManagePopup.js"/>"></script>
 </head>
 
 <body onload="main.showTooltip('${sessionScope.get('tooltip-text')}', '${sessionScope.get('tooltip-type')}')">
@@ -195,9 +196,10 @@
                     </c:forEach>
                 </div>
                 <div class="jlab-row margin">
-                    <div class="jlab-row margin">
-                        <button class="jlab-cell-10 align-center" onclick="location.href='<c:url value="/contact/createList" />'">Создать список</button>
-                    </div>
+                    <button class="jlab-cell-10 align-center" onclick="location.href='<c:url value="/contact/createList" />'">Создать список</button>
+                </div>
+                <div class="jlab-row margin">
+                    <button class="jlab-cell-10 align-center" onclick="listManagePopup.showListManagePopup();">Управление списками</button>
                 </div>
             </section>
 
@@ -207,6 +209,65 @@
     </div>
 
     <%--div.container end--%>
+</div>
+
+<div id="listManagePopup" class="popupBack hidden">
+    <div class="popup">
+        <div class="jlab-row">
+            <div class="jlab-cell-11 center text-medium">Управление списками</div>
+            <div class="jlab-cell-1 align-right">
+                <a class="text-large" href="javascript:;" onclick="listManagePopup.closeListManagePopup()">&times;</a>
+            </div>
+        </div>
+        <div class="box">
+            <c:set var="first" value="true" scope="page"/>
+            <c:forEach var="group" items="${requestScope.get('userGroups')}">
+                <c:if test="${not first eq 'true'}">
+                    <hr>
+                </c:if>
+                <c:set var="first" value="false"/>
+
+                <div class="jlab-row margin">
+                    <div class="jlab-cell-1 center">
+                        <input type="checkbox" id="manage-group-${group.id}" class="regular-checkbox" onchange="listManagePopup.onCheckBoxChecked(this)"/><label for="manage-group-${group.id}"></label>
+                    </div>
+                    <div class="jlab-cell-7 center text-small-bold">
+                        <a href="<c:url value="/contact/editList?id=${group.id}"/> ">${group.groupName}</a>
+                    </div>
+                    <div class="jlab-cell-1 center">
+                        <div class="imageButton" onclick="listManagePopup.onEmailGroup(${group.id})">
+                            <img src="<c:url value="/sysImages/email.png"/>">
+                        </div>
+                    </div>
+
+                    <div class="jlab-cell-1 center">
+                        <div class="imageButton" onclick="location.href='<c:url value="/contact/editList?id=${group.id}"/>'">
+                            <img src="<c:url value="/sysImages/edit.png"/>">
+                        </div>
+                    </div>
+
+                    <div class="jlab-cell-1 center ">
+                        <div class="imageButton" onclick="main.showConfirmDialog('Вы действительно хотите удалить группу ${group.groupName}?', function() { listManagePopup.onDeleteGroup('${group.id}')})">
+                            <img src="<c:url value="/sysImages/delete.png"/>" >
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+
+        <div class="jlab-row">
+            <div class="jlab-cell-5"></div>
+            <div class="jlab-cell-4">
+                <button class="jlab-cell-12 align-center" id="sendEmailGroup" type="button" onclick="listManagePopup.onEmailSelectedClick()" disabled>Отправить письмо</button>
+            </div>
+            <div class="jlab-cell-3">
+                <button class="jlab-cell-12" id="deleteGroup" type="button" onclick="main.showConfirmDialog('Вы действительно хотите удалить выбранные группы?', listManagePopup.onDeleteSelectedClick)" disabled>Удалить</button>
+            </div>
+        </div>
+
+    </div>
+
+    <%--div id phonePopup end--%>
 </div>
 <jsp:include page="confirmPopup.jsp"/>
 <jsp:include page="footer.jsp"/>

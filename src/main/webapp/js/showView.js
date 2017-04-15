@@ -1,43 +1,15 @@
 var showView = (function() {
     var checkedCount = 0;
+    var selectedCheckboxes = function () {
+        return document.querySelectorAll("input[type=checkbox]:checked")
+    };
+
     window.onhashchange = function () {
-        checkedCount = document.querySelectorAll("input[type=checkbox]:checked").length;
+        checkedCount = selectedCheckboxes().length;
         if(checkedCount > 0) {
             document.getElementById('deleteSelected').disabled = false;
             document.getElementById('sendEmail').disabled = false;
         }
-    };
-
-    var postDeleteRequest = function(id) {
-        var form = document.createElement('form');
-        form.style.visibility = 'hidden';
-        form.setAttribute('method', 'post');
-        form.setAttribute('action', contextPath + '/contact/delete');
-
-        var input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('name', 'id');
-        input.value = id;
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-        form.submit();
-    };
-
-    var postEmailRequest = function (id) {
-        var form = document.createElement('form');
-        form.style.visibility = 'hidden';
-        form.setAttribute('method', 'post');
-        form.setAttribute('action', contextPath + '/contact/email');
-
-        var input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('name', 'id');
-        input.value = id;
-        form.appendChild(input);
-
-        document.body.appendChild(form);
-        form.submit();
     };
 
     return { // методы доступные извне
@@ -48,37 +20,37 @@ var showView = (function() {
                 checkedCount--;
                 checkedCount = Math.max(checkedCount, 0);
             }
-            document.getElementById('deleteSelected').disabled = checkedCount == 0;
-            document.getElementById('sendEmail').disabled = checkedCount == 0;
+            document.getElementById('deleteSelected').disabled = checkedCount === 0;
+            document.getElementById('sendEmail').disabled = checkedCount === 0;
         },
 
         onDeleteSelectedClick : function () {
-            var checkedBoxes = document.querySelectorAll("input[type=checkbox]:checked");
-            if(checkedBoxes.length == 0)
+            var checkedBoxes = selectedCheckboxes();
+            if(checkedBoxes.length === 0)
                 return;
 
             var ids = '';
             for (var i = 0; i < checkedBoxes.length; ++i) {
                 ids += checkedBoxes[i].id + ',';
             }
-            postDeleteRequest(ids);
+            main.postRequest('/contact/delete', 'id', ids);
         },
 
         onDeleteContact: function(id) {
-            postDeleteRequest(id);
+            main.postRequest('/contact/delete', 'id', id);
         },
 
         onEmailContact: function (id) {
-            postEmailRequest(id);
+            main.postRequest('/contact/email', 'id', id);
         },
 
         onEmailSelectedClick: function (id) {
-            var checkedBoxes = document.querySelectorAll("input[type=checkbox]:checked");
+            var checkedBoxes = selectedCheckboxes();
             var ids = '';
             for (var i = 0; i < checkedBoxes.length; ++i) {
                 ids += checkedBoxes[i].id + ',';
             }
-            postEmailRequest(ids);
+            main.postRequest('/contact/email', 'id', ids);
         }
 
 
