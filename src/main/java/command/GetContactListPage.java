@@ -75,6 +75,11 @@ public class GetContactListPage implements Command {
             request.setAttribute("contactGroups", contactService.getContactGroups(selectedContactIdList));
 
             request.getSession().setAttribute("lastVisitedPage", pageNumber);
+            if(request.getAttribute("filter") != null) {
+                request.getSession().setAttribute("lastVisitedFilter", request.getAttribute("filter"));
+            } else {
+                request.getSession().removeAttribute("lastVisitedFilter");
+            }
 
         } catch (NumberFormatException e) {
             LOG.error("incorrect page number - {}", request.getAttribute("page"), e);

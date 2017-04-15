@@ -1,21 +1,26 @@
 var main = (function () {
+    var isTooltipShown = false;
     return {
         showTooltip: function (tooltipText, tooltipType) {
-            if(tooltipText == '')
-                return;
+            if (isTooltipShown === false) {
+                isTooltipShown = true;
+                if (tooltipText == '')
+                    return;
 
-            var bgColor = tooltipType === 'success' ? "rgb(190, 235, 159)" : "rgb(239, 100, 105)";
+                var bgColor = tooltipType === 'success' ? "rgb(190, 235, 159)" : "rgb(239, 100, 105)";
 
-            var tooltipElement = document.getElementById('tooltip');
-            tooltipElement.style.display = "block";
-            tooltipElement.innerHTML = tooltipText;
-            tooltipElement.style.backgroundColor = bgColor;
-            tooltipElement.className = 'tooltip-animation';
+                var tooltipElement = document.getElementById('tooltip');
+                tooltipElement.style.display = "block";
+                tooltipElement.innerHTML = tooltipText;
+                tooltipElement.style.backgroundColor = bgColor;
+                tooltipElement.className = 'tooltip-animation';
 
-            setTimeout(function(){
-                console.log('hiding');
-                tooltipElement.style.display = 'none';
-            }, 5000);
+                setTimeout(function () {
+                    console.log('hiding');
+                    tooltipElement.style.display = 'none';
+                    isTooltipShown = false;
+                }, 5000);
+            }
         },
         createInput: function (id, type, display) {
             var inputElement = document.createElement('input');

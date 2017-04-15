@@ -20,40 +20,41 @@
         <input type="text" hidden name="id" value="${isAdd ? '' : requestScope.get('id')}">
         <div class="jlab-row margin">
             <div class="jlab-cell-9">
+                <c:if test="${not requestScope.get('contactList').isEmpty()}">
+                    <c:forEach var="j" begin="0" end="${requestScope.get('contactList').size() - 1}" step="3">
+                        <div class="jlab-row">
+                            <c:forEach var="k" begin="${j}" end="${j + 2}">
 
-                <c:forEach var="j" begin="0" end="${requestScope.get('contactList').size() - 1}" step="3">
-                    <div class="jlab-row">
-                        <c:forEach var="k" begin="${j}" end="${j + 2}">
+                                <div class="jlab-cell-4">
 
-                            <div class="jlab-cell-4">
-
-                                <c:if test="${k < requestScope.get('contactList').size()}">
-                                    <c:set var="i" value="${requestScope.get('contactList').get(k)}"/>
-                                    <c:set var="contains"
-                                           value="${isAdd ? '' : requestScope.get('contactGroups').contains(i.id) ? 'checked' : ''}"/>
-                                    <section>
-                                        <div class="jlab-row">
-                                            <div class="jlab-cell-1 center">
-                                                <input type="checkbox" ${contains} id="${i.id}"name="contact-${i.id}" class="regular-checkbox"/><label for="${i.id}"></label>
-                                            </div>
-
-                                            <div class="jlab-cell-2 center">
-                                                <img src="<c:url value="${i.profilePicture}" /> " width="25px" height="25px">
-                                            </div>
-
-                                            <div class="jlab-cell-9 center">
-                                                <div class="text-medium">
-                                                        ${i.firstName} ${i.lastName}
+                                    <c:if test="${k < requestScope.get('contactList').size()}">
+                                        <c:set var="i" value="${requestScope.get('contactList').get(k)}"/>
+                                        <c:set var="contains"
+                                               value="${isAdd ? '' : requestScope.get('contactGroups').contains(i.id) ? 'checked' : ''}"/>
+                                        <section>
+                                            <div class="jlab-row">
+                                                <div class="jlab-cell-1 center">
+                                                    <input type="checkbox" ${contains} id="${i.id}"name="contact-${i.id}" class="regular-checkbox"/><label for="${i.id}"></label>
                                                 </div>
 
+                                                <div class="jlab-cell-2 center">
+                                                    <img src="<c:url value="${i.profilePicture}" /> " width="25px" height="25px">
+                                                </div>
+
+                                                <div class="jlab-cell-9 center">
+                                                    <div class="text-medium">
+                                                            ${i.firstName} ${i.lastName}
+                                                    </div>
+
+                                                </div>
                                             </div>
-                                        </div>
-                                    </section>
-                                </c:if>
-                            </div>
-                        </c:forEach>
-                    </div>
-                </c:forEach>
+                                        </section>
+                                    </c:if>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:forEach>
+                </c:if>
             </div><%--div.jlab-cell-9 end --%>
 
             <div class="jlab-cell-3">
@@ -91,7 +92,9 @@
                         </div>
                     </c:if>
                     <div class="jlab-row margin">
-                        <button type="button" class="jlab-cell-12 align-center" onclick="location.href='<c:url value="/contact/show?page=${sessionScope.getOrDefault('lastVisitedPage', 1)}" />'">Назад</button>
+                        <c:set var="lastVisitedFilter"
+                               value="${sessionScope.containsKey('lastVisitedFilter') ? '&filter='.concat(sessionScope.get('lastVisitedFilter')): ''}"/>
+                        <button type="button" class="jlab-cell-12 align-center" onclick="location.href='<c:url value="/contact/show?page=${sessionScope.getOrDefault('lastVisitedPage', 1)}${lastVisitedFilter}" />'">Назад</button>
                     </div>
                 </section>
             </div>

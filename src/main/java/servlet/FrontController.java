@@ -94,7 +94,7 @@ public class FrontController extends HttpServlet {
         }
 
         try {
-            if(viewName == null) {
+            if(viewName == null && !response.isCommitted()) {
 //                response.sendRedirect("?action=show&page=1");
                 response.sendRedirect(request.getContextPath() + "/contact/show?page=1");
             } else {

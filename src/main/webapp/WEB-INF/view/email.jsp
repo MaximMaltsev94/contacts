@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
     <link rel="stylesheet" href="<c:url value="/css/dropdown.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/email.js"/>"></script>
 
@@ -17,6 +18,7 @@
 <jsp:include page="header.jsp"/>
 <fmt:setLocale value="ru_RU" scope="session"/>
 
+<span id="tooltip"></span>
 <div class="container">
         <div class="jlab-row">
             <div class="jlab-cell-8">

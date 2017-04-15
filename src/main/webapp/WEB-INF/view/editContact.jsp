@@ -45,7 +45,9 @@
                         </div>
                         <div class="jlab-cell-3">
 
-                            <a href="<c:url value="/contact/show?page=${sessionScope.getOrDefault('lastVisitedPage', 1)}" />">
+                            <c:set var="lastVisitedFilter"
+                                   value="${sessionScope.containsKey('lastVisitedFilter') ? '&filter='.concat(sessionScope.get('lastVisitedFilter')): ''}"/>
+                            <a href="<c:url value="/contact/show?page=${sessionScope.getOrDefault('lastVisitedPage', 1)}${lastVisitedFilter}" />">
                                 <button type="button" class="jlab-cell-12">Назад</button>
                             </a>
                         </div>

@@ -38,8 +38,8 @@ var email = (function () {
 
        onEmailSubmit: function () {
            var checkedBoxes = document.querySelectorAll("input[type=checkbox]:checked");
-           if(checkedBoxes.length == 0) {
-               alert('Не выбраны получатели!');
+           if(checkedBoxes.length === 0) {
+               main.showTooltip('Не выбраны получатели!', 'danger');
            } else {
                var ids = '';
                for (var i = 0; i < checkedBoxes.length; ++i) {

@@ -3,8 +3,8 @@ var popupPhone = (function () {
     var phoneID;
     var popupSubmit;
     var validatePopup = function () {
-        var operatorCodeRegex = /[0-9]{2,5}/;
-        var phoneRegex = /[0-9]{4,9}/;
+        var operatorCodeRegex = /^[0-9]{2,5}$/;
+        var phoneRegex = /^[0-9]{4,9}$/;
 
         if(!operatorCodeRegex.test(document.getElementById('popupPhone_operatorCode').value)) {
             main.showTooltip('Неверный код оператора. Формат: от 2 до 5 цифр');
