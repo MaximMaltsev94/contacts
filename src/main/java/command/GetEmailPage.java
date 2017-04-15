@@ -4,8 +4,12 @@ import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
 import model.Contact;
+import model.ContactGroups;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.ContactGroupsService;
+import service.ContactGroupsServiceImpl;
 import service.ContactService;
 import service.ContactServiceImpl;
 
@@ -66,15 +70,36 @@ public class GetEmailPage implements Command {
         }
 
         if(contactIdList == null) {
-            contactIdList = new ArrayList<>();
+            contactIdList = Collections.emptyList();
+        }
+
+        String groupIdAttribute = (String) request.getAttribute("groupId");
+        List<Integer> groupIdList = null;
+        if(groupIdAttribute != null) {
+            groupIdList = Arrays.stream(groupIdAttribute.split(","))
+                    .map(id -> Integer.parseInt(StringUtils.substringAfter(id,"manage-group-")))
+                    .collect(Collectors.toList());
+        }
+
+        if(groupIdList == null) {
+            groupIdList = Collections.emptyList();
         }
 
         try {
             ContactService contactService = new ContactServiceImpl(connection);
+            ContactGroupsService contactGroupsService = new ContactGroupsServiceImpl(connection);
+
             List<Contact> contactsWithEmail = contactService.getByEmailNotNullAndLoginUser(request.getUserPrincipal().getName());
+            List<ContactGroups> contactGroupsList = contactGroupsService.getByGroupIdIn(groupIdList);
+            List<Integer> contactGroupsContactIdList = contactGroupsList.stream().map(ContactGroups::getContactID).collect(Collectors.toList());;
+
+            List<Integer> selectedContacts = new ArrayList<>();
+            selectedContacts.addAll(contactIdList);
+            selectedContacts.addAll(contactGroupsContactIdList);
+
 
             request.setAttribute("contactList", contactsWithEmail);
-            request.setAttribute("selectedContacts", contactIdList);
+            request.setAttribute("selectedContacts", selectedContacts);
 
             Map<String, String> templates = readTemplates();
             request.setAttribute("templates", templates);

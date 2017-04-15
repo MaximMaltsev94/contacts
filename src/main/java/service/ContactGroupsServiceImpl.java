@@ -29,6 +29,11 @@ public class ContactGroupsServiceImpl implements ContactGroupsService {
     }
 
     @Override
+    public List<ContactGroups> getByGroupIdIn(List<Integer> groupIdList) throws DaoException {
+        return contactGroupsDao.getByGroupIdIn(groupIdList);
+    }
+
+    @Override
     public List<ContactGroups> getByContactId(int contactId) throws DaoException {
         return contactGroupsDao.getByContactId(contactId);
     }

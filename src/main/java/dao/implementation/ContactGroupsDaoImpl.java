@@ -41,6 +41,16 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
     }
 
     @Override
+    public List<ContactGroups> getByGroupIdIn(List<Integer> groupIdList) throws DaoException {
+        LOG.info("selecting contact groups by group id list - {}", groupIdList);
+        if(groupIdList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String sql = String.format("SELECT * FROM %s WHERE `id_group` %s", TABLE_NAME, DaoUtils.generateSqlInPart(groupIdList.size()));
+        return jdbcTemplate.queryForList(rsMapper, sql, groupIdList.toArray());
+    }
+
+    @Override
     public List<ContactGroups> getByContactId(int contactId) throws DaoException {
         LOG.info("selecting contact groups by contact id - {}", contactId);
         String sql = String.format("SELECT * FROM %s WHERE `id_contact` = ?", TABLE_NAME);

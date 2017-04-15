@@ -34,7 +34,7 @@ var listManagePopup = (function () {
         },
 
         onEmailGroup: function (id) {
-            main.postRequest('/contact/email', 'groupId', id);
+            main.postRequest('/contact/email', 'groupId', 'manage-group-' + id);
         },
 
         onEmailSelectedClick: function () {
