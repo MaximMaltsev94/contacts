@@ -54,6 +54,10 @@ public class CommandFactory {
         commands.put("post/forgotpassword", SendRestorePasswordEmail.class);
         commands.put("get/resetpassword", GetResetPasswordPage.class);
         commands.put("post/resetpassword", ResetPassword.class);
+
+        commands.put("get/oauthvk", OauthVk.class);
+//        commands.put("get/importvk", GetImportVkPage.class);
+//        commands.put("post/importvk", ImportVk.class);
     }
 
     public Command getCommand(HttpServletRequest request) {

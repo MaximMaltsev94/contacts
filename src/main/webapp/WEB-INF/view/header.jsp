@@ -23,7 +23,7 @@
                     <a class="text-small-bold" href="<c:url value="/contact/createList" />">Создать список</a>
                 </div>
                 <div class="element">
-                    <a class="text-small-bold" href="#">Импорт контактов</a>
+                    <a class="text-small-bold" href="<c:url value="/contact/oauthVK"/>">Импорт контактов</a>
                 </div>
 
                 <div class="element right">

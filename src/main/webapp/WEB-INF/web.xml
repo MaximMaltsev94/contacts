@@ -45,6 +45,8 @@
             <url-pattern>/contact/createList</url-pattern>
             <url-pattern>/contact/editList</url-pattern>
             <url-pattern>/contact/deleteList</url-pattern>
+            <url-pattern>/contact/oauthVK</url-pattern>
+            <url-pattern>/contact/importVK</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
