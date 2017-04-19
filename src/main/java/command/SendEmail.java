@@ -104,6 +104,7 @@ public class SendEmail implements Command {
                 Map<String, Object> args = getTemplateArgsMap(contact, relationship, country, city);
 
                 String message = emailHelper.processTemplate(emailText, args);
+                message = message.replaceAll(System.lineSeparator(), "<br>");
 
                 emailHelper.sendEmail(contact.getEmail(), emailSubject, message);
             }
