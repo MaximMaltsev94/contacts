@@ -1,12 +1,22 @@
 package util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.stringtemplate.v4.ST;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class EmailHelper {
+    private static final Logger LOG = LoggerFactory.getLogger(EmailHelper.class);
+
     private Properties properties;
     private String senderEmail;
     private String senderPassword;
@@ -55,12 +65,46 @@ public class EmailHelper {
         message.setFrom(new InternetAddress(senderEmail));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
         message.setSubject(subject);
-        message.setText(text);
+        message.setContent(text, "text/html; charset=utf-8");
 
         Transport.send(message);
     }
 
-    public void sendToAdmin(String subject, String text) throws MessagingException {
-        sendEmail(adminEmail, subject, text);
+    public Map.Entry<String, String> readTemplateFile(File file) {
+        Map.Entry<String, String> result = null;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+            String templateName = reader.readLine();
+            StringBuilder templateBody = new StringBuilder();
+            String str;
+            while ((str = reader.readLine()) != null) {
+                templateBody.append(str);
+                templateBody.append(System.lineSeparator());
+            }
+            result = new AbstractMap.SimpleEntry<>(templateName, templateBody.toString());
+        } catch (IOException e) {
+            LOG.warn("can't read template file - {}", file.getName(), e);
+        }
+        return result;
     }
+
+    public Map.Entry<String, String> readTemplateFile(String fileName) {
+        try {
+            return readTemplateFile(new File(getClass().getResource("../" + fileName).toURI()));
+        } catch (URISyntaxException e) {
+            LOG.error("error while opening file {}", fileName, e);
+        }
+        return null;
+    }
+
+    public String processTemplate(String templateText, Map<String, Object> args) {
+        ST template = new ST(templateText);
+
+        for (String key : args.keySet()) {
+            template.add(key, args.get(key));
+        }
+
+        return template.render();
+    }
+
 }

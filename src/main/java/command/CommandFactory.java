@@ -50,6 +50,10 @@ public class CommandFactory {
         commands.put("get/editlist", GetEditListPage.class);
         commands.put("post/editlist", EditList.class);
         commands.put("post/deletelist", DeleteList.class);
+
+        commands.put("post/forgotpassword", SendRestorePasswordEmail.class);
+        commands.put("get/resetpassword", GetResetPasswordPage.class);
+        commands.put("post/resetpassword", ResetPassword.class);
     }
 
     public Command getCommand(HttpServletRequest request) {

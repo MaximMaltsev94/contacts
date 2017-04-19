@@ -33,15 +33,13 @@ public class UserServiceImpl implements UserService {
         }
 
         String password = (String) request.getAttribute("password");
-        password = ContactUtils.getSHA256HEX(password);
 
         User user = new User();
         user.setLogin(login);
         user.setEmail(email);
         user.setNeedBDateNotify(needBDateNotify);
         user.setProfilePicture(profilePicture);
-        user.setPassword(password);
-
+        setHashedPassword(user, password);
         return user;
     }
 
@@ -50,6 +48,11 @@ public class UserServiceImpl implements UserService {
         if(user.getProfilePicture() != null) {
             ContactFileUtils.deleteFileByUrl(user.getProfilePicture(), "pri");
         }
+    }
+
+    @Override
+    public void setHashedPassword(User user, String password) {
+        user.setPassword(ContactUtils.getSHA256HEX(password));
     }
 
     @Override

@@ -11,6 +11,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.annotation.WebListener;
 
 import static org.quartz.CronScheduleBuilder.dailyAtHourAndMinute;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 
 @WebListener
@@ -22,16 +23,26 @@ public class QuartzListener extends QuartzInitializerListener {
         ServletContext ctx = sce.getServletContext();
         StdSchedulerFactory factory = (StdSchedulerFactory) ctx.getAttribute(QUARTZ_FACTORY_KEY);
         try {
-            Scheduler scheduler = factory.getScheduler();
-            JobDetail jobDetail = JobBuilder.newJob(BirthDateNotifyJob.class).build();
-            Trigger trigger = TriggerBuilder.newTrigger()
-                    .withIdentity("simple")
+            JobDetail birthDateDetailJob = JobBuilder.newJob(BirthDateNotifyJob.class).build();
+            Trigger birthDateTrigger = TriggerBuilder.newTrigger()
+                    .withIdentity("birthDate", "group1")
                     .withSchedule(dailyAtHourAndMinute(9, 0))
 //                    .withSchedule(simpleSchedule().withIntervalInSeconds(50).withRepeatCount(1))
                     .startNow()
                     .build();
-            scheduler.scheduleJob(jobDetail, trigger);
+
+            JobDetail invalidateTokensDetailJob = JobBuilder.newJob(InvalidateTokensJob.class).build();
+            Trigger invalidateTokensTrigger = TriggerBuilder.newTrigger()
+                    .withIdentity("invalidateTokens", "group1")
+                    .withSchedule(simpleSchedule().withIntervalInMinutes(1).repeatForever())
+                    .startNow()
+                    .build();
+
+            Scheduler scheduler = factory.getScheduler();
             scheduler.start();
+            scheduler.scheduleJob(birthDateDetailJob, birthDateTrigger);
+            scheduler.scheduleJob(invalidateTokensDetailJob, invalidateTokensTrigger);
+
         } catch (Exception e) {
             LOG.warn("can't start scheduler", e);
         }

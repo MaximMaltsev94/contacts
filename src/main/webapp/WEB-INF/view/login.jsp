@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/popup.css"/>">
 
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/login.js"/>"></script>
@@ -78,7 +79,7 @@
 
                     <div class="jlab-row margin">
                         <div class="jlab-cell-12 align-center text-small-bold">
-                            <a href="#">Забыли пароль?</a></div>
+                            <a href="javascript:loginView.showRestorePasswordPopup();">Забыли пароль?</a></div>
                         </div>
                 </form>
             </section>
@@ -120,6 +121,34 @@
             </section>
         </div>
     </div>
+</div>
+
+
+<div id="restorePassword" class="popupBack hidden">
+    <div class="popup">
+        <div class="jlab-row margin">
+            <div class="jlab-cell-11 center text-medium">Восстановить пароль</div>
+            <div class="jlab-cell-1 align-right">
+                <a class="text-large" href="javascript:;" onclick="loginView.closeRestorePasswordPopup()">&times;</a>
+            </div>
+        </div>
+        <div class="jlab-row margin">
+            <div class="jlab-cell-12 text-small-bold">Имя пользователя</div>
+        </div>
+        <div class="jlab-row margin">
+            <div class="jlab-cell-12">
+                <input type="text" id="restorePasswordLogin">
+            </div>
+        </div>
+        <div class="jlab-row margin">
+            <div class="jlab-cell-8"></div>
+            <div class="jlab-cell-4">
+                <button class="jlab-cell-12" type="button" onclick="loginView.redirectForgotPassword()">Восстановить</button>
+            </div>
+        </div>
+    </div>
+
+    <%--div id restorePassword end--%>
 </div>
 <jsp:include page="footer.jsp"/>
 </body>

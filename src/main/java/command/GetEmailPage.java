@@ -12,6 +12,7 @@ import service.ContactGroupsService;
 import service.ContactGroupsServiceImpl;
 import service.ContactService;
 import service.ContactServiceImpl;
+import util.EmailHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 public class GetEmailPage implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(GetEmailPage.class);
+    private EmailHelper emailHelper = new EmailHelper();
 
     private Map<String, String> readTemplates() {
         Map<String, String> templates = new TreeMap<>();
@@ -34,20 +36,10 @@ public class GetEmailPage implements Command {
                     .listFiles((dir, name) -> p.matcher(name).matches());
 
             if(fileList != null) {
-                for (File file : fileList) {
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-                        String templateName = reader.readLine();
-                        StringBuilder templateBody = new StringBuilder();
-                        String str;
-                        while ((str = reader.readLine()) != null) {
-                            templateBody.append(str);
-                            templateBody.append(System.getProperty("line.separator"));
-                        }
-                        templates.put(templateName, templateBody.toString());
-                    } catch (IOException e) {
-                        LOG.warn("can't read template file - {}", file.getName(), e);
-                    }
-                }
+                templates = Arrays.stream(fileList)
+                        .map(emailHelper::readTemplateFile)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
         } catch (URISyntaxException e) {
             LOG.error("can't find resource folder", e);

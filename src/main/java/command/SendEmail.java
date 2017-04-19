@@ -21,43 +21,47 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SendEmail implements Command {
     private final static Logger LOG = LoggerFactory.getLogger(SendEmail.class);
+    private EmailHelper emailHelper = new EmailHelper();
 
-    private String processMessage(Contact contact, Relationship relationship, Country country, City city, String message) {
-        ST template = new ST(message);
-        template.add("firstName", contact.getFirstName());
-        template.add("lastName", contact.getLastName());
+    private Map<String, Object> getTemplateArgsMap(Contact contact, Relationship relationship, Country country, City city) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("firstName", contact.getFirstName());
+        map.put("lastName", contact.getLastName());
         if(contact.getPatronymic() != null)
-            template.add("patronymic", contact.getPatronymic());
+            map.put("patronymic", contact.getPatronymic());
         if(contact.getBirthDate() != null) {
-            template.add("birthDate", DateFormatUtils.format(contact.getBirthDate(), "dd MMMM yyyy"));
+            map.put("birthDate", DateFormatUtils.format(contact.getBirthDate(), "dd MMMM yyyy"));
         }
         String gender = "жен.";
         if(contact.getGender() == true) {
             gender = "муж.";
         }
-        template.add("gender", gender);
-        template.add("citizenship", contact.getCitizenship());
+        map.put("gender", gender);
+        map.put("citizenship", contact.getCitizenship());
         if(relationship != null)
-            template.add("relationship", relationship.getName());
+            map.put("relationship", relationship.getName());
 
-        template.add("website", contact.getWebSite());
-        template.add("companyName", contact.getCompanyName());
+        map.put("website", contact.getWebSite());
+        map.put("companyName", contact.getCompanyName());
 
         if(country != null)
-            template.add("country", country.getName());
+            map.put("country", country.getName());
 
         if(city != null)
-            template.add("city", city.getName());
+            map.put("city", city.getName());
 
-        template.add("street", contact.getStreet());
-        template.add("postcode", contact.getPostcode());
-        return template.render();
+        map.put("street", contact.getStreet());
+        map.put("postcode", contact.getPostcode());
+
+        return map;
     }
 
     @Override
@@ -89,7 +93,6 @@ public class SendEmail implements Command {
             Map<Integer, Relationship> relationshipMap = relationshipList.stream().collect(Collectors.toMap(Relationship::getId, relationship -> relationship));
 
 
-            EmailHelper emailHelper = new EmailHelper();
             String emailSubject = (String) request.getAttribute("subject");
             String emailText = (String) request.getAttribute("text");
             for (Contact contact : contactList) {
@@ -98,7 +101,9 @@ public class SendEmail implements Command {
                 Country country = countryMap.get(contact.getCountryID());
                 City city = cityMap.get(contact.getCityID());
 
-                String message = processMessage(contact, relationship, country, city, emailText);
+                Map<String, Object> args = getTemplateArgsMap(contact, relationship, country, city);
+
+                String message = emailHelper.processTemplate(emailText, args);
 
                 emailHelper.sendEmail(contact.getEmail(), emailSubject, message);
             }

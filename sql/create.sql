@@ -31,6 +31,16 @@ CREATE TABLE `contacts`.`user_groups` (
 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `contacts`.`user_reset_tokens` (
+	`token`	NVARCHAR(255) NOT NULL ,
+	`login` NVARCHAR(15) NOT NULL,
+	`expiry_date` DATETIME NOT NULL,
+
+	PRIMARY KEY (`token`),
+	CONSTRAINT `user_reset_tokens_user_fk` FOREIGN KEY (`login`) REFERENCES `contacts`.`user`(`login`) ON DELETE CASCADE
+
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `contacts`.`relationship` (
 	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`name` NVARCHAR(20) NOT NULL,

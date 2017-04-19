@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserService {
     User parseRequest(HttpServletRequest request);
     void deleteProfileImageFile(User user);
+    void setHashedPassword(User user, String password);
 
     User getByLogin(String login) throws DaoException;
     List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException;
