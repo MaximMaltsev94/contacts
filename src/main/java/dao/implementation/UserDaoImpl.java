@@ -41,6 +41,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User getByEmail(String email) throws DaoException {
+        LOG.info("selecting user by email - {}", email);
+        String sql = String.format("SELECT * FROM %s where `email` = ?", TABLE_NAME);
+        return jdbcTemplate.queryForObject(rsMapper, sql, email);
+    }
+
+    @Override
     public List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException {
         LOG.info("selecting users by birth date notify - {}", needBDateNotify);
         String sql = String.format("SELECT * FROM %s WHERE `need_bdate_notify` = ?", TABLE_NAME);

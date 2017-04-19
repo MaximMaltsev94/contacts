@@ -25,12 +25,18 @@ public class UpdateUser implements Command {
 
         String imageAction = ContactUtils.IMG_NOTHING;
         boolean isErrorOccurred = true;
+        boolean isMessageSet = false;
         User newUser = null;
         User oldUser = null;
 
         try {
             newUser = userService.parseRequest(request);
             oldUser = userService.getByLogin(request.getUserPrincipal().getName());
+            if(!oldUser.getEmail().equalsIgnoreCase(newUser.getEmail()) && userService.getByEmail(newUser.getEmail()) != null) {
+                isMessageSet = true;
+                RequestUtils.setMessageText(request, String.format("Email %s занят другим пользователем", newUser.getEmail()), TooltipType.danger);
+                return new GetUserPage().execute(request, response, connection);
+            }
 
             imageAction = (String) request.getAttribute("imageAction");
             switch (imageAction) {
@@ -53,7 +59,9 @@ public class UpdateUser implements Command {
             throw new CommandExecutionException("error while accessing database", e);
         } finally {
             if(isErrorOccurred) {
-                RequestUtils.setMessageText(request, "Произошла ошибка при редактировании пользователя " + request.getUserPrincipal().getName() + ". Информация не изменена", TooltipType.danger);
+                if(!isMessageSet) {
+                    RequestUtils.setMessageText(request, "Произошла ошибка при редактировании пользователя " + request.getUserPrincipal().getName() + ". Информация не изменена", TooltipType.danger);
+                }
                 if(newUser != null && !ContactUtils.IMG_NOTHING.equals(imageAction)) {
                     userService.deleteProfileImageFile(newUser);
                 }

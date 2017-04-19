@@ -9,7 +9,8 @@ CREATE TABLE `contacts`.`user` (
 	`profile_picture` NVARCHAR(255) DEFAULT '/sysImages/default.png',
 	`password` NVARCHAR(255) NOT NULL,
 
-	PRIMARY KEY (`login`)
+	PRIMARY KEY (`login`),
+	UNIQUE (`email`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts`.`user_roles` (

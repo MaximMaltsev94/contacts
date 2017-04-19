@@ -61,6 +61,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByEmail(String email) throws DaoException {
+        return userDao.getByEmail(email);
+    }
+
+    @Override
     public List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException {
         return userDao.getByNeedNotify(needBDateNotify);
     }

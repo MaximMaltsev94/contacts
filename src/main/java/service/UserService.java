@@ -12,6 +12,8 @@ public interface UserService {
     void setHashedPassword(User user, String password);
 
     User getByLogin(String login) throws DaoException;
+    User getByEmail(String email) throws DaoException;
+
     List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException;
     void insert(User user) throws DaoException;
     void update(User user) throws DaoException;

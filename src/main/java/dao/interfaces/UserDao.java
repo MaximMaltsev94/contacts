@@ -11,4 +11,6 @@ public interface UserDao {
     void insert(User user) throws DaoException;
     void update(User user) throws DaoException;
     void delete(String login) throws DaoException;
+
+    User getByEmail(String email) throws DaoException;
 }

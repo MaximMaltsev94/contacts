@@ -31,6 +31,8 @@ public class Register implements Command {
             User user = userService.parseRequest(request);
             if (userService.getByLogin(user.getLogin()) != null) {
                 RequestUtils.setMessageText(request, "Пользователь с таким логином уже существует", TooltipType.danger);
+            } else if(userService.getByEmail(user.getEmail()) != null) {
+                RequestUtils.setMessageText(request, "Пользователь с таким email уже существует", TooltipType.danger);
             } else {
                 connection.setAutoCommit(false);
                 userService.insert(user);
