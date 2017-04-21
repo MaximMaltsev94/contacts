@@ -33,20 +33,6 @@ public class CityDaoImpl implements CityDao {
     }
 
     @Override
-    public List<City> getAll() throws DaoException {
-        LOG.info("selecting all cities");
-        String sql = String.format("SELECT * FROM %s", TABLE_NAME);
-        return jdbcTemplate.queryForList(rsMapper, sql);
-    }
-
-    @Override
-    public City getByID(int cityID) throws DaoException {
-        LOG.info("selecting cities by id - {}", cityID);
-        String sql = String.format("SELECT * FROM %s WHERE `id` = ?", TABLE_NAME);
-        return jdbcTemplate.queryForObject(rsMapper, sql, cityID);
-    }
-
-    @Override
     public List<City> getByIDIn(List<Integer> idList) throws DaoException {
         LOG.info("selecting cities by id list - {}", idList);
         if(idList.isEmpty()) {

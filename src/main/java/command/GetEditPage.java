@@ -26,7 +26,6 @@ public class GetEditPage implements Command {
         ContactService contactService = new ContactServiceImpl(connection);
         RelationshipService relationshipService = new RelationshipServiceImpl(connection);
         CountryService countryService = new CountryServiceImpl(connection);
-        CityService cityService = new CityServiceImpl(connection);
         PhoneService phoneService = new PhoneServiceImpl(connection);
         AttachmentService attachmentService = new AttachmentServiceImpl(connection);
         UserGroupsService userGroupsService = new UserGroupsServiceImpl(connection);
@@ -48,7 +47,6 @@ public class GetEditPage implements Command {
             request.setAttribute("contact", contact);
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
-            request.setAttribute("cityList", cityService.getAll());
             request.setAttribute("phoneList", phoneService.getByContactID(contactID));
             request.setAttribute("attachmentList", attachmentService.getByContactId(contactID));
             request.setAttribute("userGroups", userGroupsService.getByLogin(loginUser));

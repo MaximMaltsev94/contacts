@@ -17,16 +17,6 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
-    public List<City> getAll() throws DaoException {
-        return cityDao.getAll();
-    }
-
-    @Override
-    public City getByID(int cityID) throws DaoException {
-        return cityDao.getByID(cityID);
-    }
-
-    @Override
     public List<City> getByIDIn(List<Integer> idList) throws DaoException {
         return cityDao.getByIDIn(idList);
     }

@@ -15,18 +15,13 @@ var addView = (function() {
 
     return { // методы доступные извне
         selectCountry: function(countryID) {
-            document.getElementById('country').selectedIndex = countryID;
+            document.getElementById('country').value = countryID;
             addView.onChangeCountry(countryID);
         },
 
         selectCity: function (cityID) {
-            var options = document.getElementById('city');
-
-            for(i = 0, n = options.length; i < n; ++i) {
-                if(options[i].value == cityID) {
-                    document.getElementById('city').selectedIndex = i;
-                    return
-                }
+            if(cityID != 0) {
+                main.addScript("https://api.vk.com/method/database.getCitiesById?callback=addView.fillCity&city_ids=" + cityID)
             }
         },
 
@@ -48,21 +43,43 @@ var addView = (function() {
         },
 
         onChangeCountry: function(selectedValue) {
-            var citySelect = document.getElementById('city');
-            citySelect.innerHTML = '\<option value="0" data-country="0">Не выбрано</option>';
-            var citySelectHelper = document.getElementById('cityData');
+            document.getElementById('city').innerHTML = '\<option value="0">Не выбрано</option>';
+            document.getElementById('cityInput').value = "";
+        },
 
-            cityOptions = citySelectHelper.options;
-            for(i = 0, n = cityOptions.length; i < n; i++) {
-                if(cityOptions[i].dataset.country == selectedValue) {
-                    var option = document.createElement("option");
-                    option.value = cityOptions[i].value;
-                    option.dataset.country = selectedValue;
-                    option.textContent = cityOptions[i].textContent;
-                    citySelect.appendChild(option);
-                }
+        onCityKeyDown: function (text) {
+            var citySelect = document.getElementById('city');
+            if(text.length === 0) {
+                citySelect.innerHTML = "<option value='0'>Не выбрано</option>";
+                citySelect.value = 0;
+                return;
             }
-            document.getElementById('city').selectedIndex = 0;
+
+            var country_id = document.getElementById('country').value;
+            if(country_id != 0) {
+                var params = "?q=" + text + "&country_id=" + country_id + "&count=5&callback=addView.fillCities";
+                main.addScript("https://api.vk.com/method/database.getCities" + params);
+            }
+        },
+
+        fillCities: function (data) {
+            var citySelect = document.getElementById('city');
+            var cities = data.response;
+            var innerHTML = "";
+
+            for (var i = 0; i < cities.length; ++i) {
+                innerHTML += '<option value="' + cities[i].cid +  '">' + cities[i].title + '</option>';
+            }
+            citySelect.innerHTML = innerHTML;
+            if(cities.length === 0) {
+                citySelect.innerHTML = "<option value='0'>Не выбрано</option>";
+                citySelect.value = 0;
+            }
+        },
+
+        fillCity: function (data) {
+            var city = data.response[0];
+            document.getElementById('city').innerHTML = '<option value="' + city.cid +  '">' + city.name + '</option>';
         },
 
         readURL: function (input) {

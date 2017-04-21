@@ -24,7 +24,7 @@ CREATE TABLE `contacts`.`user_roles` (
 
 CREATE TABLE `contacts`.`user_groups` (
 	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`group_name` NVARCHAR(15) NOT NULL,
+	`group_name` NVARCHAR(30) NOT NULL,
 	`login`  NVARCHAR(15) NOT NULL,
 
 	PRIMARY KEY (`id`),
@@ -49,20 +49,12 @@ CREATE TABLE `contacts`.`relationship` (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts`.`country` (
-	`id` TINYINT UNSIGNED AUTO_INCREMENT NOT NULL,
+	`id` INT UNSIGNED NOT NULL,
 	`phone_code` SMALLINT UNSIGNED NOT NULL,
-	`name` NVARCHAR(30) NOT NULL,
+	`name` NVARCHAR(50) NOT NULL,
 	PRIMARY KEY (`id`)		
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `contacts`.`city` (
-	`id` SMALLINT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`name` NVARCHAR(30) NOT NULL,
-	`id_country` TINYINT UNSIGNED NOT NULL,
-	
-	PRIMARY KEY (`id`),
-	CONSTRAINT `city_county_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts`.`country`(`id`) ON DELETE CASCADE
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `contacts`.`contact` (
 	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
@@ -77,8 +69,9 @@ CREATE TABLE `contacts`.`contact` (
 	`email` NVARCHAR(255),
 	`company_name` NVARCHAR(50),
 	`profile_picture` NVARCHAR(255) DEFAULT '/sysImages/default.png',
-	`id_country` TINYINT UNSIGNED,
-	`id_city` SMALLINT UNSIGNED,
+	`id_country` INT UNSIGNED,
+	`id_region` INT UNSIGNED,
+	`id_city` INT UNSIGNED,
 	`street` NVARCHAR(50),
 	`postcode` NVARCHAR(20),
 
@@ -88,7 +81,6 @@ CREATE TABLE `contacts`.`contact` (
 	CONSTRAINT `concact_relationship_fk` FOREIGN KEY (`id_relationship`) REFERENCES `contacts`.`relationship` (`id`) ON DELETE SET NULL,
 	
 	CONSTRAINT `concact_country_fk` FOREIGN KEY (`id_country`) REFERENCES `contacts`.`country` (`id`) ON DELETE SET NULL,
-	CONSTRAINT `concact_city_fk` FOREIGN KEY (`id_city`) REFERENCES `contacts`.`city` (`id`) ON DELETE SET NULL,
 	CONSTRAINT `concact_user_fk` FOREIGN KEY (`login_user`) REFERENCES `contacts`.`user` (`login`) ON DELETE CASCADE
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -104,7 +96,7 @@ CREATE TABLE `contacts`.`contact_groups` (
 
 CREATE TABLE `contacts`.`phone` (
 	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`id_country` TINYINT UNSIGNED  NOT NULL,
+	`id_country` INT UNSIGNED  NOT NULL,
 	`operator_code` SMALLINT UNSIGNED NOT NULL,
 	`phone_number` BIGINT UNSIGNED NOT NULL,
 	`id_contact` INT UNSIGNED NOT NULL,

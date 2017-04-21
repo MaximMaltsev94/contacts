@@ -253,18 +253,10 @@
 
                     <div class="text-small-bold">Город</div>
                     <div class="jlab-row margin">
-                        <select name="city" id="city">
-                            <option value="0" data-country="0">Не выбрано</option>
+                        <input id="cityInput" type="text" onkeyup="addView.onCityKeyDown(this.value)">
+                        <select id="city" name="city">
+                            <option value="0">Не выбрано</option>
                         </select>
-
-                        <%--hidden select with city data--%>
-                        <select hidden id="cityData">
-                            <option value="0" data-country="0">Не выбрано</option>
-                            <c:forEach var="i" items="${requestScope.get('cityList')}">
-                                <option value="${i.id}" data-country="${i.countryID}">${i.name}</option>
-                            </c:forEach>
-                        </select>
-                        <%--hidden select with city data--%>
                     </div>
 
                     <div class="text-small-bold">Адрес</div>

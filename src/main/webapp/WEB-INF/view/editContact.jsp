@@ -32,7 +32,7 @@
 <span id="tooltip"></span>
 
 <div class="container-80">
-    <form id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="/contact/${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
+    <form autocomplete="off" id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="/contact/${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
         <div class="jlab-row margin">
             <div class="jlab-cell-12">
                 <section>
@@ -388,18 +388,13 @@
                                         <span class="text-small">Город</span>
                                     </div>
                                     <div class="jlab-cell-9">
-                                        <select name="city" id="city">
-                                            <option value="0" data-country="0">Не выбрано</option>
-                                        </select>
+                                        <div class="jlab-row">
+                                            <input id="cityInput" type="text" onkeyup="addView.onCityKeyDown(this.value)" placeholder="Начните вводить название города">
 
-                                        <%--hidden select with city data--%>
-                                        <select hidden id="cityData">
-                                            <option value="0" data-country="0">Не выбрано</option>
-                                            <c:forEach var="i" items="${requestScope.get('cityList')}">
-                                                <option value="${i.id}" data-country="${i.countryID}">${i.name}</option>
-                                            </c:forEach>
-                                        </select>
-                                        <%--hidden select with city data--%>
+                                            <select id="city" name="city">
+                                                <option value="0">Не выбрано</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -71,6 +71,12 @@ var main = (function () {
 
             document.body.appendChild(form);
             form.submit();
-        }
+        },
+
+        addScript: function (url) {
+            var elem = document.createElement("script");
+            elem.src = url;
+            document.head.appendChild(elem);
+        },
     }
 }());

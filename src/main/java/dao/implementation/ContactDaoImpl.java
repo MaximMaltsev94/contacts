@@ -43,8 +43,8 @@ public class ContactDaoImpl implements ContactDao {
             contact.setEmail(rs.getString("email"));
             contact.setCompanyName(rs.getString("company_name"));
             contact.setProfilePicture(rs.getString("profile_picture"));
-            contact.setCountryID(rs.getByte("id_country"));
-            contact.setCityID(rs.getByte("id_city"));
+            contact.setCountryID(rs.getInt("id_country"));
+            contact.setCityID(rs.getInt("id_city"));
             contact.setStreet(rs.getString("street"));
             contact.setPostcode(rs.getString("postcode"));
             contact.setLoginUser(rs.getString("login_user"));

@@ -20,12 +20,10 @@ public class GetSearchPage implements Command {
 
         RelationshipService relationshipService = new RelationshipServiceImpl(connection);
         CountryService countryService = new CountryServiceImpl(connection);
-        CityService cityService = new CityServiceImpl(connection);
 
         try {
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
-            request.setAttribute("cityList", cityService.getAll());
 
             request.setAttribute("gender", 2);
             request.setAttribute("age1", 0);

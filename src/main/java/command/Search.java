@@ -40,7 +40,6 @@ public class Search implements Command {
 
         RelationshipService relationshipService = new RelationshipServiceImpl(connection);
         CountryService countryService = new CountryServiceImpl(connection);
-        CityService cityService = new CityServiceImpl(connection);
         ContactService contactService = new ContactServiceImpl(connection);
 
         try {
@@ -61,7 +60,6 @@ public class Search implements Command {
 
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
-            request.setAttribute("cityList", cityService.getAll());
 
             request.setAttribute("contactList", contactPage.getData());
             request.setAttribute("maxPageNumber", maxPageNumber);
