@@ -70,7 +70,6 @@ CREATE TABLE `contacts`.`contact` (
 	`company_name` NVARCHAR(50),
 	`profile_picture` NVARCHAR(255) DEFAULT '/sysImages/default.png',
 	`id_country` INT UNSIGNED,
-	`id_region` INT UNSIGNED,
 	`id_city` INT UNSIGNED,
 	`street` NVARCHAR(50),
 	`postcode` NVARCHAR(20),
