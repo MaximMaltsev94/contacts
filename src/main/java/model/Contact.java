@@ -9,7 +9,7 @@ public class Contact extends GenericModel implements Serializable{
     private String lastName;
     private String patronymic;
     private Date birthDate;
-    private boolean gender;
+    private int gender;
     private String citizenship;
     private int relationshipID;
     private String webSite;
@@ -62,11 +62,11 @@ public class Contact extends GenericModel implements Serializable{
         this.birthDate = birthDate;
     }
 
-    public boolean getGender() {
+    public int getGender() {
         return gender;
     }
 
-    public void setGender(boolean gender) {
+    public void setGender(int gender) {
         this.gender = gender;
     }
 

@@ -130,7 +130,7 @@ public class ContactServiceImpl implements ContactService {
                 contact.setBirthDate(DateUtils.parseDate(birthDate, "dd.MM.yyyy"));
             }
 
-            contact.setGender(request.getAttribute("gender").toString().charAt(0) == '1');
+            contact.setGender(Integer.parseInt((String)request.getAttribute("gender")));
             contact.setCitizenship((String) request.getAttribute("citizenship"));
             contact.setRelationshipID(Integer.parseInt((String) request.getAttribute("relationship")));
             contact.setWebSite((String) request.getAttribute("webSite"));

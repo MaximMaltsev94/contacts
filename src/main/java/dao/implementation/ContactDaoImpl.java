@@ -36,7 +36,7 @@ public class ContactDaoImpl implements ContactDao {
             contact.setLastName(rs.getString("last_name"));
             contact.setPatronymic(rs.getString("patronymic"));
             contact.setBirthDate(rs.getDate("birth_date"));
-            contact.setGender(rs.getBoolean("gender"));
+            contact.setGender(rs.getInt("gender"));
             contact.setCitizenship(rs.getString("citizenship"));
             contact.setRelationshipID(rs.getByte("id_relationship"));
             contact.setWebSite(rs.getString("web_site"));
@@ -223,7 +223,7 @@ public class ContactDaoImpl implements ContactDao {
                 "last_name like ? and " +
                 "ifnull(patronymic, '') like ? and " +
                 "ifnull(timestampdiff(YEAR, birth_date, current_date()), -1) between ? and ? and " +
-                "cast((gender | 0) as char) like ? and " +
+                "cast(gender as char) like ? and " +
                 "ifnull(citizenship, '') like ? and " +
                 "ifnull(cast(id_relationship as char), '') like ? and " +
                 "ifnull(company_name, '') like ? and " +
@@ -248,7 +248,7 @@ public class ContactDaoImpl implements ContactDao {
                 surroundPercentString(searchCriteria.getPatronymic()),
                 age1,
                 age2,
-                surroundPercentInt(searchCriteria.getGender(), 2),
+                surroundPercentInt(searchCriteria.getGender(), 0),
                 surroundPercentString(searchCriteria.getCitizenship()),
                 surroundPercentInt(searchCriteria.getRelationship(), 0),
                 surroundPercentString(searchCriteria.getCompanyName()),

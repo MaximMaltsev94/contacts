@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 import service.*;
+import util.ContactUtils;
 import util.EmailHelper;
 import util.RequestUtils;
 import util.TooltipType;
@@ -40,9 +41,11 @@ public class SendEmail implements Command {
         if(contact.getBirthDate() != null) {
             map.put("birthDate", DateFormatUtils.format(contact.getBirthDate(), "dd MMMM yyyy"));
         }
-        String gender = "жен.";
-        if(contact.getGender() == true) {
+        String gender = "не. указ.";
+        if(contact.getGender() == ContactUtils.GENDER_MAN) {
             gender = "муж.";
+        } else if(contact.getGender() == ContactUtils.GENDER_WOMAN) {
+            gender = "жен.";
         }
         map.put("gender", gender);
         map.put("citizenship", contact.getCitizenship());

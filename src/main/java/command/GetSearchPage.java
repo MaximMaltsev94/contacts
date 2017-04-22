@@ -25,7 +25,7 @@ public class GetSearchPage implements Command {
             request.setAttribute("relationshipList", relationshipService.getAll());
             request.setAttribute("countryList", countryService.getAll());
 
-            request.setAttribute("gender", 2);
+            request.setAttribute("gender", 0);
             request.setAttribute("age1", 0);
             request.setAttribute("age2", 0);
             request.setAttribute("country", 0);

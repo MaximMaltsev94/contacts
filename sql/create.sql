@@ -62,7 +62,7 @@ CREATE TABLE `contacts`.`contact` (
 	`last_name` NVARCHAR(30) NOT NULL,
 	`patronymic` NVARCHAR(30),
 	`birth_date` DATE,
-	`gender` BIT(1) NOT NULL,
+	`gender` TINYINT NOT NULL,
 	`citizenship` NVARCHAR(50),
 	`id_relationship` TINYINT UNSIGNED,
 	`web_site` NVARCHAR(255),

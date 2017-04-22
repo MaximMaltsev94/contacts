@@ -72,10 +72,10 @@ public class EditContact implements Command {
             }
             if(MAN_IMG.equals(newContact.getProfilePicture())
                     || WOMAN_IMG.equals(newContact.getProfilePicture())) {
-                if(newContact.getGender()) {
-                    newContact.setProfilePicture(MAN_IMG);
-                } else {
+                if(newContact.getGender() == ContactUtils.GENDER_WOMAN) {
                     newContact.setProfilePicture(WOMAN_IMG);
+                } else {
+                    newContact.setProfilePicture(MAN_IMG);
                 }
             }
             contactService.update(newContact);

@@ -193,7 +193,6 @@
                                 <option value="${i}">${i}</option>
                             </c:forEach>
                         </select>
-                        <pre>  -  </pre>
                         <select name="age2" id="age2">
                             <option value="0">До</option>
                             <c:forEach var="i" begin="1" end="100">
@@ -203,20 +202,12 @@
                     </div>
 
                     <div class="text-small-bold">Пол</div>
-                    <div class="jlab-row margin text-small">
-                        <div class="jlab-cell-12">
-                            <input class="regular-radio" type="radio" name="gender" value="2" id="r2"/> <label for="r2"></label>Любой
-                        </div>
-                   </div>
-                    <div class="jlab-row text-small">
-                        <div class="jlab-cell-12">
-                            <input class="regular-radio" type="radio" name="gender" value="1" id="r1"/> <label for="r1"></label>Мужской
-                        </div>
-                   </div>
-                    <div class="jlab-row margin text-small">
-                        <div class="jlab-cell-12">
-                            <input class="regular-radio" type="radio" name="gender" value="0" id="r0"/> <label for="r0"></label>Женский
-                        </div>
+                    <div class="jlab-row margin">
+                        <select name="gender" id="gender">
+                            <option value="0">Любой</option>
+                            <option value="1">Мужской</option>
+                            <option value="2">Женский</option>
+                        </select>
                    </div>
 
                     <div class="text-small-bold">Гражданство</div>

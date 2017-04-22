@@ -30,11 +30,7 @@ var addView = (function() {
         },
 
         selectGender: function (genderValue) {
-            if(genderValue == true)
-                genderValue = 1;
-            else if(genderValue == false)
-                genderValue = 0;
-            document.getElementById('r' + genderValue).checked = true;
+            document.getElementById('gender').value = genderValue;
         },
 
         selectAge: function (age1, age2) {
@@ -42,7 +38,7 @@ var addView = (function() {
             document.getElementById('age2').selectedIndex = age2;
         },
 
-        onChangeCountry: function(selectedValue) {
+        onChangeCountry: function() {
             document.getElementById('city').innerHTML = '\<option value="0">Не выбрано</option>';
             document.getElementById('cityInput').value = "";
         },
@@ -147,14 +143,15 @@ var addView = (function() {
         },
 
         setAvatar: function (gender) {
+            console.log(gender);
             var img = document.getElementById('blah');
             var manIMG = '/sysImages/default.png';
             var womanIMG = '/sysImages/girl.png';
             if (img.getAttribute('src') === manIMG || img.getAttribute('src') === womanIMG) {
-                if (gender === 'M') {
-                    img.setAttribute('src', '/sysImages/default.png');
-                } else if (gender === 'W') {
+                if (gender == '2') {
                     img.setAttribute('src', '/sysImages/girl.png');
+                } else {
+                    img.setAttribute('src', '/sysImages/default.png');
                 }
             }
         }

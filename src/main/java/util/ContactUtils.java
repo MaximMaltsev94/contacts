@@ -9,6 +9,10 @@ public class ContactUtils {
     public static final String IMG_UPDATE = "update";
     public static final String IMG_DELETE = "delete";
 
+    public static final int GENDER_ANY = 0;
+    public static final int GENDER_MAN = 1;
+    public static final int GENDER_WOMAN = 2;
+
     public static synchronized String getUTF8String(String target) throws UnsupportedEncodingException {
         String result = null;
         if (target != null)

@@ -21,7 +21,7 @@
 <body onload="addView.selectCountry(${isAdd eq false ? requestScope.get('contact').countryID : 0});
         addView.selectCity(${isAdd eq false ? requestScope.get('contact').cityID : 0});
         addView.selectRelationship(${isAdd eq false ? requestScope.get('contact').relationshipID : 0});
-        addView.selectGender(${isAdd eq false ? requestScope.get('contact').gender : 1});
+        addView.selectGender(${isAdd eq false ? requestScope.get('contact').gender : 0});
 
         popupPhone.setPhoneCount(${isAdd eq false ? requestScope.get('phoneList').size() : 0});
         popupAttachment.setAttachmentCount(${isAdd eq false ? requestScope.get('attachmentList').size() : 0});
@@ -295,8 +295,11 @@
                                         <span class="text-small">Пол</span>
                                     </div>
                                     <div class="jlab-cell-9">
-                                        <input class="regular-radio" type="radio" name="gender" value="1" id="r1" onclick="addView.setAvatar('M')"/> <label for="r1"></label> Мужской
-                                        <input class="regular-radio" type="radio" name="gender" value="0" id="r0" onclick="addView.setAvatar('W')"/> <label for="r0"></label> Женский
+                                        <select name="gender" id="gender" onchange="addView.setAvatar(this.value)">
+                                            <option value="0">Не выбран</option>
+                                            <option value="1">Мужской</option>
+                                            <option value="2">Женский</option>
+                                        </select>
                                     </div>
                                 </div>
 
