@@ -43,6 +43,7 @@ public class SendRestorePasswordEmail implements Command {
             Map<String, Object> args = new HashMap<>();
             args.put("login", user.getLogin());
             args.put("token", token);
+            args.put("url", String.format("http://%s:%s/%s/contact/resetPassword", request.getServerName(), request.getServerPort(), request.getContextPath()));
 
             Map.Entry<String, String> template = emailHelper.readTemplateFile("restorePasswordEmail.txt");
             if(template == null) {
