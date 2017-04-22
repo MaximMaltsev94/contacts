@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="java.time.LocalDate" %>
+<% pageContext.setAttribute("year", LocalDate.now().getYear());%>
 
 <c:set var="isAdd" value="${requestScope.get('action') eq 'add'}" scope="page"/>
 <!DOCTYPE HTML>
@@ -22,6 +24,9 @@
         addView.selectCity(${isAdd eq false ? requestScope.get('contact').cityID : 0});
         addView.selectRelationship(${isAdd eq false ? requestScope.get('contact').relationshipID : 0});
         addView.selectGender(${isAdd eq false ? requestScope.get('contact').gender : 0});
+        addView.selectBirthDay(${isAdd eq false ? requestScope.get('contact').birthDay : 0},
+${isAdd eq false ? requestScope.get('contact').birthMonth : 0},
+${isAdd eq false ? requestScope.get('contact').birthYear : 0});
 
         popupPhone.setPhoneCount(${isAdd eq false ? requestScope.get('phoneList').size() : 0});
         popupAttachment.setAttachmentCount(${isAdd eq false ? requestScope.get('attachmentList').size() : 0});
@@ -32,7 +37,7 @@
 <span id="tooltip"></span>
 
 <div class="container-80">
-    <form autocomplete="off" id="contactForm" onsubmit="return addView.validateDate()" action="<c:url value="/contact/${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
+    <form autocomplete="off" id="contactForm" action="<c:url value="/contact/${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
         <div class="jlab-row margin">
             <div class="jlab-cell-12">
                 <section>
@@ -285,8 +290,35 @@
                                         <span class="text-small">День рождения</span>
                                     </div>
                                     <div class="jlab-cell-9">
-                                        <input type="text" name="birthDate" id="birthDate" value="<fmt:formatDate value="${requestScope.get('contact').birthDate}" pattern="dd.MM.yyyy"/>"
-                                               placeholder="дд.мм.гггг" pattern="^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$" maxlength="10" title="дд.мм.гггг"/>
+                                        <div class="jlab-row">
+                                            <select name="birth_day" id="birth_day">
+                                                <option value="0">Не выбрано</option>
+                                                <c:forEach var="i" begin="1" end="31">
+                                                    <option value="${i}">${i}</option>
+                                                </c:forEach>
+                                            </select>
+                                            <select name="birth_month" id="birth_month" onchange="addView.onChangeMonth()">
+                                                <option value="0">Не выбрано</option>
+                                                <option value="1">Январь</option>
+                                                <option value="2">Февраль</option>
+                                                <option value="3">Март</option>
+                                                <option value="4">Апрель</option>
+                                                <option value="5">Май</option>
+                                                <option value="6">Июнь</option>
+                                                <option value="7">Июль</option>
+                                                <option value="8">Август</option>
+                                                <option value="9">Сентябрь</option>
+                                                <option value="10">Октябрь</option>
+                                                <option value="11">Ноябрь</option>
+                                                <option value="12">Декабрь</option>
+                                            </select>
+                                            <select name="birth_year" id="birth_year">
+                                                <option value="0">Не выбрано</option>
+                                                <c:forEach var="i" begin="${year - 100}" end="${year}">
+                                                    <option value="${i}">${i}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 

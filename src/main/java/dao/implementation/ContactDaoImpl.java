@@ -9,7 +9,6 @@ import model.Contact;
 import model.ContactSearchCriteria;
 import model.Page;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.DaoUtils;
@@ -20,7 +19,6 @@ import java.util.Date;
 
 public class ContactDaoImpl implements ContactDao {
     private static final Logger LOG = LoggerFactory.getLogger(ContactDaoImpl.class);
-    private final String DATE_FORMAT = "yyyy.MM.dd";
     private final String TABLE_NAME = "`contact`";
     private ResultSetMapper<Contact> rsMapper;
     private JdbcTemplate<Contact> jdbcTemplate;
@@ -35,7 +33,9 @@ public class ContactDaoImpl implements ContactDao {
             contact.setFirstName(rs.getString("first_name"));
             contact.setLastName(rs.getString("last_name"));
             contact.setPatronymic(rs.getString("patronymic"));
-            contact.setBirthDate(rs.getDate("birth_date"));
+            contact.setBirthDay(rs.getInt("birth_day"));
+            contact.setBirthMonth(rs.getInt("birth_month"));
+            contact.setBirthYear(rs.getInt("birth_year"));
             contact.setGender(rs.getInt("gender"));
             contact.setCitizenship(rs.getString("citizenship"));
             contact.setRelationshipID(rs.getByte("id_relationship"));
@@ -56,16 +56,15 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public Contact insert(Contact contact) throws DaoException {
         LOG.info("inserting contact - {}", contact);
-        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_date`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
         List<Integer> generatedKeys = new ArrayList<>();
-        String birthDate = null;
-        if (contact.getBirthDate() != null) {
-            birthDate = DateFormatUtils.format(contact.getBirthDate(), DATE_FORMAT);
-        }
+
         jdbcTemplate.update(sql, generatedKeys, contact.getFirstName(),
                                                 contact.getLastName(),
                                                 contact.getPatronymic(),
-                                                birthDate,
+                                                contact.getBirthDay() == 0 ? null : contact.getBirthDay(),
+                                                contact.getBirthMonth() == 0 ? null : contact.getBirthMonth(),
+                                                contact.getBirthYear() == 0 ? null : contact.getBirthYear(),
                                                 contact.getGender(),
                                                 contact.getCitizenship(),
                 contact.getRelationshipID() == 0 ? null : contact.getRelationshipID(),
@@ -86,16 +85,15 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public void update(Contact contact) throws DaoException {
         LOG.info("updating contact - {}", contact);
-        String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_date` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_day` = ?, `birth_month` = ?, `birth_year` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);
 
         String birthDate = null;
-        if (contact.getBirthDate() != null) {
-            birthDate = DateFormatUtils.format(contact.getBirthDate(), DATE_FORMAT);
-        }
         jdbcTemplate.update(sql, contact.getFirstName(),
                                     contact.getLastName(),
                                     contact.getPatronymic(),
-                                    birthDate,
+                                    contact.getBirthDay() == 0 ? null : contact.getBirthDay(),
+                                    contact.getBirthMonth() == 0 ? null : contact.getBirthMonth(),
+                                    contact.getBirthYear() == 0 ? null : contact.getBirthYear(),
                                     contact.getGender(),
                                     contact.getCitizenship(),
                                     contact.getRelationshipID() == 0 ? null : contact.getRelationshipID(),
@@ -222,7 +220,7 @@ public class ContactDaoImpl implements ContactDao {
                 "first_name like ? and " +
                 "last_name like ? and " +
                 "ifnull(patronymic, '') like ? and " +
-                "ifnull(timestampdiff(YEAR, birth_date, current_date()), -1) between ? and ? and " +
+                "ifnull(timestampdiff(YEAR, CONCAT_WS('-', birth_year, birth_month, birth_day), current_date()), -1) between ? and ? and " +
                 "cast(gender as char) like ? and " +
                 "ifnull(citizenship, '') like ? and " +
                 "ifnull(cast(id_relationship as char), '') like ? and " +
@@ -270,7 +268,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException {
         LOG.info("selecting contacts by birth date - {} and login user list - {}", date, loginUserList);
-        String sql = String.format("SELECT * FROM %s WHERE day(`birth_date`) = ? and month(`birth_date`) = ? and `login_user` %s", TABLE_NAME, DaoUtils.generateSqlInPart(loginUserList.size()));
+        String sql = String.format("SELECT * FROM %s WHERE `birth_day` = ? and `birth_month` = ? and `login_user` %s", TABLE_NAME, DaoUtils.generateSqlInPart(loginUserList.size()));
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
 

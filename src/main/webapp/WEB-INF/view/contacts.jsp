@@ -69,9 +69,7 @@
                             <div class="jlab-row">
                                 <div class="jlab-cell-12 center">
                                 <span class="text-small">
-                                    <c:if test="${i.birthDate != null}">
-                                        <fmt:formatDate value="${i.birthDate}" type="date" dateStyle="long" />
-                                    </c:if>
+                                    ${i.birthDay == 0 ? 'xx' : i.birthDay}.${i.birthMonth == 0 ? 'xx' : i.birthMonth}.${i.birthYear == 0 ? 'xxxx' : i.birthYear}
                                     <c:out value=" ${i.companyName} ${i.street}"/>
                                 </span>
                                 </div>

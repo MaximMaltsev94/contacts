@@ -8,7 +8,9 @@ public class Contact extends GenericModel implements Serializable{
     private String firstName;
     private String lastName;
     private String patronymic;
-    private Date birthDate;
+    private int birthDay;
+    private int birthMonth;
+    private int birthYear;
     private int gender;
     private String citizenship;
     private int relationshipID;
@@ -54,12 +56,28 @@ public class Contact extends GenericModel implements Serializable{
         this.patronymic = patronymic;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+    public int getBirthDay() {
+        return birthDay;
     }
 
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
+    public void setBirthDay(int birthDay) {
+        this.birthDay = birthDay;
+    }
+
+    public int getBirthMonth() {
+        return birthMonth;
+    }
+
+    public void setBirthMonth(int birthMonth) {
+        this.birthMonth = birthMonth;
+    }
+
+    public int getBirthYear() {
+        return birthYear;
+    }
+
+    public void setBirthYear(int birthYear) {
+        this.birthYear = birthYear;
     }
 
     public int getGender() {

@@ -38,9 +38,7 @@ public class SendEmail implements Command {
         map.put("lastName", contact.getLastName());
         if(contact.getPatronymic() != null)
             map.put("patronymic", contact.getPatronymic());
-        if(contact.getBirthDate() != null) {
-            map.put("birthDate", DateFormatUtils.format(contact.getBirthDate(), "dd MMMM yyyy"));
-        }
+        map.put("birthDate", contact.getBirthDay() + " " + contact.getBirthMonth() + " " + contact.getBirthYear());
         String gender = "не. указ.";
         if(contact.getGender() == ContactUtils.GENDER_MAN) {
             gender = "муж.";

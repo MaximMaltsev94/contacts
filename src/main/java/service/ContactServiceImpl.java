@@ -6,10 +6,10 @@ import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContactFileUtils;
+import util.ContactUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -120,34 +119,29 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public Contact parseRequest(HttpServletRequest request) throws RequestParseException {
         Contact contact = new Contact();
-        try {
-            contact.setFirstName((String) request.getAttribute("firstName"));
-            contact.setLastName((String) request.getAttribute("lastName"));
-            contact.setPatronymic((String) request.getAttribute("patronymic"));
 
-            String birthDate = (String) request.getAttribute("birthDate");
-            if(StringUtils.isNotBlank(birthDate)) {
-                contact.setBirthDate(DateUtils.parseDate(birthDate, "dd.MM.yyyy"));
-            }
+        contact.setFirstName((String) request.getAttribute("firstName"));
+        contact.setLastName((String) request.getAttribute("lastName"));
+        contact.setPatronymic((String) request.getAttribute("patronymic"));
 
-            contact.setGender(Integer.parseInt((String)request.getAttribute("gender")));
-            contact.setCitizenship((String) request.getAttribute("citizenship"));
-            contact.setRelationshipID(Integer.parseInt((String) request.getAttribute("relationship")));
-            contact.setWebSite((String) request.getAttribute("webSite"));
-            contact.setEmail((String) request.getAttribute("email"));
-            contact.setCompanyName((String) request.getAttribute("companyName"));
-            contact.setCountryID(Integer.parseInt((String) request.getAttribute("country")));
-            contact.setCityID(Integer.parseInt((String) request.getAttribute("city")));
-            contact.setStreet((String) request.getAttribute("street"));
-            contact.setPostcode((String) request.getAttribute("postcode"));
-            contact.setLoginUser(request.getUserPrincipal().getName());
+        contact.setBirthDay(Integer.parseInt((String) request.getAttribute("birth_day")));
+        contact.setBirthMonth(Integer.parseInt((String) request.getAttribute("birth_month")));
+        contact.setBirthYear(Integer.parseInt((String) request.getAttribute("birth_year")));
 
-            String profileImage = parseProfileImage(request);
-            contact.setProfilePicture(profileImage);
-        } catch (ParseException e) {
-            LOG.error("birth date not matches required format. Found - \"{}\" expected \"dd.MM.yyyy\"", request.getAttribute("birthDate"));
-            throw new RequestParseException("birth date not matches expected format \"dd.MM.yyyy\"", e);
-        }
+        contact.setGender(Integer.parseInt((String)request.getAttribute("gender")));
+        contact.setCitizenship((String) request.getAttribute("citizenship"));
+        contact.setRelationshipID(Integer.parseInt((String) request.getAttribute("relationship")));
+        contact.setWebSite((String) request.getAttribute("webSite"));
+        contact.setEmail((String) request.getAttribute("email"));
+        contact.setCompanyName((String) request.getAttribute("companyName"));
+        contact.setCountryID(Integer.parseInt((String) request.getAttribute("country")));
+        contact.setCityID(Integer.parseInt((String) request.getAttribute("city")));
+        contact.setStreet((String) request.getAttribute("street"));
+        contact.setPostcode((String) request.getAttribute("postcode"));
+        contact.setLoginUser(request.getUserPrincipal().getName());
+
+        String profileImage = parseProfileImage(request);
+        contact.setProfilePicture(profileImage);
         return contact;
     }
 
@@ -155,8 +149,8 @@ public class ContactServiceImpl implements ContactService {
     public String parseProfileImage(HttpServletRequest request) {
 
         String result = "/sysImages/default.png";
-        if(request.getAttribute("gender") != null) {
-            result = request.getAttribute("gender").toString().charAt(0) == '1' ? result : "/sysImages/girl.png";
+        if(request.getAttribute("gender") != null && ContactUtils.GENDER_WOMAN == Integer.parseInt((String) request.getAttribute("gender"))){
+            result = "/sysImages/girl.png";
         }
         String str = (String) request.getAttribute("profileImage");
         if(StringUtils.isBlank(str)) {
