@@ -3,9 +3,30 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <c:set var="isAdd" value="${requestScope.get('action') eq 'createList'}" scope="page"/>
+<c:set var="isEdit" value="${requestScope.get('action') eq 'editList'}" scope="page"/>
+<c:set var="isImport" value="${requestScope.get('action') eq 'importVK'}" scope="page"/>
+<c:choose>
+    <c:when test="${requestScope.get('action') eq 'createList'}">
+        <c:set var="title" value="Создать список" scope="page"/>
+        <c:set var="inputGroupName" value="${''}" scope="page"/>
+        <c:set var="btnSubmitText" value="Добавить" scope="page"/>
+    </c:when>
+    <c:when test="${requestScope.get('action') eq 'editList'}">
+        <c:set var="title" value="Редактировать список" scope="page"/>
+        <c:set var="inputGroupName" value="${requestScope.get('groupName')}" scope="page"/>
+        <c:set var="btnSubmitText" value="Сохранить" scope="page"/>
+
+    </c:when>
+    <c:when test="${requestScope.get('action') eq 'importVK'}">
+        <c:set var="title" value="Импортировать Вконтакте" scope="page"/>
+        <c:set var="inputGroupName" value="${'Друзья вконтакте'}" scope="page"/>
+        <c:set var="btnSubmitText" value="Импортировать" scope="page"/>
+
+    </c:when>
+</c:choose>
 <html>
 <head>
-    <title>${isAdd eq true ? 'Создать список' : 'Редактировать список'}</title>
+    <title>${title}</title>
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
@@ -17,7 +38,7 @@
 <jsp:include page="header.jsp"/>
 <div class="container">
     <form action="<c:url value="/contact/${requestScope.get('action')}"/> " method="post">
-        <input type="text" hidden name="id" value="${isAdd ? '' : requestScope.get('id')}">
+        <input type="text" hidden name="id" value="${isAdd or isImport ? '' : requestScope.get('id')}">
         <div class="jlab-row margin">
             <div class="jlab-cell-9">
                 <c:if test="${not requestScope.get('contactList').isEmpty()}">
@@ -30,7 +51,7 @@
                                     <c:if test="${k < requestScope.get('contactList').size()}">
                                         <c:set var="i" value="${requestScope.get('contactList').get(k)}"/>
                                         <c:set var="contains"
-                                               value="${isAdd ? '' : requestScope.get('contactGroups').contains(i.id) ? 'checked' : ''}"/>
+                                               value="${isAdd or isImport ? '' : requestScope.get('contactGroups').contains(i.id) ? 'checked' : ''}"/>
                                         <section>
                                             <div class="jlab-row">
                                                 <div class="jlab-cell-1 center">
@@ -62,7 +83,7 @@
                     <div class="jlab-row margin">
                         <div class="jlab-cell-12">
                             <span class="text-small-bold">
-                                ${isAdd eq true ? 'Создание списка' : 'Редактирование списка'}
+                                ${title}
                             </span>
                         </div>
                     </div>
@@ -70,19 +91,19 @@
                         <div class="jlab-cell-12 align-center">
                             <input type="text"
                                    name="groupName"
-                                   value="${isAdd ? '' : requestScope.get('groupName')}"
+                                   value="${inputGroupName}"
                                    placeholder="Название списка"
-                                   pattern="^[A-Za-zА-Яа-яЁё\s0-9_]{1,15}$"
-                                   title="Русские, английские буквы, пробелы цифры, знаки подчеркивания от 1 до 15 символов"
+                                   pattern="^[A-Za-zА-Яа-яЁё\s0-9_]{1,30}$"
+                                   title="Русские, английские буквы, пробелы цифры, знаки подчеркивания от 1 до 30 символов"
                                    required>
                         </div>
                     </div>
                 </section>
                 <section>
                     <div class="jlab-row margin">
-                        <button class="jlab-cell-12 align-center">${isAdd eq true ?"Добавить" : "Сохранить"}</button>
+                        <button class="jlab-cell-12 align-center">${btnSubmitText}</button>
                     </div>
-                    <c:if test="${isAdd eq false}">
+                    <c:if test="${isAdd eq false and isImport eq false}">
                         <div class="jlab-row margin">
                             <button type="button"
                                     class="jlab-cell-12 align-center"

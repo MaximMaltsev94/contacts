@@ -22,7 +22,7 @@ public class OauthVk implements Command {
             String url = String.format("https://oauth.vk.com/authorize?client_id=%s&display=%s&redirect_uri=%s&scope=%s&response_type=%s&v=%s",
                     properties.getProperty("client_id"),
                     properties.getProperty("display"),
-                    String.format("http://%s:%s/%s/%s", request.getServerName(), request.getServerPort(), request.getContextPath(), properties.getProperty("redirect_uri")),
+                    String.format("http://%s:%s%s/%s", request.getServerName(), request.getServerPort(), request.getContextPath(), properties.getProperty("redirect_uri")),
                     properties.getProperty("scope"),
                     properties.getProperty("response_type"),
                     properties.getProperty("v"));

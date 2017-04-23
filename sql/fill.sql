@@ -1,8 +1,11 @@
 START TRANSACTION ;
-INSERT INTO `contacts`.`relationship` (`name`) VALUES ('В отношениях');
 INSERT INTO `contacts`.`relationship` (`name`) VALUES ('Свободен');
-INSERT INTO `contacts`.`relationship` (`name`) VALUES ('В активном поиске');
+INSERT INTO `contacts`.`relationship` (`name`) VALUES ('В отношениях');
+INSERT INTO `contacts`.`relationship` (`name`) VALUES ('Помолвлен');
 INSERT INTO `contacts`.`relationship` (`name`) VALUES ('В браке');
+INSERT INTO `contacts`.`relationship` (`name`) VALUES ('Все сложно');
+INSERT INTO `contacts`.`relationship` (`name`) VALUES ('В активном поиске');
+INSERT INTO `contacts`.`relationship` (`name`) VALUES ('Влюблён');
 COMMIT;
 
 START TRANSACTION ;

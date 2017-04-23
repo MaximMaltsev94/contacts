@@ -56,7 +56,7 @@ public class CommandFactory {
         commands.put("post/resetpassword", ResetPassword.class);
 
         commands.put("get/oauthvk", OauthVk.class);
-//        commands.put("get/importvk", GetImportVkPage.class);
+        commands.put("get/importvk", GetImportVkPage.class);
 //        commands.put("post/importvk", ImportVk.class);
     }
 
