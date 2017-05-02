@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
 
     <script src="<c:url value="/js/main.js"/>"></script>
+    <script src="<c:url value="/js/editListView.js"/>"></script>
     <script src="<c:url value="/js/listManagePopup.js"/>"></script>
 </head>
 <body>
@@ -42,12 +43,15 @@
         <div class="jlab-row margin">
             <div class="jlab-cell-9">
                 <section>
-                    <c:set var="first" value="true"/>
+                    <div class="jlab-row margin">
+                        <div class="jlab-cell-1"></div>
+                        <div class="jlab-cell-1"></div>
+                        <div class="jlab-cell-9"></div>
+                        <div class="jlab-cell-1">
+                            <input type="checkbox" id="selectAll" class="regular-checkbox" onclick="editListView.onSelectAllClick(this)"/><label for="selectAll"></label>
+                        </div>
+                    </div>
                     <c:forEach var="i" items="${requestScope.get('contactList')}">
-                        <c:if test="${first eq false}">
-                            <%--<hr>--%>
-                        </c:if>
-                        <c:set var="first" value="false"/>
                         <c:set var="contains"
                                value="${isAdd or isImport ? '' : requestScope.get('contactGroups').contains(i.id) ? 'checked' : ''}"/>
                         <div class="hoverable" onclick="main.toggleCheckBox(${i.id})">

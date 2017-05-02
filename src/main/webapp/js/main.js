@@ -80,6 +80,20 @@ var main = (function () {
         toggleCheckBox: function (id) {
             var checkBox = document.getElementById(id);
             checkBox.checked = !checkBox.checked;
+        },
+
+        selectAllCheckBoxes: function () {
+            var list = document.querySelectorAll('input[type=checkbox]');
+            for(var i = 0; i < list.length; ++i) {
+                list[i].checked = true;
+            }
+        },
+
+        deselectAllCheckBoxes: function () {
+            var list = document.querySelectorAll('input[type=checkbox]:checked');
+            for(var i = 0; i < list.length; ++i) {
+                list[i].checked = false;
+            }
         }
     }
 }());
