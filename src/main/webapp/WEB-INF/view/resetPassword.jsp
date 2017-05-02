@@ -12,7 +12,10 @@
     <script src="<c:url value="/js/login.js"/>"></script>
 </head>
 <body>
+<c:remove var="tooltip-text" scope="session"/>
+<c:remove var="tooltip-type" scope="session"/>
 <jsp:include page="header.jsp"/>
+<span id="tooltip"></span>
 <div class="container">
     <div class="jlab-row">
         <div class="jlab-cell-3"></div>
@@ -22,7 +25,7 @@
                 <section>
                     <div class="jlab-row margin text-medium">Восстановление пароля</div>
                     <div class="jlab-row margin text-small-bold">Новый пароль</div>
-                    <div class="jlab-row margin"><input type="password" id="pass1" name="password"></div>
+                    <div class="jlab-row margin"><input id="pass1" name="password" type="password" pattern="[\w]{3,20}" required title="Буквы, цифры, знак подчеркивания. От 3х до 20 символов"></div>
                     <div class="jlab-row margin text-small-bold">Повторите пароль</div>
                     <div class="jlab-row margin"><input type="password" id="pass2"></div>
                     <div class="jlab-row margin">

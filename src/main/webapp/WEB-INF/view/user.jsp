@@ -22,7 +22,7 @@
 <jsp:include page="header.jsp"/>
 <span id="tooltip"></span>
 
-<div class="container-80">
+<div class="container">
     <form id="contactForm" onsubmit="return loginView.validatePassword()" action="<c:url value="/contact/user"/>" method="post" enctype="multipart/form-data">
         <div class="jlab-row margin">
             <div class="jlab-cell-12">

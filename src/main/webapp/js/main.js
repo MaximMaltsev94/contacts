@@ -2,21 +2,19 @@ var main = (function () {
     var isTooltipShown = false;
     return {
         showTooltip: function (tooltipText, tooltipType) {
-            if (isTooltipShown === false) {
+            if (isTooltipShown === false && tooltipText !== '') {
                 isTooltipShown = true;
-                if (tooltipText == '')
-                    return;
 
                 var bgColor = tooltipType === 'success' ? "rgb(190, 235, 159)" : "rgb(239, 100, 105)";
 
                 var tooltipElement = document.getElementById('tooltip');
+
                 tooltipElement.style.display = "block";
                 tooltipElement.innerHTML = tooltipText;
                 tooltipElement.style.backgroundColor = bgColor;
                 tooltipElement.className = 'tooltip-animation';
 
                 setTimeout(function () {
-                    console.log('hiding');
                     tooltipElement.style.display = 'none';
                     isTooltipShown = false;
                 }, 5000);

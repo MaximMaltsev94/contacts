@@ -36,7 +36,7 @@ ${isAdd eq false ? requestScope.get('contact').birthYear : 0});
 
 <span id="tooltip"></span>
 
-<div class="container-80">
+<div class="container">
     <form autocomplete="off" id="contactForm" action="<c:url value="/contact/${requestScope.get('action')}"/>" method="post" enctype="multipart/form-data">
         <div class="jlab-row margin">
             <div class="jlab-cell-12">

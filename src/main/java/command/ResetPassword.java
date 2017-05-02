@@ -42,7 +42,8 @@ public class ResetPassword implements Command {
             userService.update(user);
 
             RequestUtils.setMessageText(request, "Пароль успешно обновлен", TooltipType.success);
-            request.login(user.getLogin(), password);
+            if(request.getUserPrincipal() == null)
+                request.login(user.getLogin(), password);
         } catch (DaoException e) {
             LOG.error("error while accessing database", e);
             throw new CommandExecutionException("error while accessing database", e);
