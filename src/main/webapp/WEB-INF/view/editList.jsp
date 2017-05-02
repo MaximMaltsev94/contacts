@@ -41,41 +41,34 @@
         <input type="text" hidden name="id" value="${isAdd or isImport ? '' : requestScope.get('id')}">
         <div class="jlab-row margin">
             <div class="jlab-cell-9">
-                <c:if test="${not requestScope.get('contactList').isEmpty()}">
-                    <c:forEach var="j" begin="0" end="${requestScope.get('contactList').size() - 1}" step="3">
-                        <div class="jlab-row">
-                            <c:forEach var="k" begin="${j}" end="${j + 2}">
-
-                                <div class="jlab-cell-4">
-
-                                    <c:if test="${k < requestScope.get('contactList').size()}">
-                                        <c:set var="i" value="${requestScope.get('contactList').get(k)}"/>
-                                        <c:set var="contains"
-                                               value="${isAdd or isImport ? '' : requestScope.get('contactGroups').contains(i.id) ? 'checked' : ''}"/>
-                                        <section>
-                                            <div class="jlab-row">
-                                                <div class="jlab-cell-1 center">
-                                                    <input type="checkbox" ${contains} id="${i.id}"name="contact-${i.id}" class="regular-checkbox"/><label for="${i.id}"></label>
-                                                </div>
-
-                                                <div class="jlab-cell-2 center">
-                                                    <img src="<c:url value="${i.profilePicture}" /> " width="25px" height="25px">
-                                                </div>
-
-                                                <div class="jlab-cell-9 center">
-                                                    <div class="text-medium">
-                                                            ${i.firstName} ${i.lastName}
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </section>
-                                    </c:if>
+                <section>
+                    <c:set var="first" value="true"/>
+                    <c:forEach var="i" items="${requestScope.get('contactList')}">
+                        <c:if test="${first eq false}">
+                            <%--<hr>--%>
+                        </c:if>
+                        <c:set var="first" value="false"/>
+                        <c:set var="contains"
+                               value="${isAdd or isImport ? '' : requestScope.get('contactGroups').contains(i.id) ? 'checked' : ''}"/>
+                        <div class="hoverable" onclick="main.toggleCheckBox(${i.id})">
+                            <div class="jlab-row striped">
+                                <div class="jlab-cell-1"></div>
+                                <div class="jlab-cell-1 center">
+                                    <img src="<c:url value="${i.profilePicture}" /> " width="25px" height="25px">
                                 </div>
-                            </c:forEach>
+
+                                <div class="jlab-cell-9 center">
+                                    <div class="text-medium">
+                                            ${i.firstName} ${i.lastName}
+                                    </div>
+                                </div>
+                                <div class="jlab-cell-1 center">
+                                    <input type="checkbox" ${contains} id="${i.id}"name="contact-${i.id}" class="regular-checkbox"/><label for="${i.id}"></label>
+                                </div>
+                            </div>
                         </div>
                     </c:forEach>
-                </c:if>
+                </section>
             </div><%--div.jlab-cell-9 end --%>
 
             <div class="jlab-cell-3">

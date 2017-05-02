@@ -79,21 +79,10 @@ a:hover {
     transform: scaleX(1);
 }
 
-.container, .container-80 {
+.container {
     min-height: calc(100vh - 96px);
     margin: auto auto 20px;
-}
-
-.container.login, .container-80.login {
-    margin-top: 30%;
-}
-
-.container {
     width: 90%;
-}
-
-.container-80 {
-    width: 80%;
 }
 
 .footer {
@@ -160,6 +149,13 @@ label {
     border-radius: 3px;
     display: inline-block;
     position: relative;
+
+
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 
 .regular-checkbox + label:active, .regular-checkbox:checked + label:active {
@@ -333,6 +329,7 @@ textarea {
 }
 
 hr {
+    margin: 0 auto;
     width: 90%;
     background-color: rgba(89, 89, 84, 0.5);
 }

@@ -76,5 +76,10 @@ var main = (function () {
             elem.src = url;
             document.head.appendChild(elem);
         },
+
+        toggleCheckBox: function (id) {
+            var checkBox = document.getElementById(id);
+            checkBox.checked = !checkBox.checked;
+        }
     }
 }());
