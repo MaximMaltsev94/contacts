@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.objects.friends.UserXtrLists;
 import exceptions.CommandExecutionException;
 import exceptions.DataNotFoundException;
 import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.ContactService;
+import service.ContactServiceImpl;
 import service.VKService;
 import service.VKServiceImpl;
 
@@ -28,11 +31,14 @@ public class GetImportVkPart implements Command {
             response.setContentType("application/javascript");
 
             VKService vkService = new VKServiceImpl();
+            ContactService contactService = new ContactServiceImpl(connection);
 
             int pageNumber = Integer.parseInt((String)request.getAttribute("vkPage"));
             UserActor userActor = (UserActor) request.getSession().getAttribute("userActor");
             try {
-                List<Contact> contactList = vkService.getFriendsPart(userActor, pageNumber, 10, request.getUserPrincipal().getName());
+                List<UserXtrLists> friendsList = vkService.getFriendsPart(userActor, pageNumber, 10);
+                List<Contact> contactList = contactService.mapVkUserToContact(friendsList, request.getUserPrincipal().getName());
+
                 String callback = String.format("%s(%s)", request.getAttribute("callback"), new ObjectMapper().writeValueAsString(contactList));
                 response.getWriter().write(callback);
             } catch (JsonProcessingException e) {

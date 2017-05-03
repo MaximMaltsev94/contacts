@@ -1,5 +1,6 @@
 package service;
 
+import com.vk.api.sdk.objects.friends.UserXtrLists;
 import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.Contact;
@@ -16,6 +17,7 @@ public interface ContactService {
     Contact parseRequest(HttpServletRequest request) throws RequestParseException;
     String parseProfileImage(HttpServletRequest request);
     void deleteProfileImageFile(Contact contact);
+    List<Contact> mapVkUserToContact(List<UserXtrLists> friendList, String loginUser);
 
 
     Contact insert(Contact contact) throws DaoException;

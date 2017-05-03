@@ -1,10 +1,12 @@
 package service;
 
+import com.vk.api.sdk.objects.friends.UserXtrLists;
 import dao.implementation.ContactDaoImpl;
 import dao.interfaces.ContactDao;
 import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import java.sql.Connection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ContactServiceImpl implements ContactService {
@@ -176,5 +179,68 @@ public class ContactServiceImpl implements ContactService {
     public void deleteProfileImageFile(Contact contact) {
         if(contact.getProfilePicture() != null)
             ContactFileUtils.deleteFileByUrl(contact.getProfilePicture(), "pri");
+    }
+
+    @Override
+    public List<Contact> mapVkUserToContact(List<UserXtrLists> friendList, String loginUser) {
+        return friendList
+                .stream()
+                .filter(e -> Objects.isNull(e.getDeactivated()))
+                .map(friend -> {
+                    Contact contact = new Contact();
+                    contact.setId(friend.getId());
+                    contact.setFirstName(friend.getFirstName());
+                    contact.setLastName(friend.getLastName());
+                    contact.setPatronymic(friend.getNickname());
+                    switch (friend.getSex()) {
+                        case UNKNOWN:
+                            contact.setGender(ContactUtils.GENDER_ANY);
+                            break;
+                        case MALE:
+                            contact.setGender(ContactUtils.GENDER_MAN);
+                            break;
+                        case FEMALE:
+                            contact.setGender(ContactUtils.GENDER_WOMAN);
+                            break;
+                    }
+
+                    String db[] = StringUtils.split(friend.getBdate(), ".");
+                    if(db != null) {
+                        if (db.length > 0)
+                            contact.setBirthDay(Integer.parseInt(db[0]));
+                        if (db.length > 1)
+                            contact.setBirthMonth(Integer.parseInt(db[1]));
+                        if (db.length > 2)
+                            contact.setBirthYear(Integer.parseInt(db[2]));
+                    }
+
+                    contact.setRelationshipID(friend.getRelation() == null ? 0 : friend.getRelation());
+//                        contact.setCitizenship();
+                    contact.setWebSite(friend.getSite());
+//                        contact.setEmail();
+                    if(CollectionUtils.isNotEmpty(friend.getCareer())) {
+                        contact.setCompanyName(friend.getCareer().get(0).getCompany());
+                    }
+                    if(friend.getPhoto200() == null) {
+                        if(contact.getGender() == ContactUtils.GENDER_WOMAN) {
+                            contact.setProfilePicture("/sysImages/girl.png");
+                        } else {
+                            contact.setProfilePicture("/sysImages/default.png");
+                        }
+                    } else {
+                        contact.setProfilePicture(friend.getPhoto200());
+                    }
+                    if(friend.getCountry() != null) {
+                        contact.setCountryID(friend.getCountry().getId());
+                    }
+                    if(friend.getCity() != null) {
+                        contact.setCityID(friend.getCity().getId());
+                    }
+//                        contact.setStreet(friend.get);
+//                        contact.setPostcode();
+                    contact.setLoginUser(loginUser);
+                    return contact;
+                })
+                .collect(Collectors.toList());
     }
 }

@@ -1,32 +1,25 @@
 package command;
 
-import com.vk.api.sdk.client.TransportClient;
-import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.httpclient.HttpTransportClient;
-import com.vk.api.sdk.objects.UserAuthResponse;
-import com.vk.api.sdk.queries.users.UserField;
+import com.vk.api.sdk.objects.friends.UserXtrLists;
 import exceptions.CommandExecutionException;
 import exceptions.DataNotFoundException;
 import model.Contact;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.ContactService;
+import service.ContactServiceImpl;
 import service.VKService;
 import service.VKServiceImpl;
-import util.ContactUtils;
 import util.RequestUtils;
 import util.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class GetImportVkPage implements Command {
@@ -43,7 +36,9 @@ public class GetImportVkPage implements Command {
             }
 
             VKService vkService = new VKServiceImpl();
-            List<Contact> contactList = vkService.getFriendsPart(actor, 1, 10, request.getUserPrincipal().getName());
+            ContactService contactService = new ContactServiceImpl(connection);
+            List<UserXtrLists> friendsList = vkService.getFriendsPart(actor, 1, 10);
+            List<Contact> contactList = contactService.mapVkUserToContact(friendsList, request.getUserPrincipal().getName());
 
             request.setAttribute("action", "importVK");
             request.setAttribute("contactList", contactList.stream().map(e -> {
