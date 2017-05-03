@@ -42,7 +42,7 @@
         <input type="text" hidden name="id" value="${isAdd or isImport ? '' : requestScope.get('id')}">
         <div class="jlab-row margin">
             <div class="jlab-cell-9">
-                <section>
+                <section id="contactList">
                     <div class="jlab-row margin">
                         <div class="jlab-cell-1"></div>
                         <div class="jlab-cell-1"></div>
@@ -73,6 +73,12 @@
                         </div>
                     </c:forEach>
                 </section>
+                <c:if test="${isImport}" >
+                    <div class="jlab-row">
+                        <div class="jlab-cell-4"></div>
+                        <button id="loadMore" class="jlab-cell-4" type="button" onclick="editListView.onLoadMoreClick('${requestScope.get('action')}')">Загрузить еще</button>
+                    </div>
+                </c:if>
             </div><%--div.jlab-cell-9 end --%>
 
             <div class="jlab-cell-3">

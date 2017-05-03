@@ -46,7 +46,6 @@ public class GetImportVkPage implements Command {
             List<Contact> contactList = vkService.getFriendsPart(actor, 1, 10, request.getUserPrincipal().getName());
 
             request.setAttribute("action", "importVK");
-            request.getSession().setAttribute("friendList", contactList);
             request.setAttribute("contactList", contactList.stream().map(e -> {
                 Contact contact = new Contact();
                 contact.setId(e.getId());

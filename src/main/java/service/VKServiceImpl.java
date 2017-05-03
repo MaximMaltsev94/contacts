@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import util.ContactUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class VKServiceImpl implements VKService {
@@ -28,20 +29,21 @@ public class VKServiceImpl implements VKService {
                 .execute()
                 .getItems()
                 .stream()
+                .filter(e -> Objects.isNull(e.getDeactivated()))
                 .map(friend -> {
                     Contact contact = new Contact();
                     contact.setId(friend.getId());
                     contact.setFirstName(friend.getFirstName());
                     contact.setLastName(friend.getLastName());
                     contact.setPatronymic(friend.getNickname());
-                    switch (friend.getSex().getValue()) {
-                        case ContactUtils.GENDER_ANY:
+                    switch (friend.getSex()) {
+                        case UNKNOWN:
                             contact.setGender(ContactUtils.GENDER_ANY);
                             break;
-                        case ContactUtils.GENDER_MAN:
+                        case MALE:
                             contact.setGender(ContactUtils.GENDER_MAN);
                             break;
-                        case ContactUtils.GENDER_WOMAN:
+                        case FEMALE:
                             contact.setGender(ContactUtils.GENDER_WOMAN);
                             break;
                     }
@@ -63,7 +65,15 @@ public class VKServiceImpl implements VKService {
                     if(CollectionUtils.isNotEmpty(friend.getCareer())) {
                         contact.setCompanyName(friend.getCareer().get(0).getCompany());
                     }
-                    contact.setProfilePicture(friend.getPhoto200());
+                    if(friend.getPhoto200() == null) {
+                        if(contact.getGender() == ContactUtils.GENDER_WOMAN) {
+                            contact.setProfilePicture("/sysImages/girl.png");
+                        } else {
+                            contact.setProfilePicture("/sysImages/default.png");
+                        }
+                    } else {
+                        contact.setProfilePicture(friend.getPhoto200());
+                    }
                     if(friend.getCountry() != null) {
                         contact.setCountryID(friend.getCountry().getId());
                     }

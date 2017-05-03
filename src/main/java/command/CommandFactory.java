@@ -57,7 +57,7 @@ public class CommandFactory {
 
         commands.put("get/oauthvk", OauthVk.class);
         commands.put("get/importvk", GetImportVkPage.class);
-//        commands.put("get/importvk/next", GetImportVkPart.class);
+        commands.put("get/importvk/next", GetImportVkPart.class);
 //        commands.put("post/importvk", ImportVk.class);
     }
 

@@ -40,7 +40,6 @@ public class OauthVk implements Command {
 
             UserActor actor = new UserActor(authResponse.getUserId(), authResponse.getAccessToken());
             request.getSession().setAttribute("userActor", actor);
-            request.getSession().setAttribute("vkPage", 2);
             response.sendRedirect(request.getContextPath() + "/contact/importVK");
         } catch (IOException e) {
             LOG.error("error while redirecting request", e);
