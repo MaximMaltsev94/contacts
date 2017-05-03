@@ -1,5 +1,12 @@
 package command;
 
+import com.vk.api.sdk.client.TransportClient;
+import com.vk.api.sdk.client.VkApiClient;
+import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.httpclient.HttpTransportClient;
+import com.vk.api.sdk.objects.UserAuthResponse;
 import exceptions.CommandExecutionException;
 import exceptions.DataNotFoundException;
 import org.slf4j.Logger;
@@ -16,19 +23,29 @@ public class OauthVk implements Command {
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
+        TransportClient transportClient = HttpTransportClient.getInstance();
+        VkApiClient vk = new VkApiClient(transportClient);
+
         try {
             Properties properties = new Properties();
             properties.load(getClass().getResourceAsStream("../importVK.properties"));
-            String url = String.format("https://oauth.vk.com/authorize?client_id=%s&display=%s&redirect_uri=%s&scope=%s&response_type=%s&v=%s",
-                    properties.getProperty("client_id"),
-                    properties.getProperty("display"),
-                    String.format("http://%s:%s%s/%s", request.getServerName(), request.getServerPort(), request.getContextPath(), properties.getProperty("redirect_uri")),
-                    properties.getProperty("scope"),
-                    properties.getProperty("response_type"),
-                    properties.getProperty("v"));
-            response.sendRedirect(url);
+
+            String code = (String) request.getAttribute("code");
+            int appId = Integer.parseInt(properties.getProperty("client_id"));
+            String clientSecret = properties.getProperty("app_secret");
+            String uri = request.getRequestURL().toString().replace("importVK", properties.getProperty("redirect_uri"));
+            UserAuthResponse authResponse = vk.oauth()
+                    .userAuthorizationCodeFlow(appId, clientSecret, uri, code)
+                    .execute();
+
+            UserActor actor = new UserActor(authResponse.getUserId(), authResponse.getAccessToken());
+            request.getSession().setAttribute("userActor", actor);
+            request.getSession().setAttribute("vkPage", 2);
+            response.sendRedirect(request.getContextPath() + "/contact/importVK");
         } catch (IOException e) {
-            LOG.error("can't redirect to oauth page", e);
+            LOG.error("error while redirecting request", e);
+        } catch (ApiException | ClientException e) {
+            LOG.error("error while authentificate vk");
         }
         return null;
     }
