@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css" />">
 
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/editListView.js"/>"></script>
@@ -37,6 +38,7 @@
 </head>
 <body>
 <jsp:include page="header.jsp"/>
+<span id="tooltip"></span>
 <div class="container">
     <form action="<c:url value="/contact/${requestScope.get('action')}"/> " method="post">
         <input type="text" hidden name="id" value="${isAdd or isImport ? '' : requestScope.get('id')}">

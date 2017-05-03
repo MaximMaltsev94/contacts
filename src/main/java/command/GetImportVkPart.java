@@ -15,6 +15,7 @@ import service.VKServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
@@ -23,18 +24,32 @@ public class GetImportVkPart implements Command {
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
-        response.setContentType("application/javascript");
-
-        VKService vkService = new VKServiceImpl();
-
-        int pageNumber = Integer.parseInt((String)request.getAttribute("vkPage"));
-        UserActor userActor = (UserActor) request.getSession().getAttribute("userActor");
         try {
-            List<Contact> contactList = vkService.getFriendsPart(userActor, pageNumber, 10, request.getUserPrincipal().getName());
-            String callback = String.format("%s(%s)", request.getAttribute("callback"), new ObjectMapper().writeValueAsString(contactList));
-            response.getWriter().write(callback);
-            response.getWriter().flush();
-        } catch (Exception e) {
+            response.setContentType("application/javascript");
+
+            VKService vkService = new VKServiceImpl();
+
+            int pageNumber = Integer.parseInt((String)request.getAttribute("vkPage"));
+            UserActor userActor = (UserActor) request.getSession().getAttribute("userActor");
+            try {
+                List<Contact> contactList = vkService.getFriendsPart(userActor, pageNumber, 10, request.getUserPrincipal().getName());
+                String callback = String.format("%s(%s)", request.getAttribute("callback"), new ObjectMapper().writeValueAsString(contactList));
+                response.getWriter().write(callback);
+            } catch (JsonProcessingException e) {
+                LOG.error("error while converting list to json", e);
+                response.getWriter().write("{error: 'Ошибка при обработке обработке данных.'}");
+            }  catch (ApiException | ClientException e) {
+                LOG.error("error while getting data from vk", e);
+                response.getWriter().write("{error: 'Ошибка при получении данных ВКонтакте.'}");
+            }
+        }catch (IOException e) {
+            LOG.info("can't write data to response", e);
+        } finally {
+            try {
+                response.getWriter().flush();
+            } catch (IOException e) {
+                LOG.info("can't write data to response", e);
+            }
         }
 
         return null;

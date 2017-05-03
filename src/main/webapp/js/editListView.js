@@ -47,10 +47,14 @@ var editListView = (function () {
         },
 
         appendContacts: function (data) {
-            if(data.length === 0) {
-                document.getElementById('loadMore').style.display = 'none';
+            if(!!data.error) {
+                main.showTooltip(data.error, 'danger');
+            } else {
+                if (data.length === 0) {
+                    document.getElementById('loadMore').style.display = 'none';
+                }
+                generateContactsHtml(data);
             }
-            generateContactsHtml(data);
         }
     }
 })();
