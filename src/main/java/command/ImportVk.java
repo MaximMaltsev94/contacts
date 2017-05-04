@@ -28,8 +28,8 @@ public class ImportVk implements Command {
         ContactGroupsService contactGroupsService = new ContactGroupsServiceImpl(connection);
         ContactService contactService = new ContactServiceImpl(connection);
         UserGroupsService userGroupsService = new UserGroupsServiceImpl(connection);
-        VKService vkService = new VKServiceImpl();
         UserActor userActor = (UserActor) request.getSession().getAttribute("userActor");
+        VKService vkService = new VKServiceImpl(userActor);
 
         try {
             String groupName = (String) request.getAttribute("groupName");
@@ -44,7 +44,7 @@ public class ImportVk implements Command {
 
             List<Integer> userIdList = contactGroupsService.parseRequest(request, userGroups.getId(), true).stream().map(ContactGroups::getContactID).collect(Collectors.toList());
 
-            List<? extends UserFull> friends = vkService.getFriendsByIdIn(userActor, userIdList);
+            List<? extends UserFull> friends = vkService.getFriendsByIdIn(userIdList);
             List<Contact> contactList = contactService.mapVkFriendToContact(friends, loginUser);
             contactService.saveRemoteImages(contactList);
             List<Integer> generatedIds = contactService.insert(contactList);

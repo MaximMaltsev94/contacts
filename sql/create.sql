@@ -75,6 +75,7 @@ CREATE TABLE `contacts`.`contact` (
 	`id_city` INT UNSIGNED,
 	`street` NVARCHAR(50),
 	`postcode` NVARCHAR(20),
+	`id_vk` INT UNSIGNED,
 
 	`login_user` NVARCHAR(15) NOT NULL,
 	

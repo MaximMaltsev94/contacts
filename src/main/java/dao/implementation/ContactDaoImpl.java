@@ -11,6 +11,7 @@ import model.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 import util.DaoUtils;
 
 import java.sql.*;
@@ -47,6 +48,7 @@ public class ContactDaoImpl implements ContactDao {
             contact.setCityID(rs.getInt("id_city"));
             contact.setStreet(rs.getString("street"));
             contact.setPostcode(rs.getString("postcode"));
+            contact.setVkId(rs.getInt("id_vk"));
             contact.setLoginUser(rs.getString("login_user"));
 
             return contact;
@@ -56,7 +58,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public Contact insert(Contact contact) throws DaoException {
         LOG.info("inserting contact - {}", contact);
-        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `id_vk`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
         List<Integer> generatedKeys = new ArrayList<>();
 
         jdbcTemplate.update(sql, generatedKeys, contact.getFirstName(),
@@ -76,6 +78,7 @@ public class ContactDaoImpl implements ContactDao {
                 contact.getCityID() == 0 ? null : contact.getCityID(),
                                                 contact.getStreet(),
                                                 contact.getPostcode(),
+                contact.getVkId() == 0 ? null : contact.getVkId(),
                                                 contact.getLoginUser());
 
         contact.setId(generatedKeys.get(0));
@@ -85,7 +88,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public List<Integer> insert(List<Contact> contactList) throws DaoException {
         LOG.info("inserting contact list - {}", contactList);
-        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `id_vk`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
         List<Object[]> args = new ArrayList<>();
         for (Contact contact : contactList) {
             args.add(new Object[] {
@@ -106,6 +109,7 @@ public class ContactDaoImpl implements ContactDao {
                     contact.getCityID() == 0 ? null : contact.getCityID(),
                     contact.getStreet(),
                     contact.getPostcode(),
+                    contact.getVkId() == 0 ? null : contact.getVkId(),
                     contact.getLoginUser()});
         }
         List<Integer> generatedKeys = new ArrayList<>();
@@ -116,7 +120,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public void update(Contact contact) throws DaoException {
         LOG.info("updating contact - {}", contact);
-        String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_day` = ?, `birth_month` = ?, `birth_year` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_day` = ?, `birth_month` = ?, `birth_year` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `id_vk` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);
 
         String birthDate = null;
         jdbcTemplate.update(sql, contact.getFirstName(),
@@ -136,6 +140,7 @@ public class ContactDaoImpl implements ContactDao {
                                     contact.getCityID() == 0 ? null : contact.getCityID(),
                                     contact.getStreet(),
                                     contact.getPostcode(),
+                                    contact.getVkId() == 0 ? null : contact.getVkId(),
                                     contact.getLoginUser(),
                                     contact.getId());
     }
@@ -309,5 +314,12 @@ public class ContactDaoImpl implements ContactDao {
         params.addAll(loginUserList);
 
         return jdbcTemplate.queryForList(rsMapper, sql, params.toArray());
+    }
+
+    @Override
+    public List<Contact> getByVkIdNotNullAndLoginUser(String loginUser) throws DaoException {
+        LOG.info("selecting contacts with non null email and login user - {}", loginUser);
+        String sql = String.format("SELECT * FROM %s WHERE `id_vk` is not null and `login_user` = ?", TABLE_NAME);
+        return jdbcTemplate.queryForList(rsMapper, sql, loginUser);
     }
 }

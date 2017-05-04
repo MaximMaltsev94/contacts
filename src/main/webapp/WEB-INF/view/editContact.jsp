@@ -382,6 +382,15 @@ ${isAdd eq false ? requestScope.get('contact').birthYear : 0});
                                     </div>
                                 </div>
 
+                                <div class="jlab-row margin">
+                                    <div class="jlab-cell-3 center">
+                                        <span class="text-small">Социальные сети</span>
+                                    </div>
+                                    <div class="jlab-cell-9">
+                                        <a href="https://vk.com/id${requestScope.get('contact').vkId}">Вконтакте</a>
+                                    </div>
+                                </div>
+
 
                                 <div class="jlab-row margin">
                                     <div class="jlab-cell-3 center">

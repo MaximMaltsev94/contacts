@@ -23,6 +23,15 @@ public class Contact extends GenericModel implements Serializable{
     private String street;
     private String postcode;
     private String loginUser;
+    private int VkId;
+
+    public int getVkId() {
+        return VkId;
+    }
+
+    public void setVkId(int vkId) {
+        VkId = vkId;
+    }
 
     public int getId() {
         return id;

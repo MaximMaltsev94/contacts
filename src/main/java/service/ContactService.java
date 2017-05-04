@@ -1,5 +1,8 @@
 package service;
 
+import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.friends.UserXtrLists;
 import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.objects.users.UserXtrCounters;
@@ -43,4 +46,7 @@ public interface ContactService {
     Map<Integer, List<UserGroups>> getContactGroups(List<Integer> contactIdList) throws DaoException;
     long getCountByLoginUser(String loginUser) throws DaoException;
     long getMaxID() throws DaoException;
+
+    List<Contact> getByVkIdNotNullAndLoginUser(String loginUser) throws DaoException;
+    List<? extends UserFull> getVkPart(UserActor userActor, int pageNumber, int count, String loginUser) throws DaoException, ClientException, ApiException;
 }

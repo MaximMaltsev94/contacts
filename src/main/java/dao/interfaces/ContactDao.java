@@ -30,4 +30,6 @@ public interface ContactDao {
     long getCountByLoginUser(String loginUser) throws DaoException;
     List<Contact> getByEmailNotNullAndLoginUser(String loginUser) throws DaoException;
     List<Contact> getByBirthdayAndLoginUserIn(Date date, List<String> loginUserList) throws DaoException;
+
+    List<Contact> getByVkIdNotNullAndLoginUser(String loginUser) throws DaoException;
 }

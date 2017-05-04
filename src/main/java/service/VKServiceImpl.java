@@ -15,23 +15,20 @@ import java.util.stream.Collectors;
 
 public class VKServiceImpl implements VKService {
     private VkApiClient vk;
+    private UserActor userActor;
 
-    public VKServiceImpl() {
+    public VKServiceImpl(UserActor userActor) {
         vk = new VkApiClient(HttpTransportClient.getInstance());
+        this.userActor = userActor;
     }
 
     @Override
-    public List<UserXtrLists> getFriendsPart(UserActor userActor, int pageNumber, int count) throws ClientException, ApiException {
-        return vk.friends()
-                .get(userActor, UserField.NICKNAME, UserField.SEX, UserField.BDATE, UserField.RELATION, UserField.SITE, UserField.CAREER, UserField.PHOTO_200, UserField.COUNTRY, UserField.CITY)
-                .count(count)
-                .offset((pageNumber - 1) * count)
-                .execute()
-                .getItems();
+    public List<Integer> getFriends() throws ClientException, ApiException {
+        return vk.friends().get(userActor).execute().getItems();
     }
 
     @Override
-    public List<UserXtrCounters> getFriendsByIdIn(UserActor userActor, List<Integer> userIdList) throws ClientException, ApiException {
+    public List<UserXtrCounters> getFriendsByIdIn(List<Integer> userIdList) throws ClientException, ApiException {
         return vk.users()
                 .get(userActor)
                 .fields(UserField.NICKNAME, UserField.SEX, UserField.BDATE, UserField.RELATION, UserField.SITE, UserField.CAREER, UserField.PHOTO_200, UserField.COUNTRY, UserField.CITY)

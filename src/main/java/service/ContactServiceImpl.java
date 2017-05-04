@@ -1,5 +1,8 @@
 package service;
 
+import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.users.UserFull;
 import dao.implementation.ContactDaoImpl;
 import dao.interfaces.ContactDao;
@@ -23,10 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ContactServiceImpl implements ContactService {
@@ -122,6 +122,29 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public List<Contact> getByVkIdNotNullAndLoginUser(String loginUser) throws DaoException {
+        return contactDao.getByVkIdNotNullAndLoginUser(loginUser);
+    }
+
+    @Override
+    public List<? extends UserFull> getVkPart(UserActor userActor, int pageNumber, int count, String loginUser) throws DaoException, ClientException, ApiException {
+        VKService vkService = new VKServiceImpl(userActor);
+
+        Set<Integer> importedVkId = getByVkIdNotNullAndLoginUser(loginUser)
+                .stream()
+                .map(Contact::getVkId)
+                .collect(Collectors.toSet());
+
+        List<Integer> friendIdList = vkService.getFriends()
+                .stream()
+                .filter(friendId -> !importedVkId.contains(friendId))
+                .skip((pageNumber - 1) * count)
+                .limit(count)
+                .collect(Collectors.toList());
+        return vkService.getFriendsByIdIn(friendIdList);
+    }
+
+    @Override
     public long getCountByLoginUser(String loginUser) throws DaoException {
         return contactDao.getCountByLoginUser(loginUser);
     }
@@ -148,6 +171,7 @@ public class ContactServiceImpl implements ContactService {
         contact.setCityID(Integer.parseInt((String) request.getAttribute("city")));
         contact.setStreet((String) request.getAttribute("street"));
         contact.setPostcode((String) request.getAttribute("postcode"));
+        contact.setVkId(Integer.parseInt((String)request.getAttribute("vk")));
         contact.setLoginUser(request.getUserPrincipal().getName());
 
         String profileImage = parseProfileImage(request);
@@ -199,6 +223,7 @@ public class ContactServiceImpl implements ContactService {
                 .map(friend -> {
                     Contact contact = new Contact();
                     contact.setId(friend.getId());
+                    contact.setVkId(friend.getId());
                     contact.setFirstName(friend.getFirstName());
                     contact.setLastName(friend.getLastName());
                     contact.setPatronymic(friend.getNickname());
