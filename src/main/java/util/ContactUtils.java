@@ -13,6 +13,9 @@ public class ContactUtils {
     public static final int GENDER_MAN = 1;
     public static final int GENDER_WOMAN = 2;
 
+    public static final String DEFAULT_MAN_AVATAR = "/sysImages/default.png";
+    public static final String DEFAULT_WOMAN_AVATAR = "/sysImages/girl.png";
+
     public static synchronized String getUTF8String(String target) throws UnsupportedEncodingException {
         String result = null;
         if (target != null)

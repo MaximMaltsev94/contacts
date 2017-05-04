@@ -37,7 +37,7 @@ public class GetImportVkPart implements Command {
             UserActor userActor = (UserActor) request.getSession().getAttribute("userActor");
             try {
                 List<UserXtrLists> friendsList = vkService.getFriendsPart(userActor, pageNumber, 10);
-                List<Contact> contactList = contactService.mapVkUserToContact(friendsList, request.getUserPrincipal().getName());
+                List<Contact> contactList = contactService.mapVkFriendToContact(friendsList, request.getUserPrincipal().getName());
 
                 String callback = String.format("%s(%s)", request.getAttribute("callback"), new ObjectMapper().writeValueAsString(contactList));
                 response.getWriter().write(callback);

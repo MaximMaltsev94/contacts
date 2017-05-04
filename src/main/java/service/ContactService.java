@@ -1,6 +1,8 @@
 package service;
 
 import com.vk.api.sdk.objects.friends.UserXtrLists;
+import com.vk.api.sdk.objects.users.UserFull;
+import com.vk.api.sdk.objects.users.UserXtrCounters;
 import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.Contact;
@@ -17,10 +19,12 @@ public interface ContactService {
     Contact parseRequest(HttpServletRequest request) throws RequestParseException;
     String parseProfileImage(HttpServletRequest request);
     void deleteProfileImageFile(Contact contact);
-    List<Contact> mapVkUserToContact(List<UserXtrLists> friendList, String loginUser);
+    List<Contact> mapVkFriendToContact(List<? extends UserFull> friendList, String loginUser);
+    void saveRemoteImages(List<Contact> contactList);
 
 
     Contact insert(Contact contact) throws DaoException;
+    List<Integer> insert(List<Contact> contactList) throws DaoException;
     void update(Contact contact) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;
 

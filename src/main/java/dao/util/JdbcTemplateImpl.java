@@ -59,6 +59,27 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
     }
 
     @Override
+    public void batchUpdate(String sql, List<Integer> generatedKeys, List<Object[]> args) throws DaoException {
+        try(PreparedStatement statement = DaoUtils.getPreparedStatement(connection, sql, Statement.RETURN_GENERATED_KEYS, args.get(0))) {
+            statement.addBatch();
+            for(int i = 1; i < args.size(); ++i) {
+                DaoUtils.fillPreparedStatement(statement, args.get(i));
+                statement.addBatch();
+            }
+            statement.executeBatch();
+
+            try(ResultSet rs = statement.getGeneratedKeys();){
+                while (rs.next()) {
+                    generatedKeys.add(rs.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            LOG.error("error while performing sql query - {}", sql, e);
+            throw new DaoException("error while performing sql query - " + sql, e);
+        }
+    }
+
+    @Override
     public T queryForObject(ResultSetMapper<T> rsMapper, String sql, Object... args) throws DaoException {
         T result = null;
         try(PreparedStatement statement = DaoUtils.getPreparedStatement(connection, sql, Statement.RETURN_GENERATED_KEYS, args);

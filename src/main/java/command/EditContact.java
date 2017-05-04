@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 
 public class EditContact implements Command {
     private static final Logger LOG = LoggerFactory.getLogger(EditContact.class);
-    private final String MAN_IMG = "/sysImages/default.png";
-    private final String WOMAN_IMG = "/sysImages/girl.png";
 
     @Override
     public String execute(HttpServletRequest request, HttpServletResponse response, Connection connection) throws CommandExecutionException, DataNotFoundException {
@@ -70,12 +68,12 @@ public class EditContact implements Command {
                     newContact.setProfilePicture(oldContact.getProfilePicture());
                     break;
             }
-            if(MAN_IMG.equals(newContact.getProfilePicture())
-                    || WOMAN_IMG.equals(newContact.getProfilePicture())) {
+            if(ContactUtils.DEFAULT_MAN_AVATAR.equals(newContact.getProfilePicture())
+                    || ContactUtils.DEFAULT_WOMAN_AVATAR.equals(newContact.getProfilePicture())) {
                 if(newContact.getGender() == ContactUtils.GENDER_WOMAN) {
-                    newContact.setProfilePicture(WOMAN_IMG);
+                    newContact.setProfilePicture(ContactUtils.DEFAULT_WOMAN_AVATAR);
                 } else {
-                    newContact.setProfilePicture(MAN_IMG);
+                    newContact.setProfilePicture(ContactUtils.DEFAULT_MAN_AVATAR);
                 }
             }
             contactService.update(newContact);

@@ -1,24 +1,26 @@
 package service;
 
-import com.vk.api.sdk.objects.friends.UserXtrLists;
+import com.vk.api.sdk.objects.users.UserFull;
 import dao.implementation.ContactDaoImpl;
 import dao.interfaces.ContactDao;
 import exceptions.DaoException;
+import exceptions.InvalidUrlException;
 import exceptions.RequestParseException;
 import model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.BufferedImageSaver;
 import util.ContactFileUtils;
 import util.ContactUtils;
+import util.RemoteImageDownloader;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.Date;
@@ -43,6 +45,11 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public Contact insert(Contact contact) throws DaoException {
         return contactDao.insert(contact);
+    }
+
+    @Override
+    public List<Integer> insert(List<Contact> contactList) throws DaoException {
+        return contactDao.insert(contactList);
     }
 
     @Override
@@ -148,12 +155,16 @@ public class ContactServiceImpl implements ContactService {
         return contact;
     }
 
+    private String concatProfileImageUrl(String fileName) {
+        return "/contact/image?name=" + fileName;
+    }
+
     @Override
     public String parseProfileImage(HttpServletRequest request) {
 
-        String result = "/sysImages/default.png";
+        String result = ContactUtils.DEFAULT_MAN_AVATAR;
         if(request.getAttribute("gender") != null && ContactUtils.GENDER_WOMAN == Integer.parseInt((String) request.getAttribute("gender"))){
-            result = "/sysImages/girl.png";
+            result = ContactUtils.DEFAULT_WOMAN_AVATAR;
         }
         String str = (String) request.getAttribute("profileImage");
         if(StringUtils.isBlank(str)) {
@@ -166,9 +177,8 @@ public class ContactServiceImpl implements ContactService {
 
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imagedata));
 
-            File fileToSave = ContactFileUtils.createTempFile("pri", ".png");
-            ImageIO.write(bufferedImage, "png", fileToSave);
-            result = "/contact/image?name=" + fileToSave.getName();
+            String fileName = new BufferedImageSaver(bufferedImage).saveToFileSystem("pri");
+            result = concatProfileImageUrl(fileName);
         } catch (IOException e) {
             LOG.error("can't save profile image to file system", e);
         }
@@ -182,7 +192,7 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> mapVkUserToContact(List<UserXtrLists> friendList, String loginUser) {
+    public List<Contact> mapVkFriendToContact(List<? extends UserFull> friendList, String loginUser) {
         return friendList
                 .stream()
                 .filter(e -> Objects.isNull(e.getDeactivated()))
@@ -219,13 +229,13 @@ public class ContactServiceImpl implements ContactService {
                     contact.setWebSite(friend.getSite());
 //                        contact.setEmail();
                     if(CollectionUtils.isNotEmpty(friend.getCareer())) {
-                        contact.setCompanyName(friend.getCareer().get(0).getCompany());
+                        contact.setCompanyName(friend.getCareer().get(friend.getCareer().size() - 1).getCompany());
                     }
                     if(friend.getPhoto200() == null) {
                         if(contact.getGender() == ContactUtils.GENDER_WOMAN) {
-                            contact.setProfilePicture("/sysImages/girl.png");
+                            contact.setProfilePicture(ContactUtils.DEFAULT_WOMAN_AVATAR);
                         } else {
-                            contact.setProfilePicture("/sysImages/default.png");
+                            contact.setProfilePicture(ContactUtils.DEFAULT_MAN_AVATAR);
                         }
                     } else {
                         contact.setProfilePicture(friend.getPhoto200());
@@ -242,5 +252,22 @@ public class ContactServiceImpl implements ContactService {
                     return contact;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void saveRemoteImages(List<Contact> contactList) {
+        for (Contact contact : contactList) {
+            if(!ContactUtils.DEFAULT_MAN_AVATAR.equals(contact.getProfilePicture()) && !ContactUtils.DEFAULT_WOMAN_AVATAR.equals(contact.getProfilePicture())) {
+                try {
+                    BufferedImage image = new RemoteImageDownloader(contact.getProfilePicture()).download();
+                    String fileName = new BufferedImageSaver(image).saveToFileSystem("pri");
+                    contact.setProfilePicture(concatProfileImageUrl(fileName));
+                } catch (IOException e) {
+                    LOG.error("can;t save image to file system", e);
+                } catch (InvalidUrlException e) {
+                    LOG.error("invalid url for image saving - ", contact.getProfilePicture());
+                }
+            }
+        }
     }
 }

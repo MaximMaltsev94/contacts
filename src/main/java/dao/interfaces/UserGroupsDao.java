@@ -12,4 +12,6 @@ public interface UserGroupsDao {
     UserGroups insert(UserGroups userGroups) throws DaoException;
     void update(UserGroups userGroups) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;
+
+    List<UserGroups> getByGroupNameAndLoginUser(String groupName, String loginUser) throws DaoException;
 }

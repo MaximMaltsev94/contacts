@@ -81,4 +81,11 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
         String sql = String.format("DELETE FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         jdbcTemplate.update(sql, idList.toArray());
     }
+
+    @Override
+    public List<UserGroups> getByGroupNameAndLoginUser(String groupName, String loginUser) throws DaoException {
+        LOG.info("selecting user groups by groupName - {} and loginUser - {}", groupName, loginUser);
+        String sql = String.format("SELECT * FROM %s WHERE `group_name` = ? and `login` = ?", TABLE_NAME);
+        return jdbcTemplate.queryForList(rsMapper, sql, groupName, loginUser);
+    }
 }

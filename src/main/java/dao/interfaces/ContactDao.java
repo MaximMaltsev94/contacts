@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface ContactDao {
     Contact insert(Contact contact) throws DaoException;
+    List<Integer> insert(List<Contact> contactList) throws DaoException;
     void update(Contact contact) throws DaoException;
     void delete(Contact contact) throws DaoException;
     void delete(List<Integer> idList) throws DaoException;

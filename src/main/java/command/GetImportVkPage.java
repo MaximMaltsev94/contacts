@@ -38,7 +38,7 @@ public class GetImportVkPage implements Command {
             VKService vkService = new VKServiceImpl();
             ContactService contactService = new ContactServiceImpl(connection);
             List<UserXtrLists> friendsList = vkService.getFriendsPart(actor, 1, 10);
-            List<Contact> contactList = contactService.mapVkUserToContact(friendsList, request.getUserPrincipal().getName());
+            List<Contact> contactList = contactService.mapVkFriendToContact(friendsList, request.getUserPrincipal().getName());
 
             request.setAttribute("action", "importVK");
             request.setAttribute("contactList", contactList.stream().map(e -> {

@@ -5,7 +5,6 @@ import exceptions.DaoException;
 import exceptions.DataNotFoundException;
 import model.ContactGroups;
 import model.UserGroups;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ContactGroupsService;
@@ -18,8 +17,6 @@ import util.TooltipType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 public class CreateList implements Command {

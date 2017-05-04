@@ -83,6 +83,37 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
+    public List<Integer> insert(List<Contact> contactList) throws DaoException {
+        LOG.info("inserting contact list - {}", contactList);
+        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        List<Object[]> args = new ArrayList<>();
+        for (Contact contact : contactList) {
+            args.add(new Object[] {
+                    contact.getFirstName(),
+                    contact.getLastName(),
+                    contact.getPatronymic(),
+                    contact.getBirthDay() == 0 ? null : contact.getBirthDay(),
+                    contact.getBirthMonth() == 0 ? null : contact.getBirthMonth(),
+                    contact.getBirthYear() == 0 ? null : contact.getBirthYear(),
+                    contact.getGender(),
+                    contact.getCitizenship(),
+                    contact.getRelationshipID() == 0 ? null : contact.getRelationshipID(),
+                    contact.getWebSite(),
+                    contact.getEmail(),
+                    contact.getCompanyName(),
+                    contact.getProfilePicture(),
+                    contact.getCountryID() == 0 ? null : contact.getCountryID(),
+                    contact.getCityID() == 0 ? null : contact.getCityID(),
+                    contact.getStreet(),
+                    contact.getPostcode(),
+                    contact.getLoginUser()});
+        }
+        List<Integer> generatedKeys = new ArrayList<>();
+        jdbcTemplate.batchUpdate(sql, generatedKeys, args);
+        return generatedKeys;
+    }
+
+    @Override
     public void update(Contact contact) throws DaoException {
         LOG.info("updating contact - {}", contact);
         String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_day` = ?, `birth_month` = ?, `birth_year` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);

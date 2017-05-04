@@ -47,4 +47,9 @@ public class UserGroupsServiceImpl implements UserGroupsService {
     public void delete(List<Integer> idList) throws DaoException {
         userGroupsDao.delete(idList);
     }
+
+    @Override
+    public List<UserGroups> getByGroupNameAndLogin(String groupName, String loginUser) throws DaoException {
+        return userGroupsDao.getByGroupNameAndLoginUser(groupName, loginUser);
+    }
 }
