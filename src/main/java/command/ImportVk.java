@@ -16,6 +16,7 @@ import service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,9 +30,9 @@ public class ImportVk implements Command {
         ContactService contactService = new ContactServiceImpl(connection);
         UserGroupsService userGroupsService = new UserGroupsServiceImpl(connection);
         UserActor userActor = (UserActor) request.getSession().getAttribute("userActor");
-        VKService vkService = new VKServiceImpl(userActor);
 
         try {
+            VKService vkService = new VKServiceImpl(userActor);
             String groupName = (String) request.getAttribute("groupName");
             String loginUser = request.getUserPrincipal().getName();
             List<UserGroups> userGroupsList = userGroupsService.getByGroupNameAndLogin(groupName, loginUser);
@@ -54,10 +55,12 @@ public class ImportVk implements Command {
         } catch (DaoException e) {
             LOG.error("can't access database", e);
             throw new CommandExecutionException("error while accessing database", e);
-        } catch (ClientException e) {
-            e.printStackTrace();
-        } catch (ApiException e) {
-            e.printStackTrace();
+        } catch (ClientException | ApiException e) {
+            LOG.error("can't access vk api", e);
+            throw new CommandExecutionException("error while accessing vk api", e);
+        } catch (IOException e) {
+            LOG.error("can't read vk properties file", e);
+            throw new CommandExecutionException("error while reading vk properties file", e);
         }
         return null;
     }

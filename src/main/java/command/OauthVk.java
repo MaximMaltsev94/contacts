@@ -11,6 +11,7 @@ import exceptions.CommandExecutionException;
 import exceptions.DataNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.VkProperties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,13 +28,11 @@ public class OauthVk implements Command {
         VkApiClient vk = new VkApiClient(transportClient);
 
         try {
-            Properties properties = new Properties();
-            properties.load(getClass().getResourceAsStream("../importVK.properties"));
-
+            VkProperties vkProperties = new VkProperties();
             String code = (String) request.getAttribute("code");
-            int appId = Integer.parseInt(properties.getProperty("client_id"));
-            String clientSecret = properties.getProperty("app_secret");
-            String uri = request.getRequestURL().toString().replace("importVK", properties.getProperty("redirect_uri"));
+            int appId = vkProperties.getApllicationId();
+            String clientSecret = vkProperties.getAppSecret();
+            String uri = request.getRequestURL().toString().replace("importVK", vkProperties.getRedirect_uri());
             UserAuthResponse authResponse = vk.oauth()
                     .userAuthorizationCodeFlow(appId, clientSecret, uri, code)
                     .execute();

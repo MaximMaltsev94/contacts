@@ -128,20 +128,25 @@ public class ContactServiceImpl implements ContactService {
 
     @Override
     public List<? extends UserFull> getVkPart(UserActor userActor, int pageNumber, int count, String loginUser) throws DaoException, ClientException, ApiException {
-        VKService vkService = new VKServiceImpl(userActor);
+        try {
+            VKService vkService = new VKServiceImpl(userActor);
 
-        Set<Integer> importedVkId = getByVkIdNotNullAndLoginUser(loginUser)
-                .stream()
-                .map(Contact::getVkId)
-                .collect(Collectors.toSet());
+            Set<Integer> importedVkId = getByVkIdNotNullAndLoginUser(loginUser)
+                    .stream()
+                    .map(Contact::getVkId)
+                    .collect(Collectors.toSet());
 
-        List<Integer> friendIdList = vkService.getFriends()
-                .stream()
-                .filter(friendId -> !importedVkId.contains(friendId))
-                .skip((pageNumber - 1) * count)
-                .limit(count)
-                .collect(Collectors.toList());
-        return vkService.getFriendsByIdIn(friendIdList);
+            List<Integer> friendIdList = vkService.getFriends()
+                    .stream()
+                    .filter(friendId -> !importedVkId.contains(friendId))
+                    .skip((pageNumber - 1) * count)
+                    .limit(count)
+                    .collect(Collectors.toList());
+            return vkService.getFriendsByIdIn(friendIdList);
+        } catch (IOException e) {
+            LOG.error("can't read vk properties", e);
+            throw new DaoException("error while reading vk properties file", e);
+        }
     }
 
     @Override
@@ -171,7 +176,8 @@ public class ContactServiceImpl implements ContactService {
         contact.setCityID(Integer.parseInt((String) request.getAttribute("city")));
         contact.setStreet((String) request.getAttribute("street"));
         contact.setPostcode((String) request.getAttribute("postcode"));
-        contact.setVkId(Integer.parseInt((String)request.getAttribute("vk")));
+        // TODO: 05.05.17 insert vk id to edit contact page
+//        contact.setVkId(Integer.parseInt((String)request.getAttribute("vk")));
         contact.setLoginUser(request.getUserPrincipal().getName());
 
         String profileImage = parseProfileImage(request);

@@ -1,5 +1,7 @@
 package command;
 
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stringtemplate.v4.ST;
 import service.*;
+import sun.rmi.runtime.Log;
 import util.ContactUtils;
 import util.EmailHelper;
 import util.RequestUtils;
@@ -20,6 +23,7 @@ import util.TooltipType;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,10 +74,10 @@ public class SendEmail implements Command {
         ContactService contactService = new ContactServiceImpl(connection);
         RelationshipService relationshipService = new RelationshipServiceImpl(connection);
         CountryService countryService = new CountryServiceImpl(connection);
-        CityService cityService = new CityServiceImpl(connection);
 
         boolean isErrorOccurred = true;
         try {
+            CityService cityService = new CityServiceVkImpl(new VKServiceImpl(null));
 
             List<Integer> idList = Arrays.stream(((String) request.getAttribute("id")).split(","))
                                             .map(Integer::parseInt)
@@ -115,6 +119,12 @@ public class SendEmail implements Command {
             throw new CommandExecutionException("error while accessing database",e);
         } catch (MessagingException e) {
             LOG.error("can't send email to address", e);
+        } catch (IOException e) {
+            LOG.error("can't read vk properties file", e);
+            throw new CommandExecutionException("error while reading vk properties file", e);
+        } catch (ApiException | ClientException e) {
+            LOG.error("can't access vk api", e);
+            throw new CommandExecutionException("error while accesing vk api", e);
         }
 
         if(isErrorOccurred) {

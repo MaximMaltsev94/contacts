@@ -30,4 +30,12 @@ public class City extends GenericModel implements Serializable {
     public void setCountryID(int countryID) {
         this.countryID = countryID;
     }
+
+    public City() {
+    }
+
+    public City(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
