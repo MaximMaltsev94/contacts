@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Contact extends GenericModel implements Serializable{
     private int id;

@@ -3,9 +3,7 @@ package service;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.objects.friends.UserXtrLists;
 import com.vk.api.sdk.objects.users.UserFull;
-import com.vk.api.sdk.objects.users.UserXtrCounters;
 import exceptions.DaoException;
 import exceptions.RequestParseException;
 import model.Contact;
@@ -14,6 +12,8 @@ import model.Page;
 import model.UserGroups;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,7 @@ public interface ContactService {
     void deleteProfileImageFile(Contact contact);
     List<Contact> mapVkFriendToContact(List<? extends UserFull> friendList, String loginUser);
     void saveRemoteImages(List<Contact> contactList);
+    File writeContactsToExcel(String loginUser) throws IOException;
 
 
     Contact insert(Contact contact) throws DaoException;

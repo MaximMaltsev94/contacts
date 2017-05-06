@@ -3,7 +3,6 @@ package command;
 import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
-import model.UserGroups;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

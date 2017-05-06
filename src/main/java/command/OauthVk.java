@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Properties;
 
 public class OauthVk implements Command {
     private static final Logger LOG = LoggerFactory.getLogger(OauthVk.class);

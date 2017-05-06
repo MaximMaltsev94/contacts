@@ -11,12 +11,10 @@ import model.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 import util.DaoUtils;
 
-import java.sql.*;
+import java.sql.Connection;
 import java.util.*;
-import java.util.Date;
 
 public class ContactDaoImpl implements ContactDao {
     private static final Logger LOG = LoggerFactory.getLogger(ContactDaoImpl.class);

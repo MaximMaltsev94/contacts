@@ -25,6 +25,9 @@
                 <div class="element">
                     <a class="text-small-bold" href="<c:url value="/contact/importVK"/>">Импорт контактов</a>
                 </div>
+                <div class="element">
+                    <a class="text-small-bold" href="<c:url value="/contact/export"/>">Экспорт в Excel</a>
+                </div>
 
                 <div class="element right">
                     <img src="<c:url value="${requestScope.get('user').profilePicture}" /> " width="25px" height="25px">

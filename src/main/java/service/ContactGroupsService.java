@@ -2,7 +2,6 @@ package service;
 
 import exceptions.DaoException;
 import model.ContactGroups;
-import util.DaoUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

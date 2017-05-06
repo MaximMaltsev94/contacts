@@ -3,7 +3,6 @@ package service;
 import exceptions.DaoException;
 import model.UserGroups;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface UserGroupsService {

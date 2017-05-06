@@ -12,6 +12,8 @@ import exceptions.RequestParseException;
 import model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.BufferedImageSaver;
@@ -24,8 +26,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -300,5 +307,40 @@ public class ContactServiceImpl implements ContactService {
                 }
             }
         }
+    }
+
+    @Override
+    public File writeContactsToExcel(String loginUser) throws IOException {
+        Workbook book = new HSSFWorkbook();
+        Sheet sheet = book.createSheet("Birthdays");
+
+        // Нумерация начинается с нуля
+        Row row = sheet.createRow(0);
+
+        // Мы запишем имя и дату в два столбца
+        // имя будет String, а дата рождения --- Date,
+        // формата dd.mm.yyyy
+        Cell name = row.createCell(0);
+        name.setCellValue("John");
+
+        Cell birthdate = row.createCell(1);
+
+        DataFormat format = book.createDataFormat();
+        CellStyle dateStyle = book.createCellStyle();
+        dateStyle.setDataFormat(format.getFormat("dd.mm.yyyy"));
+        birthdate.setCellStyle(dateStyle);
+
+
+        // Нумерация лет начинается с 1900-го
+        birthdate.setCellValue(Date.from(LocalDate.of(1994, Month.NOVEMBER, 14).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        // Меняем размер столбца
+        sheet.autoSizeColumn(1);
+
+        // Записываем всё в файл
+        File file = ContactFileUtils.createTempFile("report", ".xls");
+        book.write(new FileOutputStream(file));
+        book.close();
+        return file;
     }
 }

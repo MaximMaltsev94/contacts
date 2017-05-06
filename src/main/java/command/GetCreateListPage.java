@@ -3,7 +3,6 @@ package command;
 import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
-import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ContactService;
@@ -12,7 +11,6 @@ import service.ContactServiceImpl;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
-import java.util.List;
 
 public class GetCreateListPage implements Command {
     private static final Logger LOG = LoggerFactory.getLogger(GetCreateListPage.class);

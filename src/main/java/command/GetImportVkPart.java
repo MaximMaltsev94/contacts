@@ -5,28 +5,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.objects.friends.UserXtrLists;
 import com.vk.api.sdk.objects.users.UserFull;
 import exceptions.CommandExecutionException;
 import exceptions.DaoException;
 import exceptions.DataNotFoundException;
 import model.Contact;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ContactService;
 import service.ContactServiceImpl;
-import service.VKService;
-import service.VKServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GetImportVkPart implements Command {
     private static final Logger LOG = LoggerFactory.getLogger(GetImportVkPart.class);

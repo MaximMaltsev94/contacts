@@ -3,7 +3,6 @@ package command;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.objects.friends.UserXtrLists;
 import com.vk.api.sdk.objects.users.UserFull;
 import exceptions.CommandExecutionException;
 import exceptions.DaoException;
@@ -13,15 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ContactService;
 import service.ContactServiceImpl;
-import service.VKService;
-import service.VKServiceImpl;
 import util.RequestUtils;
 import util.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

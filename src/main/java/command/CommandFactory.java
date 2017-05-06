@@ -59,6 +59,8 @@ public class CommandFactory {
         commands.put("get/importvk", GetImportVkPage.class);
         commands.put("get/importvk/next", GetImportVkPart.class);
         commands.put("post/importvk", ImportVk.class);
+
+        commands.put("get/export", ExportExcel.class);
     }
 
     public Command getCommand(HttpServletRequest request) {
