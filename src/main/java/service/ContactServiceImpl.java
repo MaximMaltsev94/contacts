@@ -30,9 +30,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,11 +39,21 @@ public class ContactServiceImpl implements ContactService {
     private ContactDao contactDao;
     private ContactGroupsService contactGroupsService;
     private UserGroupsService userGroupsService;
+    private CountryService countryService;
+    private CityService cityService;
+    private RelationshipService relationshipService;
 
     public ContactServiceImpl(Connection connection) {
         contactDao = new ContactDaoImpl(connection);
         contactGroupsService = new ContactGroupsServiceImpl(connection);
         userGroupsService = new UserGroupsServiceImpl(connection);
+        countryService = new CountryServiceImpl(connection);
+        try {
+            cityService = new CityServiceVkImpl(new VKServiceImpl(null));
+        } catch (IOException e) {
+            LOG.error("can't instatinate vk service", e);
+        }
+        relationshipService = new RelationshipServiceImpl(connection);
     }
 
     @Override
@@ -310,34 +317,84 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public File writeContactsToExcel(String loginUser) throws IOException {
+    public File writeContactsToExcel(List<Contact> contactList) throws IOException, DaoException {
+        List<Integer> cityIdList = contactList.stream().map(Contact::getCityID).collect(Collectors.toList());
+        Map<Integer, String> cityMap = cityService.getByIDIn(cityIdList).stream().collect(Collectors.toMap(City::getId, City::getName));
+
+        List<Integer> countryIdList = contactList.stream().map(Contact::getCountryID).collect(Collectors.toList());
+        Map<Integer, String> countryMap = countryService.getByIDIn(countryIdList).stream().collect(Collectors.toMap(Country::getId, Country::getName));
+
+        Map<Integer, String> relationshipMap = relationshipService.getAll().stream().collect(Collectors.toMap(Relationship::getId, Relationship::getName));
+
+
         Workbook book = new HSSFWorkbook();
-        Sheet sheet = book.createSheet("Birthdays");
+        Sheet sheet = book.createSheet("Контакты");
+        CellStyle style = book.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
 
-        // Нумерация начинается с нуля
-        Row row = sheet.createRow(0);
+        Font font = book.createFont();
+        font.setBold(true);
+        style.setFont(font);
 
-        // Мы запишем имя и дату в два столбца
-        // имя будет String, а дата рождения --- Date,
-        // формата dd.mm.yyyy
-        Cell name = row.createCell(0);
-        name.setCellValue("John");
+        String headerText[] = {"ФИО", "Дата рождения", "Пол", "Семейное положение", "Веб сайт", "Эл. почта", "Место работы", "Адрес", "Социальные сети"};
 
-        Cell birthdate = row.createCell(1);
+        Row header = sheet.createRow(0);
+        for (int i = 0; i < headerText.length; i++) {
+            Cell cell = header.createCell(i);
+            cell.setCellValue(headerText[i]);
+            cell.setCellStyle(style);
+        }
 
-        DataFormat format = book.createDataFormat();
-        CellStyle dateStyle = book.createCellStyle();
-        dateStyle.setDataFormat(format.getFormat("dd.mm.yyyy"));
-        birthdate.setCellStyle(dateStyle);
+        int i = 1;
+        for (Contact contact : contactList) {
+            Row body = sheet.createRow(i++);
+            Cell cell = body.createCell(0);
+            cell.setCellValue(String.format("%s %s %s",
+                    StringUtils.defaultIfBlank(contact.getFirstName(), ""),
+                    StringUtils.defaultIfBlank(contact.getLastName(), ""),
+                    StringUtils.defaultIfBlank(contact.getPatronymic(), "")));
 
+            cell = body.createCell(1);
+            cell.setCellValue(String.format("%s.%s.%s",
+                    contact.getBirthDay() == 0 ? "xx" : contact.getBirthDay(),
+                    contact.getBirthMonth() == 0 ? "xx" : contact.getBirthMonth(),
+                    contact.getBirthYear() == 0 ? "xxxx" : contact.getBirthYear()));
 
-        // Нумерация лет начинается с 1900-го
-        birthdate.setCellValue(Date.from(LocalDate.of(1994, Month.NOVEMBER, 14).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            cell = body.createCell(2);
+            switch (contact.getGender()) {
+                case ContactUtils.GENDER_ANY:
+                    cell.setCellValue("Не указ.");
+                    break;
+                case ContactUtils.GENDER_MAN:
+                    cell.setCellValue("Муж.");
+                    break;
+                case ContactUtils.GENDER_WOMAN:
+                    cell.setCellValue("Жен.");
+                    break;
+            }
 
-        // Меняем размер столбца
-        sheet.autoSizeColumn(1);
+            cell = body.createCell(3);
+            cell.setCellValue(StringUtils.defaultString(relationshipMap.get(contact.getRelationshipID())));
 
-        // Записываем всё в файл
+            cell = body.createCell(4);
+            cell.setCellValue(StringUtils.defaultString(contact.getWebSite()));
+
+            cell = body.createCell(5);
+            cell.setCellValue(StringUtils.defaultString(contact.getEmail()));
+
+            cell = body.createCell(6);
+            cell.setCellValue(StringUtils.defaultString(contact.getCompanyName()));
+
+            cell = body.createCell(7);
+            cell.setCellValue(String.format("%s %s %s",
+                    StringUtils.defaultString(countryMap.get(contact.getCountryID())),
+                    StringUtils.defaultString(cityMap.get(contact.getCityID())),
+                    StringUtils.defaultString(contact.getStreet())));
+        }
+
+        for(i = 0; i < headerText.length; ++i) {
+            sheet.autoSizeColumn(i);
+        }
         File file = ContactFileUtils.createTempFile("report", ".xls");
         book.write(new FileOutputStream(file));
         book.close();

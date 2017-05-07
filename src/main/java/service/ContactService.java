@@ -24,7 +24,7 @@ public interface ContactService {
     void deleteProfileImageFile(Contact contact);
     List<Contact> mapVkFriendToContact(List<? extends UserFull> friendList, String loginUser);
     void saveRemoteImages(List<Contact> contactList);
-    File writeContactsToExcel(String loginUser) throws IOException;
+    File writeContactsToExcel(List<Contact> contactList) throws IOException, DaoException;
 
 
     Contact insert(Contact contact) throws DaoException;

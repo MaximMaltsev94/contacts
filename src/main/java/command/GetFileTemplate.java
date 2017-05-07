@@ -18,7 +18,7 @@ import java.sql.Connection;
 public abstract class GetFileTemplate implements Command {
     private static final Logger LOG = LoggerFactory.getLogger(GetFileTemplate.class);
 
-    protected File getFile(HttpServletRequest request, Connection connection) throws DataNotFoundException, IOException {
+    protected File getFile(HttpServletRequest request, Connection connection) throws DataNotFoundException, IOException, DaoException {
         String fileName = (String) request.getAttribute("name");
         if(StringUtils.isBlank(fileName)) {
             LOG.error("file name not specified in request attributes");

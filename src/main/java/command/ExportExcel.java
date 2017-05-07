@@ -1,7 +1,7 @@
 package command;
 
 import exceptions.DaoException;
-import exceptions.DataNotFoundException;
+import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ContactService;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.List;
 
 public class ExportExcel extends GetFileTemplate {
     public static Logger LOG = LoggerFactory.getLogger(ExportExcel.class);
@@ -24,9 +25,10 @@ public class ExportExcel extends GetFileTemplate {
     }
 
     @Override
-    protected File getFile(HttpServletRequest request, Connection connection) throws DataNotFoundException, IOException {
+    protected File getFile(HttpServletRequest request, Connection connection) throws IOException, DaoException {
         ContactService contactService = new ContactServiceImpl(connection);
-        return contactService.writeContactsToExcel(request.getUserPrincipal().getName());
+        List<Contact> contactList = contactService.getByLoginUser(request.getUserPrincipal().getName());
+        return contactService.writeContactsToExcel(contactList);
     }
 
     @Override
