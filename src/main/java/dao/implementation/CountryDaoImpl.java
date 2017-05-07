@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CountryDaoImpl implements CountryDao {
     private static final Logger LOG = LoggerFactory.getLogger(CountryDaoImpl.class);
-    private final String TABLE_NAME = "`country`";
+    private final String TABLE_NAME = "\"country\"";
     private ResultSetMapper<Country> rsMapper;
     private JdbcTemplate<Country> jdbcTemplate;
 
@@ -42,7 +42,7 @@ public class CountryDaoImpl implements CountryDao {
     @Override
     public Country getByID(int countryID) throws DaoException {
         LOG.info("selecting country by id - {}", countryID);
-        String sql = String.format("SELECT * FROM %s WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"id\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForObject(rsMapper, sql, countryID);
     }
 
@@ -52,7 +52,7 @@ public class CountryDaoImpl implements CountryDao {
         if(idList.isEmpty()) {
             return Collections.emptyList();
         }
-        String sql = String.format("SELECT * FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        String sql = String.format("SELECT * FROM %s WHERE \"id\" %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         return jdbcTemplate.queryForList(rsMapper, sql, idList.toArray());
     }
 }

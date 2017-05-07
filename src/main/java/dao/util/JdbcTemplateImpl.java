@@ -114,14 +114,10 @@ public class JdbcTemplateImpl<T> implements JdbcTemplate<T> {
         List<T> contactList = new ArrayList<>();
         int totalRowCount = 1;
         try (PreparedStatement preparedStatement = DaoUtils.getPreparedStatement(connection, sql, Statement.RETURN_GENERATED_KEYS, args);
-             ResultSet rs = preparedStatement.executeQuery();
-             PreparedStatement statement = connection.prepareStatement("SELECT found_rows()");
-             ResultSet found_rows = statement.executeQuery()) {
+             ResultSet rs = preparedStatement.executeQuery();) {
             while (rs.next()) {
+                totalRowCount = rs.getInt("total_count");
                 contactList.add(rsMapper.parseResultSet(rs));
-            }
-            if(found_rows.next()) {
-                totalRowCount = found_rows.getInt(1);
             }
         } catch (SQLException e) {
             LOG.error("error while performing sql query - {}", sql, e);

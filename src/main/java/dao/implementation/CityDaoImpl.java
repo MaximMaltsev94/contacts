@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CityDaoImpl implements CityDao {
     private static final Logger LOG = LoggerFactory.getLogger(CityDaoImpl.class);
-    private final String TABLE_NAME = "`city`";
+    private final String TABLE_NAME = "\"city\"";
     private ResultSetMapper<City> rsMapper;
     private JdbcTemplate<City> jdbcTemplate;
 
@@ -38,7 +38,7 @@ public class CityDaoImpl implements CityDao {
         if(idList.isEmpty()) {
             return Collections.emptyList();
         }
-        String sql = String.format("SELECT * FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        String sql = String.format("SELECT * FROM %s WHERE \"id\" %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         return jdbcTemplate.queryForList(rsMapper, sql, idList.toArray());
     }
 }

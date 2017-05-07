@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 
 public class UserResetTokensDaoImpl implements UserResetTokensDao {
     private static final Logger LOG = LoggerFactory.getLogger(UserResetTokensDaoImpl.class);
-    private String TABLE_NAME = "`user_reset_tokens`";
+    private String TABLE_NAME = "\"user_reset_tokens\"";
     private DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private ResultSetMapper<UserResetTokens> rsMapper;
     private JdbcTemplate<UserResetTokens> jdbcTemplate;
@@ -35,7 +35,7 @@ public class UserResetTokensDaoImpl implements UserResetTokensDao {
     @Override
     public void insert(UserResetTokens userResetTokens) throws DaoException {
         LOG.info("inserting user reset token - {}", userResetTokens);
-        String sql = String.format("INSERT INTO %s (`token`, `login`, `expiry_date`) VALUES (?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"token\", \"login\", \"expiry_date\") VALUES (?, ?, ?)", TABLE_NAME);
         jdbcTemplate.update(sql, userResetTokens.getToken(),
                 userResetTokens.getLogin(),
                 userResetTokens.getExpiryDate().format(DATE_FORMATTER));
@@ -44,14 +44,14 @@ public class UserResetTokensDaoImpl implements UserResetTokensDao {
     @Override
     public UserResetTokens get(String token) throws DaoException {
         LOG.info("selecting user reset token - {}", token);
-        String sql = String.format("SELECT * FROM %s WHERE `token` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"token\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForObject(rsMapper, sql, token);
     }
 
     @Override
     public void deleteWhereExpiryDateLessThan(LocalDateTime dateTime) throws DaoException {
         LOG.info("deleting user reset tokens where expiry date less than - {}", dateTime);
-        String sql = String.format("DELETE FROM %s WHERE TIMESTAMPDIFF(MINUTE, `expiry_date`, ?) > 0", TABLE_NAME);
+        String sql = String.format("DELETE FROM %s WHERE TIMESTAMPDIFF(MINUTE, \"expiry_date\", ?) > 0", TABLE_NAME);
         jdbcTemplate.update(sql, dateTime.format(DATE_FORMATTER));
     }
 }

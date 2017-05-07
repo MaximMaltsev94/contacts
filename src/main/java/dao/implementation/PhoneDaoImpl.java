@@ -15,7 +15,7 @@ import java.util.List;
 
 public class PhoneDaoImpl implements PhoneDao {
     private static final Logger LOG = LoggerFactory.getLogger(PhoneDaoImpl.class);
-    private final String TABLE_NAME = "`phone`";
+    private final String TABLE_NAME = "\"phone\"";
     private ResultSetMapper<Phone> rsMapper;
     private JdbcTemplate<Phone> jdbcTemplate;
 
@@ -38,21 +38,21 @@ public class PhoneDaoImpl implements PhoneDao {
     @Override
     public List<Phone> getByContactID(int contactId) throws DaoException {
         LOG.info("selecting phones by contact id - {}", contactId);
-        String sql = String.format("SELECT * FROM %s WHERE `id_contact` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"id_contact\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, contactId);
     }
 
     @Override
     public void deleteByContactID(int contactID) throws DaoException {
         LOG.info("deleting phones by contact id - {}", contactID);
-        String sql = String.format("DELETE FROM %s WHERE `id_contact` = ?", TABLE_NAME);
+        String sql = String.format("DELETE FROM %s WHERE \"id_contact\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, contactID);
     }
 
     @Override
     public void insert(Phone phone) throws DaoException {
         LOG.info("inserting phone - {}", phone);
-        String sql = String.format("INSERT INTO %s (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES(?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"id_country\", \"operator_code\", \"phone_number\", \"id_contact\", \"type\", \"comment\") VALUES(?, ?, ?, ?, ?, ?)", TABLE_NAME);
         jdbcTemplate.update(sql, phone.getCountryID(),
                                 phone.getOperatorCode(),
                                 phone.getPhoneNumber(),
@@ -66,7 +66,7 @@ public class PhoneDaoImpl implements PhoneDao {
         LOG.info("inserting phone list - {}", phoneList);
         if(phoneList.isEmpty())
             return;
-        String sql = String.format("INSERT INTO %s (`id_country`, `operator_code`, `phone_number`, `id_contact`, `type`, `comment`) VALUES(?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"id_country\", \"operator_code\", \"phone_number\", \"id_contact\", \"type\", \"comment\") VALUES(?, ?, ?, ?, ?, ?)", TABLE_NAME);
         List<Object[]> args = new ArrayList<>();
         for (Phone phone : phoneList) {
             args.add(new Object[]{phone.getCountryID(),

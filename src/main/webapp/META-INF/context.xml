@@ -7,7 +7,7 @@
             maxIdle="30"
             maxWaitMillis="10000"
             driverClassName="org.postgresql.Driver"
-            url="jdbc:postgresql:postgres://ejygazeatzsfve:0dc880128c8e169f40673df34611a066d2bc337e253bb230de093f8758a99f75@ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432/d6g9ibktq8j6nr?useSSL=false&amp;useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Minsk&amp;useUnicode=true&amp;characterEncoding=UTF-8"
+            url="jdbc:postgresql://ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432/d6g9ibktq8j6nr?sslmode=require&amp;user=ejygazeatzsfve&amp;password=0dc880128c8e169f40673df34611a066d2bc337e253bb230de093f8758a99f75"
             username="ejygazeatzsfve"
             password="0dc880128c8e169f40673df34611a066d2bc337e253bb230de093f8758a99f75"
     />
@@ -16,7 +16,7 @@
            dataSourceName="jdbc/contactsDB"
            localDataSource="true"
            digest="SHA-256"
-           userTable="user"
+           userTable="&quot;user&quot;"
            userNameCol="login"
            userCredCol="password"
            userRoleTable="user_roles"

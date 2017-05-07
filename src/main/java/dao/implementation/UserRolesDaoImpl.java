@@ -14,7 +14,7 @@ import java.util.List;
 
 public class UserRolesDaoImpl implements UserRolesDao {
     private static final Logger LOG = LoggerFactory.getLogger(UserRolesDaoImpl.class);
-    private final String TABLE_NAME = "`user_roles`";
+    private final String TABLE_NAME = "\"user_roles\"";
     private ResultSetMapper<UserRoles> rsMapper;
     private JdbcTemplate<UserRoles> jdbcTemplate;
 

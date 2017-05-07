@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class AttachmentDaoImpl implements AttachmentDao {
     private static final Logger LOG = LoggerFactory.getLogger(AttachmentDaoImpl.class);
     private final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private final String TABLE_NAME = "`attachment`";
+    private final String TABLE_NAME = "\"attachment\"";
     private ResultSetMapper<Attachment> rsMapper;
     private JdbcTemplate<Attachment> jdbcTemplate;
 
@@ -42,7 +42,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
     @Override
     public void insert(Attachment attachment) throws DaoException {
         LOG.info("inserting attachment - {}", attachment);
-        String sql = String.format("INSERT INTO %s (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES(?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"file_name\", \"file_path\", \"id_contact\", \"upload_date\", \"comment\") VALUES(?, ?, ?, ?, ?)", TABLE_NAME);
         jdbcTemplate.update(sql, attachment.getFileName(),
                                     attachment.getFilePath(),
                                     attachment.getContactID(),
@@ -56,7 +56,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
         if(attachmentList.isEmpty()) {
             return;
         }
-        String sql = String.format("INSERT INTO %s (`file_name`, `file_path`, `id_contact`, `upload_date`, `comment`) VALUES(?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"file_name\", \"file_path\", \"id_contact\", \"upload_date\", \"comment\") VALUES(?, ?, ?, ?, ?)", TABLE_NAME);
         List<Object[]> params = new ArrayList<>();
         for (Attachment attachment : attachmentList) {
             params.add(new Object[]{attachment.getFileName(),
@@ -71,7 +71,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
     @Override
     public void delete(Attachment attachment) throws DaoException {
         LOG.info("deleting attachment - {}", attachment);
-        String sql = String.format("DELETE FROM %s WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("DELETE FROM %s WHERE \"id\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, attachment.getId());
     }
 
@@ -81,14 +81,14 @@ public class AttachmentDaoImpl implements AttachmentDao {
         if(attachmentList.isEmpty())
             return;
         List<Integer> idList = attachmentList.stream().map(Attachment::getId).collect(Collectors.toList());
-        String sql = String.format("DELETE FROM %s WHERE `id` %s ", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        String sql = String.format("DELETE FROM %s WHERE \"id\" %s ", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         jdbcTemplate.update(sql, idList.toArray());
     }
 
     @Override
     public void update(Attachment attachment) throws DaoException {
         LOG.info("updating attachment - {}", attachment);
-        String sql = String.format("UPDATE %s SET `file_name` = ?, `file_path` = ?,`id_contact` = ?,`upload_date` = ?,`comment` = ? WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("UPDATE %s SET \"file_name\" = ?, \"file_path\" = ?,\"id_contact\" = ?,\"upload_date\" = ?,\"comment\" = ? WHERE \"id\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, attachment.getFileName(),
                                 attachment.getFilePath(),
                                 attachment.getContactID(),
@@ -102,7 +102,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
         LOG.info("updating attachment list - {}", attachmentList);
         if(attachmentList.isEmpty())
             return;
-        String sql = String.format("UPDATE %s SET `file_name` = ?, `file_path` = ?,`id_contact` = ?,`upload_date` = ?,`comment` = ? WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("UPDATE %s SET \"file_name\" = ?, \"file_path\" = ?,\"id_contact\" = ?,\"upload_date\" = ?,\"comment\" = ? WHERE \"id\" = ?", TABLE_NAME);
         List<Object[]> params = new ArrayList<>();
         for (Attachment attachment : attachmentList) {
             params.add(new Object[]{attachment.getFileName(),
@@ -118,7 +118,7 @@ public class AttachmentDaoImpl implements AttachmentDao {
     @Override
     public List<Attachment> getByContactId(int contactId) throws DaoException {
         LOG.info("selecting attachments by contact id - {}", contactId);
-        String sql = String.format("SELECT * FROM %s WHERE `id_contact` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"id_contact\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, contactId);
     }
 
@@ -129,14 +129,14 @@ public class AttachmentDaoImpl implements AttachmentDao {
             return Collections.emptyList();
         }
 
-        String sql = String.format("SELECT * FROM %s WHERE `id_contact` %s ", TABLE_NAME, DaoUtils.generateSqlInPart(contactIdList.size()));
+        String sql = String.format("SELECT * FROM %s WHERE \"id_contact\" %s ", TABLE_NAME, DaoUtils.generateSqlInPart(contactIdList.size()));
         return jdbcTemplate.queryForList(rsMapper, sql, contactIdList.toArray());
     }
 
     @Override
     public Attachment getByFilePath(String filePath) throws DaoException {
         LOG.info("selecting attachments by file path - {}", filePath);
-        String sql = String.format("SELECT * FROM %s WHERE `file_path` like ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"file_path\" like ?", TABLE_NAME);
         return jdbcTemplate.queryForObject(rsMapper, sql,"%" + filePath + "%");
     }
 }

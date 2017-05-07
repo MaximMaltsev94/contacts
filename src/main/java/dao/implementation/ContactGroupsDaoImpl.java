@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ContactGroupsDaoImpl implements ContactGroupsDao {
     private static final Logger LOG = LoggerFactory.getLogger(ContactGroupsDaoImpl.class);
-    private final String TABLE_NAME = "`contact_groups`";
+    private final String TABLE_NAME = "\"contact_groups\"";
     private ResultSetMapper<ContactGroups> rsMapper;
     private JdbcTemplate<ContactGroups> jdbcTemplate;
 
@@ -35,7 +35,7 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
     @Override
     public List<ContactGroups> getByGroupId(int groupId) throws DaoException {
         LOG.info("selecting contact groups by group id - {}", groupId);
-        String sql = String.format("SELECT * FROM %s WHERE `id_group` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"id_group\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, groupId);
     }
 
@@ -45,14 +45,14 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
         if(groupIdList.isEmpty()) {
             return Collections.emptyList();
         }
-        String sql = String.format("SELECT * FROM %s WHERE `id_group` %s", TABLE_NAME, DaoUtils.generateSqlInPart(groupIdList.size()));
+        String sql = String.format("SELECT * FROM %s WHERE \"id_group\" %s", TABLE_NAME, DaoUtils.generateSqlInPart(groupIdList.size()));
         return jdbcTemplate.queryForList(rsMapper, sql, groupIdList.toArray());
     }
 
     @Override
     public List<ContactGroups> getByContactId(int contactId) throws DaoException {
         LOG.info("selecting contact groups by contact id - {}", contactId);
-        String sql = String.format("SELECT * FROM %s WHERE `id_contact` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"id_contact\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, contactId);
     }
 
@@ -62,7 +62,7 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
         if(contactIdList.isEmpty()) {
             return Collections.emptyList();
         }
-        String sql = String.format("SELECT * from %s WHERE `id_contact` %s", TABLE_NAME, DaoUtils.generateSqlInPart(contactIdList.size()));
+        String sql = String.format("SELECT * from %s WHERE \"id_contact\" %s", TABLE_NAME, DaoUtils.generateSqlInPart(contactIdList.size()));
         return jdbcTemplate.queryForList(rsMapper, sql, contactIdList.toArray());
     }
 
@@ -72,7 +72,7 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
         if(contactGroupsList.isEmpty())
             return;
 
-        String sql = String.format("INSERT INTO %s (`id_group`, `id_contact`) VALUES(?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"id_group\", \"id_contact\") VALUES(?, ?)", TABLE_NAME);
         List<Object[]> args = new ArrayList<>();
         for (ContactGroups contactGroups : contactGroupsList) {
             args.add(new Object[]{contactGroups.getGroupId(), contactGroups.getContactID()});
@@ -83,14 +83,14 @@ public class ContactGroupsDaoImpl implements ContactGroupsDao {
     @Override
     public void deleteByContactId(int contactId) throws DaoException {
         LOG.info("deleting contact groups by contact id - {}", contactId);
-        String sql = String.format("DELETE FROM %s WHERE `id_contact` = ?", TABLE_NAME);
+        String sql = String.format("DELETE FROM %s WHERE \"id_contact\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, contactId);
     }
 
     @Override
     public void deleteByGroupId(int groupId) throws DaoException {
         LOG.info("deleting contact groups by group id - {}", groupId);
-        String sql = String.format("DELETE FROM %s WHERE `id_group` = ?", TABLE_NAME);
+        String sql = String.format("DELETE FROM %s WHERE \"id_group\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, groupId);
 
     }

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class RelationshipDaoImpl implements RelationshipDao {
     private static final Logger LOG = LoggerFactory.getLogger(RelationshipDaoImpl.class);
-    private final String TABLE_NAME = "`relationship`";
+    private final String TABLE_NAME = "\"relationship\"";
     private ResultSetMapper<Relationship> rsMapper;
     private JdbcTemplate<Relationship> jdbcTemplate;
 
@@ -39,7 +39,7 @@ public class RelationshipDaoImpl implements RelationshipDao {
     @Override
     public Relationship getByID(int relationshipID) throws DaoException {
         LOG.info("selecting relationship by id - {}", relationshipID);
-        String sql = String.format("SELECT * FROM %s WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"id\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForObject(rsMapper, sql, relationshipID);
     }
 }

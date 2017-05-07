@@ -14,7 +14,7 @@ import java.util.List;
 
 public class UserDaoImpl implements UserDao {
     private static final Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
-    private final String TABLE_NAME = "`user`";
+    private final String TABLE_NAME = "\"user\"";
     private ResultSetMapper<User> rsMapper;
     private JdbcTemplate<User> jdbcTemplate;
 
@@ -43,21 +43,21 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getByEmail(String email) throws DaoException {
         LOG.info("selecting user by email - {}", email);
-        String sql = String.format("SELECT * FROM %s where `email` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s where \"email\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForObject(rsMapper, sql, email);
     }
 
     @Override
     public List<User> getByNeedNotify(boolean needBDateNotify) throws DaoException {
         LOG.info("selecting users by birth date notify - {}", needBDateNotify);
-        String sql = String.format("SELECT * FROM %s WHERE `need_bdate_notify` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"need_bdate_notify\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, needBDateNotify);
     }
 
     @Override
     public void insert(User user) throws DaoException {
         LOG.info("inserting user - {}", user);
-        String sql = String.format("INSERT INTO %s (`login`, `email`, `need_bdate_notify`, `profile_picture`, `password`) VALUES(?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"login\", \"email\", \"need_bdate_notify\", \"profile_picture\", \"password\") VALUES(?, ?, ?, ?, ?)", TABLE_NAME);
         jdbcTemplate.update(sql, user.getLogin(),
                                     user.getEmail(),
                                     user.getNeedBDateNotify(),
@@ -68,7 +68,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void update(User user) throws DaoException {
         LOG.info("updating user - {}", user);
-        String sql = String.format("UPDATE %s SET `login` = ?, `email` = ?, `need_bdate_notify` = ?, `profile_picture` = ?, `password` = ? WHERE `login` = ?", TABLE_NAME);
+        String sql = String.format("UPDATE %s SET \"login\" = ?, \"email\" = ?, \"need_bdate_notify\" = ?, \"profile_picture\" = ?, \"password\" = ? WHERE \"login\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, user.getLogin(),
                 user.getEmail(),
                 user.getNeedBDateNotify(),
@@ -80,7 +80,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void delete(String login) throws DaoException {
         LOG.info("deleting user by login - {}", login);
-        String sql = String.format("DELETE FROM %s WHERE `login` = ?", TABLE_NAME);
+        String sql = String.format("DELETE FROM %s WHERE \"login\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, login);
     }
 }

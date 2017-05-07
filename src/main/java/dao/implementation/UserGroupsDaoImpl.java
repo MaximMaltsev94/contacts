@@ -17,7 +17,7 @@ import java.util.List;
 
 public class UserGroupsDaoImpl implements UserGroupsDao {
     private static final Logger LOG = LoggerFactory.getLogger(UserGroupsDaoImpl.class);
-    private final String TABLE_NAME = "`user_groups`";
+    private final String TABLE_NAME = "\"user_groups\"";
     private ResultSetMapper<UserGroups> rsMapper;
     private JdbcTemplate<UserGroups> jdbcTemplate;
 
@@ -36,14 +36,14 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
     @Override
     public List<UserGroups> getByLogin(String login) throws DaoException {
         LOG.info("selecting user groups by login - {}", login);
-        String sql = String.format("SELECT * FROM %s WHERE `login` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"login\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, login);
     }
 
     @Override
     public UserGroups getByIdAndLoginUser(int id, String loginUser) throws DaoException {
         LOG.info("selecting user group by id - {}", id);
-        String sql = String.format("SELECT * FROM %s WHERE `id` = ? and `login` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"id\" = ? and \"login\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForObject(rsMapper, sql, id, loginUser);
     }
 
@@ -53,14 +53,14 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
         if(idList.isEmpty()) {
             return Collections.emptyList();
         }
-        String sql = String.format("SELECT * FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        String sql = String.format("SELECT * FROM %s WHERE \"id\" %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         return jdbcTemplate.queryForList(rsMapper, sql, idList.toArray());
     }
 
     @Override
     public UserGroups insert(UserGroups userGroups) throws DaoException {
         LOG.info("inserting user group - {}", userGroups);
-        String sql = String.format("INSERT INTO %s (`group_name`, `login`) VALUES (?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (\"group_name\", \"login\") VALUES (?, ?)", TABLE_NAME);
         List<Integer> generatedKeys = new ArrayList<>();
         jdbcTemplate.update(sql, generatedKeys, userGroups.getGroupName(), userGroups.getLogin());
         return new UserGroups(generatedKeys.get(0), userGroups.getGroupName(), userGroups.getLogin());
@@ -69,7 +69,7 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
     @Override
     public void update(UserGroups userGroups) throws DaoException {
         LOG.info("updating user group - {}", userGroups);
-        String sql = String.format("UPDATE %s SET `group_name` = ?, `login` = ? where `id` = ?", TABLE_NAME);
+        String sql = String.format("UPDATE %s SET \"group_name\" = ?, \"login\" = ? where \"id\" = ?", TABLE_NAME);
         jdbcTemplate.update(sql, userGroups.getGroupName(), userGroups.getLogin(), userGroups.getId());
     }
 
@@ -78,14 +78,14 @@ public class UserGroupsDaoImpl implements UserGroupsDao {
         LOG.info("deleting user group by id list - {}", idList);
         if(idList.isEmpty())
             return;
-        String sql = String.format("DELETE FROM %s WHERE `id` %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        String sql = String.format("DELETE FROM %s WHERE \"id\" %s", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         jdbcTemplate.update(sql, idList.toArray());
     }
 
     @Override
     public List<UserGroups> getByGroupNameAndLoginUser(String groupName, String loginUser) throws DaoException {
         LOG.info("selecting user groups by groupName - {} and loginUser - {}", groupName, loginUser);
-        String sql = String.format("SELECT * FROM %s WHERE `group_name` = ? and `login` = ?", TABLE_NAME);
+        String sql = String.format("SELECT * FROM %s WHERE \"group_name\" = ? and \"login\" = ?", TABLE_NAME);
         return jdbcTemplate.queryForList(rsMapper, sql, groupName, loginUser);
     }
 }
