@@ -6,10 +6,10 @@
             maxTotal="100"
             maxIdle="30"
             maxWaitMillis="10000"
-            driverClassName="com.mysql.cj.jdbc.Driver"
-            url="jdbc:mysql://localhost:3306/contacts?useSSL=false&amp;useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Minsk&amp;useUnicode=true&amp;characterEncoding=UTF-8"
-            username="root"
-            password="root"
+            driverClassName="org.postgresql.Driver"
+            url="jdbc:postgresql:postgres://ejygazeatzsfve:0dc880128c8e169f40673df34611a066d2bc337e253bb230de093f8758a99f75@ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432/d6g9ibktq8j6nr?useSSL=false&amp;useTimezone=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Minsk&amp;useUnicode=true&amp;characterEncoding=UTF-8"
+            username="ejygazeatzsfve"
+            password="0dc880128c8e169f40673df34611a066d2bc337e253bb230de093f8758a99f75"
     />
 
     <Realm className="org.apache.catalina.realm.DataSourceRealm"
