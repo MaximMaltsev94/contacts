@@ -192,7 +192,7 @@ public class ContactDaoImpl implements ContactDao {
         if(idList.isEmpty()){
             return new Page<>(Collections.emptyList(), 1, 0);
         }
-        String sql = String.format("SELECT SQL_CALC_FOUND_ROWS * FROM %s WHERE \"login_user\" = ? and \"id\" %s ORDER BY \"id\" desc OFFSET ? LIMIT ?", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
+        String sql = String.format("SELECT *, count(*) OVER() total_count FROM %s WHERE \"login_user\" = ? and \"id\" %s ORDER BY \"id\" desc OFFSET ? LIMIT ?", TABLE_NAME, DaoUtils.generateSqlInPart(idList.size()));
         List<Object> params = new ArrayList<>();
         params.add(loginUser);
         params.addAll(idList);
