@@ -503,13 +503,13 @@ ${isAdd eq false ? requestScope.get('contact').birthYear : 0});
                                         </c:forEach>
 
                                         <input type="text" id="vkId" name="vkId" value="${requestScope.get('contact').vkId}" hidden>
-                                        <input type="text" id="okId" name="okId" value="${requestScope.get('contact').okId}" hidden>
-                                        <input type="text" id="facebookId" name="facebookId" value="${requestScope.get('contact').facebookId}" hidden>
-                                        <input type="text" id="instagramId" name="instagramId" value="${requestScope.get('contact').instagramId}" hidden>
-                                        <input type="text" id="twitterId" name="twitterId" value="${requestScope.get('contact').twitterId}" hidden>
-                                        <input type="text" id="youtubeId" name="youtubeId" value="${requestScope.get('contact').youtubeId}" hidden>
-                                        <input type="text" id="linkedinId" name="linkedinId" value="${requestScope.get('contact').linkedinId}" hidden>
-                                        <input type="text" id="skypeId" name="skypeId" value="${requestScope.get('contact').skypeId}" hidden>
+                                        <input maxlength="50" type="text" id="okId" name="okId" value="${requestScope.get('contact').okId}" hidden>
+                                        <input maxlength="50" type="text" id="facebookId" name="facebookId" value="${requestScope.get('contact').facebookId}" hidden>
+                                        <input maxlength="50" type="text" id="instagramId" name="instagramId" value="${requestScope.get('contact').instagramId}" hidden>
+                                        <input maxlength="50" type="text" id="twitterId" name="twitterId" value="${requestScope.get('contact').twitterId}" hidden>
+                                        <input maxlength="50" type="text" id="youtubeId" name="youtubeId" value="${requestScope.get('contact').youtubeId}" hidden>
+                                        <input maxlength="50" type="text" id="linkedinId" name="linkedinId" value="${requestScope.get('contact').linkedinId}" hidden>
+                                        <input maxlength="50" type="text" id="skypeId" name="skypeId" value="${requestScope.get('contact').skypeId}" hidden>
 
                                         <c:set var="hidden" value="${requestScope.get('contact').vkId == 0 ? 'hidden' : ''}"/>
                                         <img ${hidden} id="img_vk" class="social" src="<c:url value="/sysImages/vk.png"/>" onclick="window.open('${urls[0]}${requestScope.get('contact').vkId}', '_blank')">
