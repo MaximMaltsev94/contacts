@@ -415,3 +415,10 @@ ul.regular li:before {
     padding: 1px 8px;
     margin: 0 3px;
 }
+
+.social {
+    cursor: pointer;
+    margin-right: 5px;
+    width: 25px;
+    height: 25px;
+}

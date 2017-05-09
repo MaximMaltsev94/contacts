@@ -22,14 +22,77 @@ public class Contact extends GenericModel implements Serializable{
     private String street;
     private String postcode;
     private String loginUser;
-    private int VkId;
+    private int vkId;
+	private String okId;
+	private String facebookId;
+	private String instagramId;
+	private String twitterId;
+	private String youtubeId;
+	private String linkedinId;
+	private String skypeId;
 
     public int getVkId() {
-        return VkId;
+        return vkId;
     }
 
     public void setVkId(int vkId) {
-        VkId = vkId;
+        this.vkId = vkId;
+    }
+
+    public String getOkId() {
+        return okId;
+    }
+
+    public void setOkId(String okId) {
+        this.okId = okId;
+    }
+
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
+
+    public String getInstagramId() {
+        return instagramId;
+    }
+
+    public void setInstagramId(String instagramId) {
+        this.instagramId = instagramId;
+    }
+
+    public String getTwitterId() {
+        return twitterId;
+    }
+
+    public void setTwitterId(String twitterId) {
+        this.twitterId = twitterId;
+    }
+
+    public String getYoutubeId() {
+        return youtubeId;
+    }
+
+    public void setYoutubeId(String youtubeId) {
+        this.youtubeId = youtubeId;
+    }
+
+    public String getLinkedinId() {
+        return linkedinId;
+    }
+
+    public void setLinkedinId(String linkedinId) {
+        this.linkedinId = linkedinId;
+    }
+
+    public String getSkypeId() {
+        return skypeId;
+    }
+
+    public void setSkypeId(String skypeId) {
+        this.skypeId = skypeId;
     }
 
     public int getId() {

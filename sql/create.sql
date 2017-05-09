@@ -76,6 +76,13 @@ CREATE TABLE `contacts`.`contact` (
 	`street` NVARCHAR(50),
 	`postcode` NVARCHAR(20),
 	`id_vk` INT UNSIGNED,
+	`id_ok` NVARCHAR(20),
+	`id_facebook` NVARCHAR(20),
+	`id_instagram` NVARCHAR(20),
+	`id_twitter` NVARCHAR(20),
+	`id_youtube` NVARCHAR(20),
+	`id_linkedin` NVARCHAR(20),
+	`id_skype` NVARCHAR(20),
 
 	`login_user` NVARCHAR(15) NOT NULL,
 	

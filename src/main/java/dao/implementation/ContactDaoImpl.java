@@ -47,6 +47,13 @@ public class ContactDaoImpl implements ContactDao {
             contact.setStreet(rs.getString("street"));
             contact.setPostcode(rs.getString("postcode"));
             contact.setVkId(rs.getInt("id_vk"));
+            contact.setOkId(rs.getString("id_ok"));
+            contact.setFacebookId(rs.getString("id_facebook"));
+            contact.setInstagramId(rs.getString("id_instagram"));
+            contact.setTwitterId(rs.getString("id_twitter"));
+            contact.setYoutubeId(rs.getString("id_youtube"));
+            contact.setLinkedinId(rs.getString("id_linkedin"));
+            contact.setSkypeId(rs.getString("id_skype"));
             contact.setLoginUser(rs.getString("login_user"));
 
             return contact;
@@ -56,7 +63,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public Contact insert(Contact contact) throws DaoException {
         LOG.info("inserting contact - {}", contact);
-        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `id_vk`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `id_vk`, `id_ok`, `id_facebook`, `id_instagram`, `id_twitter`, `id_youtube`, `id_linkedin`, `id_skype`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
         List<Integer> generatedKeys = new ArrayList<>();
 
         jdbcTemplate.update(sql, generatedKeys, contact.getFirstName(),
@@ -77,6 +84,13 @@ public class ContactDaoImpl implements ContactDao {
                                                 contact.getStreet(),
                                                 contact.getPostcode(),
                 contact.getVkId() == 0 ? null : contact.getVkId(),
+                                                contact.getOkId(),
+                                                contact.getFacebookId(),
+                                                contact.getInstagramId(),
+                                                contact.getTwitterId(),
+                                                contact.getYoutubeId(),
+                                                contact.getLinkedinId(),
+                                                contact.getSkypeId(),
                                                 contact.getLoginUser());
 
         contact.setId(generatedKeys.get(0));
@@ -86,7 +100,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public List<Integer> insert(List<Contact> contactList) throws DaoException {
         LOG.info("inserting contact list - {}", contactList);
-        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `id_vk`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
+        String sql = String.format("INSERT INTO %s (`first_name`, `last_name`, `patronymic`, `birth_day`, `birth_month`, `birth_year`, `gender`, `citizenship`, `id_relationship`, `web_site`, `email`, `company_name`, `profile_picture`, `id_country`, `id_city`, `street`, `postcode`, `id_vk`, `id_ok`, `id_facebook`, `id_instagram`, `id_twitter`, `id_youtube`, `id_linkedin`, `id_skype`, `login_user`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", TABLE_NAME);
         List<Object[]> args = new ArrayList<>();
         for (Contact contact : contactList) {
             args.add(new Object[] {
@@ -108,6 +122,13 @@ public class ContactDaoImpl implements ContactDao {
                     contact.getStreet(),
                     contact.getPostcode(),
                     contact.getVkId() == 0 ? null : contact.getVkId(),
+                    contact.getOkId(),
+                    contact.getFacebookId(),
+                    contact.getInstagramId(),
+                    contact.getTwitterId(),
+                    contact.getYoutubeId(),
+                    contact.getLinkedinId(),
+                    contact.getSkypeId(),
                     contact.getLoginUser()});
         }
         List<Integer> generatedKeys = new ArrayList<>();
@@ -118,7 +139,7 @@ public class ContactDaoImpl implements ContactDao {
     @Override
     public void update(Contact contact) throws DaoException {
         LOG.info("updating contact - {}", contact);
-        String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_day` = ?, `birth_month` = ?, `birth_year` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `id_vk` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);
+        String sql = String.format("UPDATE %s SET `first_name` = ?, `last_name` = ?, `patronymic` = ?, `birth_day` = ?, `birth_month` = ?, `birth_year` = ?, `gender` = ?,`citizenship` = ?, `id_relationship` = ?, `web_site` = ?, `email` = ?, `company_name` = ?, `profile_picture` = ?, `id_country` = ?, `id_city` = ?, `street` = ?, `postcode` = ?, `id_vk` = ?, `id_ok` = ?, `id_facebook` = ?, `id_instagram` = ?, `id_twitter` = ?, `id_youtube` = ?, `id_linkedin` = ?, `id_skype` = ?, `login_user` = ? WHERE `id` = ?", TABLE_NAME);
 
         String birthDate = null;
         jdbcTemplate.update(sql, contact.getFirstName(),
@@ -139,6 +160,13 @@ public class ContactDaoImpl implements ContactDao {
                                     contact.getStreet(),
                                     contact.getPostcode(),
                                     contact.getVkId() == 0 ? null : contact.getVkId(),
+                                    contact.getOkId(),
+                                    contact.getFacebookId(),
+                                    contact.getInstagramId(),
+                                    contact.getTwitterId(),
+                                    contact.getYoutubeId(),
+                                    contact.getLinkedinId(),
+                                    contact.getSkypeId(),
                                     contact.getLoginUser(),
                                     contact.getId());
     }

@@ -190,8 +190,15 @@ public class ContactServiceImpl implements ContactService {
         contact.setCityID(Integer.parseInt((String) request.getAttribute("city")));
         contact.setStreet((String) request.getAttribute("street"));
         contact.setPostcode((String) request.getAttribute("postcode"));
-        // TODO: 05.05.17 insert vk id to edit contact page
-//        contact.setVkId(Integer.parseInt((String)request.getAttribute("vk")));
+        if(request.getAttribute("vkId") != null)
+            contact.setVkId(Integer.parseInt((String)request.getAttribute("vkId")));
+        contact.setOkId((String) request.getAttribute("okId"));
+        contact.setFacebookId((String) request.getAttribute("facebookId"));
+        contact.setInstagramId((String) request.getAttribute("instagramId"));
+        contact.setTwitterId((String) request.getAttribute("twitterId"));
+        contact.setYoutubeId((String) request.getAttribute("youtubeId"));
+        contact.setLinkedinId((String) request.getAttribute("linkedinId"));
+        contact.setSkypeId((String) request.getAttribute("skypeId"));
         contact.setLoginUser(request.getUserPrincipal().getName());
 
         String profileImage = parseProfileImage(request);
