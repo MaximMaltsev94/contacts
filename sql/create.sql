@@ -1,7 +1,7 @@
 CREATE TABLE "user" (
 	login VARCHAR(15) NOT NULL,
 	email VARCHAR(255) NOT NULL,
-	need_bdate_notify BIT NOT NULL,
+	need_bdate_notify BOOLEAN NOT NULL,
 	profile_picture VARCHAR(255) DEFAULT '/sysImages/default.png',
 	password VARCHAR(255) NOT NULL,
 

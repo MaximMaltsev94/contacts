@@ -279,18 +279,18 @@ public class ContactDaoImpl implements ContactDao {
     public Page<Contact> getByLoginUser(ContactSearchCriteria searchCriteria, int pageNumber, int limit, String loginUser) throws DaoException {
         LOG.info("searching contacts by criteria - {}", searchCriteria);
         String sql = String.format("SELECT *, count(*) OVER() as total_count FROM %s WHERE \"login_user\" = ? and " +
-                "first_name like ? and " +
-                "last_name like ? and " +
-                "ifnull(patronymic, '') like ? and " +
-                "ifnull(timestampdiff(YEAR, CONCAT_WS('-', birth_year, birth_month, birth_day), current_date()), -1) between ? and ? and " +
-                "cast(gender as char) like ? and " +
-                "ifnull(citizenship, '') like ? and " +
-                "ifnull(cast(id_relationship as char), '') like ? and " +
-                "ifnull(company_name, '') like ? and " +
-                "ifnull(cast(id_country as char), '') like ? and " +
-                "ifnull(cast(id_city as char), '') like ? and " +
-                "ifnull(street, '') like ? and " +
-                "ifnull(postcode, '') like ? OFFSET ? LIMIT ?", TABLE_NAME);
+                "first_name ilike ? and " +
+                "last_name ilike ? and " +
+                "coalesce(patronymic, '') ilike ? and " +
+                "coalesce(cast(make_date(birth_year, birth_month, birth_day) between (current_date) - make_interval(years := ?) and current_date - make_interval(years := ?) as char), 'f') = 't' and " +
+                "cast(gender as char) ilike ? and " +
+                "coalesce(citizenship, '') ilike ? and " +
+                "coalesce(cast(id_relationship as char), '') ilike ? and " +
+                "coalesce(company_name, '') ilike ? and " +
+                "coalesce(cast(id_country as char), '') ilike ? and " +
+                "coalesce(cast(id_city as char), '') ilike ? and " +
+                "coalesce(street, '') ilike ? and " +
+                "coalesce(postcode, '') ilike ? OFFSET ? LIMIT ?", TABLE_NAME);
 
 
         int age1 = searchCriteria.getAge1();
@@ -306,8 +306,8 @@ public class ContactDaoImpl implements ContactDao {
                 surroundPercentString(searchCriteria.getFirstName()),
                 surroundPercentString(searchCriteria.getLastName()),
                 surroundPercentString(searchCriteria.getPatronymic()),
-                age1,
                 age2,
+                age1,
                 surroundPercentInt(searchCriteria.getGender(), 0),
                 surroundPercentString(searchCriteria.getCitizenship()),
                 surroundPercentInt(searchCriteria.getRelationship(), 0),

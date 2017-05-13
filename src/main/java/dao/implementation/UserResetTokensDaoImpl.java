@@ -51,7 +51,7 @@ public class UserResetTokensDaoImpl implements UserResetTokensDao {
     @Override
     public void deleteWhereExpiryDateLessThan(LocalDateTime dateTime) throws DaoException {
         LOG.info("deleting user reset tokens where expiry date less than - {}", dateTime);
-        String sql = String.format("DELETE FROM %s WHERE TIMESTAMPDIFF(MINUTE, \"expiry_date\", ?) > 0", TABLE_NAME);
+        String sql = String.format("DELETE FROM %s WHERE (expiry_date < ?::timestamptz) = 't'", TABLE_NAME);
         jdbcTemplate.update(sql, dateTime.format(DATE_FORMATTER));
     }
 }
