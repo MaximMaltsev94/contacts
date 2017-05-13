@@ -72,6 +72,13 @@ CREATE TABLE contact (
 	street VARCHAR(50),
 	postcode VARCHAR(20),
 	id_vk INT ,
+	id_ok VARCHAR(50),
+	id_facebook VARCHAR(50),
+	id_instagram VARCHAR(50),
+	id_twitter VARCHAR(50),
+	id_youtube VARCHAR(50),
+	id_linkedin VARCHAR(50),
+	id_skype VARCHAR(50),
 
 	login_user VARCHAR(15) NOT NULL,
 
