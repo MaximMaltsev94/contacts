@@ -178,9 +178,6 @@
                 <div class="jlab-row margin">
                     <button id="sendEmail" disabled class="jlab-cell-10 align-center" onclick="showView.onEmailSelectedClick()">Отправить письмо</button>
                 </div>
-                <div class="jlab-row margin">
-                    <button class="jlab-cell-10 align-center" onclick="location.href='<c:url value="/contact/statistics" />'">Посмотреть статистику</button>
-                </div>
             </section>
             <section>
                 <div class="jlab-row margin">

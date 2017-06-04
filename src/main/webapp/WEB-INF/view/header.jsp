@@ -20,13 +20,7 @@
                     <a class="text-small-bold" href="<c:url value="/contact/search" />">Поиск</a>
                 </div>
                 <div class="element">
-                    <a class="text-small-bold" href="<c:url value="/contact/createList" />">Создать список</a>
-                </div>
-                <div class="element">
                     <a class="text-small-bold" href="<c:url value="/contact/importVK"/>">Импорт контактов</a>
-                </div>
-                <div class="element">
-                    <a class="text-small-bold" href="<c:url value="/contact/export"/>">Экспорт в Excel</a>
                 </div>
 
                 <div class="element right">

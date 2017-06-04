@@ -3,6 +3,13 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
+    <script>
+        var countryData = ${requestScope.get('countryStatistics')};
+        var groupData = ${requestScope.get('groupsStatistics')};
+        var ageStatisticsLabels = ${requestScope.get('ageStatisticsLabels')};
+        var menAgeStatistics = ${requestScope.get('menAgeStatistics')};
+        var womenAgeStatistics = ${requestScope.get('womenAgeStatistics')};
+    </script>
     <title>Личный кабинет</title>
     <link rel="icon" href="<c:url value="/sysImages/logo.png"/>">
 
@@ -15,9 +22,12 @@
     <script src="<c:url value="/js/addView.js"/>"></script>
     <script src="<c:url value="/js/login.js"/>"></script>
     <script src="<c:url value="/js/user.js"/>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
+    <script src="<c:url value="/js/statistics.js"/>"></script>
 </head>
-<body onload="main.showTooltip('${sessionScope.get('tooltip-text')}', '${sessionScope.get('tooltip-type')}')">
+<body onload="main.showTooltip('${sessionScope.get('tooltip-text')}', '${sessionScope.get('tooltip-type')}');
+        statisticsView.drawCharts()">
 <c:remove var="tooltip-text" scope="session"/>
 <c:remove var="tooltip-type" scope="session"/>
 <jsp:include page="header.jsp"/>
@@ -100,6 +110,12 @@
                     </div>
                 </section>
 
+                <section>
+                    <div class="jlab-row margin">
+                        <button type="button" class="jlab-cell-12 align-center" onclick="location.href='<c:url value="/contact/export"/>'">Экспортировать контакты в Excel</button>
+                    </div>
+                </section>
+
             </div> <%-- div.jlab-cell-4 end --%>
 
             <div class="jlab-cell-8">
@@ -172,6 +188,21 @@
 
                             <div class="text-small">Вы также можете <b><a href="javascript:;" onclick="main.showConfirmDialog('Это действие невозможно отменить. Вы действительно хотите удалить учетную запись?', userView.deleteUser)">Удалить свою страницу</a></b></div>
                         </div>
+                    </section>
+                </div>
+                <div class="jlab-row">
+                    <section class="jlab-row">
+                        <canvas id="age"></canvas>
+                    </section>
+                </div>
+                <div class="jlab-row">
+                    <section class="jlab-row">
+                        <canvas id="country"></canvas>
+                    </section>
+                </div>
+                <div class="jlab-row">
+                    <section class="jlab-row">
+                        <canvas id="contactGroups"></canvas>
                     </section>
                 </div>
             </div>

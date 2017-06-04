@@ -59,7 +59,7 @@ CREATE TABLE `contacts`.`country` (
 CREATE TABLE `contacts`.`contact` (
 	`id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`first_name` NVARCHAR(30) NOT NULL,
-	`last_name` NVARCHAR(30) NOT NULL,
+	`last_name` NVARCHAR(30),
 	`patronymic` NVARCHAR(30),
 	`birth_day` TINYINT,
 	`birth_month` TINYINT,
