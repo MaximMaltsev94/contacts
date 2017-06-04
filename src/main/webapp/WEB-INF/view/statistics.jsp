@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/popup.css"/>">
 
-    <script src="<c:url value="/js/chartjs/Chart.bundle.js"/>"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
     <script src="<c:url value="/js/statistics.js"/>"></script>
 </head>

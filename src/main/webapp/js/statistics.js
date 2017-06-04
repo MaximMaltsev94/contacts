@@ -18,7 +18,7 @@ var statisticsView = (function () {
 
     var draw = function (ctxId, title, type, labels, values, legendDisplay) {
         var ctx = document.getElementById(ctxId).getContext('2d');
-        var chart = new Chart(ctx, {
+        new Chart(ctx, {
             type: type,
 
             data: {
@@ -53,7 +53,7 @@ var statisticsView = (function () {
 
     var drawAgeChart = function () {
         var ctx = document.getElementById('age').getContext('2d');
-        var chart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'bar',
 
             data: {

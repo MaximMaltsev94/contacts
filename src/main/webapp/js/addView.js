@@ -74,7 +74,6 @@ var addView = (function() {
 
         onCityKeyDown: function (text) {
             document.getElementById('city').value = 0;
-            var citySelect = document.getElementById('cityDropdownContent');
             if(text.length === 0) {
                 setDefaultSelect();
                 return;
