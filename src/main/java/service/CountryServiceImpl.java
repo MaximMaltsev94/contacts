@@ -6,6 +6,7 @@ import exceptions.DaoException;
 import model.Country;
 
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.List;
 
 public class CountryServiceImpl implements CountryService {
@@ -27,7 +28,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public List<Country> getByIDIn(List<Integer> idList) throws DaoException {
+    public List<Country> getByIDIn(Collection<Integer> idList) throws DaoException {
         return countryDao.getByIDIn(idList);
     }
 }

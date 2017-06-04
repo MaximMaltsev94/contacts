@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import util.DaoUtils;
 
 import java.sql.Connection;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class CountryDaoImpl implements CountryDao {
     }
 
     @Override
-    public List<Country> getByIDIn(List<Integer> idList) throws DaoException {
+    public List<Country> getByIDIn(Collection<Integer> idList) throws DaoException {
         LOG.info("selecting countries by id list - {}", idList);
         if(idList.isEmpty()) {
             return Collections.emptyList();
