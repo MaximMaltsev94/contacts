@@ -10,8 +10,10 @@
 <html>
 <head>
     <title>${isAdd eq true ? 'Добавить контакт' : 'Редактировать контакт'}</title>
+    <link rel="icon" href="<c:url value="/sysImages/logo.png"/>">
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/dropdown.css" />">
     <link rel="stylesheet" href="<c:url value="/css/actionTooltip.css" />">
     <link rel="stylesheet" href="<c:url value="/css/popup.css" />">
 
@@ -281,18 +283,18 @@ ${isAdd eq false ? requestScope.get('contact').birthYear : 0});
                                     <div class="jlab-cell-9">
                                         <input type="text" name="firstName"
                                                value="${requestScope.get('contact').firstName}" required
-                                               pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30"
+                                               pattern="^[A-Za-zА-Яа-яЁё\s-]{2,30}$" maxlength="30"
                                                title="Русские или английские буквы, от 2х до 30 символов"/>
                                     </div>
                                 </div>
                                 <div class="jlab-row margin">
                                     <div class="jlab-cell-3 center">
-                                        <span class="text-small">Фамилия*</span>
+                                        <span class="text-small">Фамилия</span>
                                     </div>
                                     <div class="jlab-cell-9">
                                         <input type="text" name="lastName"
-                                               value="${requestScope.get('contact').lastName}" required
-                                               pattern="^[A-Za-zА-Яа-яЁё]{2,30}$" maxlength="30"
+                                               value="${requestScope.get('contact').lastName}"
+                                               pattern="^[A-Za-zА-Яа-яЁё\s-]{2,30}$" maxlength="30"
                                                title="Русские или английские буквы, от 2х до 30 символов"/>
                                     </div>
                                 </div>
@@ -449,19 +451,20 @@ ${isAdd eq false ? requestScope.get('contact').birthYear : 0});
                                     </div>
                                 </div>
 
-                                <div class="jlab-row margin">
+                                <div id="cityRow" class="jlab-row margin">
                                     <div class="jlab-cell-3 center">
                                         <span class="text-small">Город</span>
                                     </div>
                                     <div class="jlab-cell-9">
-                                        <div class="jlab-row">
+                                        <div class="dropdown">
                                             <input id="cityInput" type="text"
                                                    onkeyup="addView.onCityKeyDown(this.value)"
+                                                   onblur="addView.onCityBlur()"
                                                    placeholder="Начните вводить название города">
-
-                                            <select id="city" name="city">
-                                                <option value="0">Не выбрано</option>
-                                            </select>
+                                            <div id="cityDropdownContent" class="dropdown-content">
+                                                <div class="hoverable text-small-bold" data-value="0">Не выбрано</div>
+                                            </div>
+                                            <input type="text" id="city" name="city" hidden>
                                         </div>
                                     </div>
                                 </div>
@@ -511,7 +514,7 @@ ${isAdd eq false ? requestScope.get('contact').birthYear : 0});
                                         <input maxlength="50" type="text" id="linkedinId" name="linkedinId" value="${requestScope.get('contact').linkedinId}" hidden>
                                         <input maxlength="50" type="text" id="skypeId" name="skypeId" value="${requestScope.get('contact').skypeId}" hidden>
 
-                                        <c:set var="hidden" value="${requestScope.get('contact').vkId == 0 ? 'hidden' : ''}"/>
+                                        <c:set var="hidden" value="${requestScope.get('contact') == null || requestScope.get('contact').vkId  == 0 ? 'hidden' : ''}"/>
                                         <img ${hidden} id="img_vk" class="social" src="<c:url value="/sysImages/vk.png"/>" onclick="window.open('${urls[0]}${requestScope.get('contact').vkId}', '_blank')">
 
                                         <c:set var="hidden" value="${requestScope.get('contact').okId == null ? 'hidden' : ''}"/>

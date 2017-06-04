@@ -9,6 +9,7 @@
 <html>
 <head>
     <title>Ошибка</title>
+    <link rel="icon" href="<c:url value="/sysImages/logo.png"/>">
 </head>
 <body>
 <h1>Упс.. Что-то пошло не так</h1>

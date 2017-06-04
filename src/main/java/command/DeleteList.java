@@ -29,7 +29,6 @@ public class DeleteList implements Command {
                     .map(id -> StringUtils.substringAfter(id, "manage-group-"))
                     .map(Integer::parseInt)
                     .collect(Collectors.toList());
-            String loginUser = request.getUserPrincipal().getName();
             userGroupsService.delete(idList);
             RequestUtils.setMessageText(request, "Выбраные списки успешно удалены", TooltipType.success);
         } catch (DaoException e) {

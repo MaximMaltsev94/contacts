@@ -4,7 +4,9 @@ var popupSocial = (function () {
     return {
         showSocialPopup: function () {
             for(var i = 0; i < social.length; ++i) {
-                document.getElementById('popupSocial_' + social[i]).value = document.getElementById(social[i] + 'Id').value;
+                var elem = document.getElementById('popupSocial_' + social[i]);
+                elem.value = document.getElementById(social[i] + 'Id').value;
+                elem.value = elem.value == 0 ? "" : elem.value;
             }
             main.showPopup(idPopup);
         },
@@ -18,7 +20,8 @@ var popupSocial = (function () {
                 var popupValue = document.getElementById('popupSocial_' + social[i]).value;
                 document.getElementById(social[i] + 'Id').value = popupValue;
                 if(social[i] === 'skype') {
-                    popupValue += '?chat';
+                    if(popupValue != '')
+                        popupValue += '?chat';
                 }
                 var img = document.getElementById('img_' + social[i]);
                 (function (ind, val) {

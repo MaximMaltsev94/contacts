@@ -5,10 +5,12 @@
 <html>
 <head>
     <title>Поиск</title>
+    <link rel="icon" href="<c:url value="/sysImages/logo.png"/>">
 
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/pagination.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
+    <link rel="stylesheet" href="<c:url value="/css/dropdown.css" />">
 
     <script src="<c:url value="/js/addView.js"/>"></script>
     <script src="<c:url value="/js/main.js"/>"></script>
@@ -240,12 +242,20 @@
                         </select>
                     </div>
 
-                    <div class="text-small-bold">Город</div>
-                    <div class="jlab-row margin">
-                        <input id="cityInput" type="text" onkeyup="addView.onCityKeyDown(this.value)">
-                        <select id="city" name="city">
-                            <option value="0">Не выбрано</option>
-                        </select>
+                    <div id="cityRow" class="jlab-row margin">
+                        <div class="jlab-cell-12">
+                            <div class="text-small-bold jlab-row margin">Город</div>
+                            <div class="dropdown">
+                                <input id="cityInput" type="text"
+                                       onkeyup="addView.onCityKeyDown(this.value)"
+                                       onblur="addView.onCityBlur()"
+                                       placeholder="Начните вводить название города">
+                                <div id="cityDropdownContent" class="dropdown-content">
+                                    <div class="hoverable text-small-bold" data-value="0">Не выбрано</div>
+                                </div>
+                                <input type="text" id="city" name="city" hidden>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="text-small-bold">Адрес</div>

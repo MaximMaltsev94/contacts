@@ -73,14 +73,12 @@ public class ContactGroupsServiceImpl implements ContactGroupsService {
 
     @Override
     public List<ContactGroups> parseRequest(HttpServletRequest request, int contactId) {
-        Enumeration<String> names = request.getAttributeNames();
         List<Integer> groupIdList = parseRequest(request, "contactGroup");
         return groupIdList.stream().map(id -> new ContactGroups(id, contactId)).collect(Collectors.toList());
     }
 
     @Override
     public List<ContactGroups> parseRequest(HttpServletRequest request, int groupId, boolean dummy) {
-        Enumeration<String> names = request.getAttributeNames();
         List<Integer> contactIdList = parseRequest(request, "contact");
         return contactIdList.stream().map(id -> new ContactGroups(groupId, id)).collect(Collectors.toList());
     }

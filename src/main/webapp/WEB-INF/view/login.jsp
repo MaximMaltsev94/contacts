@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Войти</title>
+    <link rel="icon" href="<c:url value="/sysImages/logo.png"/>">
 
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">
@@ -98,7 +99,7 @@
                     </div>
                     <div class="jlab-row margin text-small-bold">Имя пользователя</div>
                     <div class="jlab-row margin">
-                        <input name="username" type="text" pattern="[\w]{3,15}" required title="Буквы, цифры, знак подчеркивания. От 3х до 15 символов">
+                        <input name="username" type="text" pattern="[\w]{3,15}" required title="Английские буквы, цифры, знак подчеркивания. От 3х до 15 символов">
                     </div>
                     <div class="jlab-row margin text-small-bold">E-mail</div>
                     <div class="jlab-row margin">

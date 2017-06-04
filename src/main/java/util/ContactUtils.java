@@ -24,8 +24,8 @@ public class ContactUtils {
     }
 
     public static String cyr2lat(char ch){
-        ch = Character.toUpperCase(ch);
-        switch (ch){
+        char upperCh = Character.toUpperCase(ch);
+        switch (upperCh){
             case 'А': return "A";
             case 'Б': return "B";
             case 'В': return "V";
@@ -59,7 +59,7 @@ public class ContactUtils {
             case 'Э': return "EH";
             case 'Ю': return "JU";
             case 'Я': return "JA";
-            default: return String.valueOf(ch);
+            default: return String.valueOf(upperCh);
         }
     }
 

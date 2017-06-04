@@ -37,7 +37,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             FileUtils.copyInputStreamToFile(inputStream, file);
             return file.getName();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("file creation error", e);
         }
         return null;
     }

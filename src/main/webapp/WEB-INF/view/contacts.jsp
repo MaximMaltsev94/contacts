@@ -5,6 +5,7 @@
 <html>
 <head>
     <title>Контакты</title>
+    <link rel="icon" href="<c:url value="/sysImages/logo.png"/>">
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/pagination.css"/>">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css"/>">

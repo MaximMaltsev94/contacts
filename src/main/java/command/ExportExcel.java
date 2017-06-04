@@ -17,7 +17,7 @@ import java.sql.Connection;
 import java.util.List;
 
 public class ExportExcel extends GetFileTemplate {
-    public static Logger LOG = LoggerFactory.getLogger(ExportExcel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExportExcel.class);
 
     @Override
     protected ResponseFileWriter getResponseFileWriter(Connection connection, File file) throws DaoException {

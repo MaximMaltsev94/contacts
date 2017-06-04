@@ -3,7 +3,8 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-    <title></title>
+    <title>Личный кабинет</title>
+    <link rel="icon" href="<c:url value="/sysImages/logo.png"/>">
 
     <link rel="stylesheet" href="<c:url value="/css/main.css" />">
     <link rel="stylesheet" href="<c:url value="/css/datagrid.css" />">
