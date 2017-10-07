@@ -11,8 +11,8 @@ import service.ContactGroupsService;
 import service.ContactGroupsServiceImpl;
 import service.UserGroupsService;
 import service.UserGroupsServiceImpl;
-import util.RequestUtils;
-import util.TooltipType;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

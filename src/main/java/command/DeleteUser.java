@@ -8,8 +8,8 @@ import model.Contact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.*;
-import util.RequestUtils;
-import util.TooltipType;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,28 +1,34 @@
 package servlet;
 
-import command.Command;
-import command.CommandFactory;
-import dao.implementation.ConnectionFactory;
-import exceptions.CommandExecutionException;
-import exceptions.ConnectionException;
-import exceptions.DataNotFoundException;
-import exceptions.RequestMapperException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import service.UserService;
-import service.UserServiceImpl;
-import util.RequestMapper;
-import util.RequestUtils;
-import util.TooltipType;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import command.Command;
+import command.CommandFactory;
+import dao.implementation.ConnectionFactory;
+import exceptions.CommandExecutionException;
+import exceptions.ConnectionException;
+import exceptions.DataNotFoundException;
+import exceptions.RequestParamHandlerException;
+import service.UserService;
+import service.UserServiceImpl;
+import util.request.MultipartRequestParamHandler;
+import util.request.RequestParamHandler;
+import util.request.RequestParamsToAttibutesHandler;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 public class FrontController extends HttpServlet {
 
@@ -30,14 +36,26 @@ public class FrontController extends HttpServlet {
 
     private transient ConnectionFactory connectionFactory;
     private transient CommandFactory commandFactory;
-    private transient RequestMapper requestMapper;
+    private transient List<RequestParamHandler> requestParamHandlers;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        connectionFactory = ConnectionFactory.getInstance();
-        commandFactory = new CommandFactory();
-        requestMapper = new RequestMapper();
+        try {
+            connectionFactory = ConnectionFactory.getInstance();
+            commandFactory = new CommandFactory();
+            requestParamHandlers = new ArrayList<>();
+            requestParamHandlers.add(new RequestParamsToAttibutesHandler());
+            requestParamHandlers.add(new MultipartRequestParamHandler());
+        } catch (IOException e) {
+            LOG.error("cannot read properties file", e);
+        }
+    }
+    
+    private void handleRequestParams(HttpServletRequest request) throws RequestParamHandlerException {
+        for(RequestParamHandler handler : requestParamHandlers) {
+            handler.handleRequestParams(request);
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -52,7 +70,7 @@ public class FrontController extends HttpServlet {
         String viewName = null;
 
         try(Connection connection = connectionFactory.getConnection()) {
-            requestMapper.mapRequestParamsToAttributes(request);
+            handleRequestParams(request);
 
             UserService userService = new UserServiceImpl(connection);
             if(request.getUserPrincipal() != null) {
@@ -79,7 +97,7 @@ public class FrontController extends HttpServlet {
         } catch (CommandExecutionException e) {
             LOG.error("some problems during command execution", e);
             viewName = "error";
-        } catch (RequestMapperException e) {
+        } catch (RequestParamHandlerException e) {
             LOG.error("error while mapping request parameters to request attributes", e);
             viewName = "error";
         } catch (ConnectionException e) {

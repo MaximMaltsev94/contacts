@@ -2,8 +2,8 @@ package command;
 
 import exceptions.CommandExecutionException;
 import exceptions.DataNotFoundException;
-import util.RequestUtils;
-import util.TooltipType;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -11,8 +11,8 @@ import service.AttachmentService;
 import service.AttachmentServiceImpl;
 import service.ContactService;
 import service.ContactServiceImpl;
-import util.RequestUtils;
-import util.TooltipType;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,6 +1,12 @@
-package util;
+package util.request;
 
-import exceptions.RequestMapperException;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -9,35 +15,28 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.ResourceBundle;
+import exceptions.RequestParamHandlerException;
+import util.ContactUtils;
 
-public class RequestMapper {
-    private final static Logger LOG = LoggerFactory.getLogger(RequestMapper.class);
-
+public class MultipartRequestParamHandler implements RequestParamHandler {
+    private final static Logger LOG = LoggerFactory.getLogger(MultipartRequestParamHandler.class);
+    
     private final int sizeThreshold;
     private final long maxFileSize;
     private final long maxRequestSize;
-    public RequestMapper() {
-        ResourceBundle bundle = ResourceBundle.getBundle("fileUpload");
-        sizeThreshold = Integer.parseInt(bundle.getString("sizeThreshold"));
-        maxFileSize = Long.parseLong(bundle.getString("maxFileSize"));
-        maxRequestSize = Long.parseLong(bundle.getString("maxRequestSize"));
-    }
 
-    public void mapRequestParamsToAttributes(HttpServletRequest request) throws RequestMapperException {
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-        mapRegularParamsToAttributes(request);
-        if(isMultipart) {
-            mapMultipartParamsToAttributes(request);
+    public MultipartRequestParamHandler() throws IOException {
+        Properties fileUploadProperties = new Properties();
+        fileUploadProperties.load(getClass().getResourceAsStream("../../fileUpload.properties"));
+        sizeThreshold = Integer.parseInt(fileUploadProperties.getProperty("sizeThreshold"));
+        maxFileSize = Long.parseLong(fileUploadProperties.getProperty("maxFileSize"));
+        maxRequestSize = Long.parseLong(fileUploadProperties.getProperty("maxRequestSize"));
+    }
+    
+    public void handleRequestParams(HttpServletRequest request) throws RequestParamHandlerException {
+        if(!ServletFileUpload.isMultipartContent(request)) {
+            return;
         }
-    }
-
-    private void mapMultipartParamsToAttributes(HttpServletRequest request) throws RequestMapperException {
         File repository = (File) request.getServletContext().getAttribute("javax.servlet.context.tempdir");
 
         DiskFileItemFactory factory = new DiskFileItemFactory(sizeThreshold, repository);
@@ -62,20 +61,10 @@ public class RequestMapper {
             }
         } catch (FileUploadException e) {
             LOG.error("can't parse multipart request", e);
-            throw new RequestMapperException("error while parsing multipart parameters", e);
+            throw new RequestParamHandlerException("error while parsing multipart parameters", e);
         } catch (IOException e) {
             LOG.error("can't get input stream for multipart file item", e);
-            throw new RequestMapperException("error while getting input stream for file item", e);
-        }
+            throw new RequestParamHandlerException("error while getting input stream for file item", e);
+        }   
     }
-
-    private void mapRegularParamsToAttributes(HttpServletRequest request) {
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()) {
-            String name = parameterNames.nextElement();
-            request.setAttribute(name, request.getParameter(name));
-        }
-    }
-
-
 }

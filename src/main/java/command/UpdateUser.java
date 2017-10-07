@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import service.UserService;
 import service.UserServiceImpl;
 import util.ContactUtils;
-import util.RequestUtils;
-import util.TooltipType;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

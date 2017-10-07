@@ -9,8 +9,8 @@ import model.UserRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.*;
-import util.RequestUtils;
-import util.TooltipType;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

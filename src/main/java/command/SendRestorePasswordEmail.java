@@ -11,8 +11,8 @@ import service.UserResetTokensServiceImpl;
 import service.UserService;
 import service.UserServiceImpl;
 import util.EmailHelper;
-import util.RequestUtils;
-import util.TooltipType;
+import util.request.RequestUtils;
+import util.request.TooltipType;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
