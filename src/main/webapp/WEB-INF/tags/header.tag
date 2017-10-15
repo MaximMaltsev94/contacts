@@ -1,10 +1,13 @@
+<%@ tag trimDirectiveWhitespaces="true"  pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <script>var contextPath = "${pageContext.request.contextPath}"</script>
 <div class="nav">
-    <div class="container1">
+    <div class="container-header">
         <div class="jlab-row">
-            <img src="<c:url value="/sysImages/logo.png"/>" width="25px" height="25px">
+            <div class="element">
+                <i class="fa fa-address-card fa-lg"></i>
+            </div>
             <div class="element">
                 <a class="text-large" href="<c:url value="/contact/show?page=1" />">
                     Контакты

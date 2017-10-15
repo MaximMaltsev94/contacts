@@ -93,7 +93,7 @@ a:hover {
     background-color: white;
 }
 
-.container1 {
+.container-header {
     width: 90%;
     margin: auto;
 }
@@ -421,4 +421,13 @@ ul.regular li:before {
     margin-right: 5px;
     width: 25px;
     height: 25px;
+}
+
+.fa.hover {
+    transition: color 0.3s ease-in-out;
+}
+
+.fa.hover:hover {
+    color: #ec1c24;
+    cursor: pointer;
 }
